@@ -4,7 +4,7 @@ Settings application for Jingos system device , which is based on `Plasma-settin
 
 With beautify the interface of the application, in line with the design language of Jingos , and added a lot of features adapted to jingos
 
-## Configuration modules
+## Plasma-settings Configuration modules
 
 Our aim for configuration modules is to work on multiple form factors.
 To archieve this, their user interface should be based on the new
