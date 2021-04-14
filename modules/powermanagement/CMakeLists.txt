@@ -1,31 +1,19 @@
-# SPDX-License-Identifier: BSD-3-Clause
-# SPDX-FileCopyrightText: 2020 Tomaz Canabrava <tcanabrava@kde.org>
+set(kcm_mobile_power_SRCS package/power.cpp)
 
-include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-add_definitions(-DTRANSLATION_DOMAIN=\"kcm_mobile_power\")
-
-set(kcm_SRCS
-   mobilepower.cpp
-)
-
-add_library(kcm_mobile_power MODULE ${kcm_SRCS})
+add_library(kcm_mobile_power MODULE ${kcm_mobile_power_SRCS})
 
 target_link_libraries(kcm_mobile_power
-    Qt5::Core
+    Qt5::Gui
+    Qt5::Qml
+    Qt5::DBus
     KF5::CoreAddons
-    KF5::I18n
     KF5::QuickAddons
-    KF5::ConfigCore
-)
+    KF5::I18n
+    
+    crypt
+    )
+kcoreaddons_desktop_to_json(kcm_mobile_power "package/metadata.desktop")
 
-kcoreaddons_desktop_to_json(kcm_mobile_power powermanagement.desktop)
 
-#this desktop file is installed only for retrocompatibility with sycoca
-install(FILES powermanagement.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(TARGETS kcm_mobile_power DESTINATION ${PLUGIN_INSTALL_DIR}/kcms)
-
+install(FILES powermanagement.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 kpackage_install_package(package kcm_mobile_power kcms)

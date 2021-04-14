@@ -1,11 +1,24 @@
 /***************************************************************************
  *                                                                         *
- *   SPDX-FileCopyrightText: 2011-2014 Sebastian Kügler <sebas@kde.org>                  *
- *   SPDX-FileCopyrightText: 2017 Marco Martin <mart@kde.org>                            *
+ *   Copyright 2011-2014 Sebastian Kügler <sebas@kde.org>                  *
+ *   Copyright 2017 Marco Martin <mart@kde.org>                            *
+ *             2021 Wang Rui <wangrui@jingos.com>                          *
  *                                                                         *
- *   SPDX-License-Identifier: GPL-2.0-or-later
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
-
 #include "settingsapp.h"
 
 #include <QDebug>
@@ -31,7 +44,6 @@ void SettingsApp::setupKDBus()
     KDBusService *service = new KDBusService(KDBusService::Unique, this);
 
     QObject::connect(service, &KDBusService::activateRequested, this, [this](const QStringList &arguments, const QString & /*workingDirectory*/) {
-        qDebug() << "activateRequested" << arguments;
         m_parser->parse(arguments);
         if (m_parser->isSet("module")) {
             const QString module = m_parser->value("module");
@@ -45,6 +57,7 @@ void SettingsApp::setupKDBus()
 void SettingsApp::setStartModule(const QString &startModule)
 {
     m_startModule = startModule;
+    emit moduleRequested(startModule);
 }
 
 void SettingsApp::setSingleModule(const bool singleModule)

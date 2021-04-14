@@ -1,11 +1,24 @@
 /**************************************************************************
  *                                                                         *
- *   SPDX-FileCopyrightText: 2005 S.R.Haque <srhaque@iee.org>.                           *
- *   SPDX-FileCopyrightText: 2009 David Faure <faure@kde.org>                            *
- *   SPDX-FileCopyrightText: 2011-2015 Sebastian Kügler <sebas@kde.org>                  *
- *   SPDX-FileCopyrightText: 2015 David Edmundson <davidedmundson@kde.org>               *
+ *   Copyright 2005 S.R.Haque <srhaque@iee.org>.                           *
+ *   Copyright 2009 David Faure <faure@kde.org>                            *
+ *   Copyright 2011-2015 Sebastian Kügler <sebas@kde.org>                  *
+ *   Copyright 2015 David Edmundson <davidedmundson@kde.org>               *
  *                                                                         *
- *   SPDX-License-Identifier: GPL-2.0-or-later
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
 #include "timesettings.h"
@@ -28,6 +41,7 @@
 #include <utility>
 
 #include "timedated_interface.h"
+#include "timetool.h"
 
 #define FORMAT24H "HH:mm:ss"
 #define FORMAT12H "h:mm:ss ap"
@@ -49,6 +63,7 @@ TimeSettings::TimeSettings(QObject *parent, const QVariantList &args)
 
     qmlRegisterAnonymousType<TimeZoneModel>("org.kde.timesettings", 1);
     qmlRegisterAnonymousType<TimeZoneFilterProxy>("org.kde.timesettings", 1);
+    qmlRegisterType<TimeTool>("org.jingos.settings.time", 1, 0, "TimeTool");
 
     initSettings();
     initTimeZones();
@@ -202,7 +217,7 @@ void TimeSettings::setTimeFormat(const QString &timeFormat)
     if (m_timeFormat != timeFormat) {
         m_timeFormat = timeFormat;
 
-        m_localeSettings.writeEntry("TimeFormat", timeFormat, KConfigGroup::Notify);
+        m_localeSettings.writeEntry("TimeFormat", timeFormat);
         m_localeConfig->sync();
 
         QDBusMessage msg = QDBusMessage::createSignal(QStringLiteral("/org/kde/kcmshell_clock"), QStringLiteral("org.kde.kcmshell_clock"), QStringLiteral("clockUpdated"));

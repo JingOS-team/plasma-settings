@@ -1,8 +1,22 @@
 /***************************************************************************
  *                                                                         *
- *   SPDX-FileCopyrightText: 2011-2015 Sebastian Kügler <sebas@kde.org>                  *
+ *   Copyright 2011-2015 Sebastian Kügler <sebas@kde.org> 
+ *             2021          Wang Rui <wangrui@jingos.com>          
  *                                                                         *
- *   SPDX-License-Identifier: GPL-2.0-or-later
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
 // std
@@ -32,8 +46,12 @@
 #include <KPluginMetaData>
 
 #include <KPackage/Package>
-#include <KPackage/PackageLoader>
+// #include <KPackage/PackageLoader>
 #include <kdeclarative/qmlobjectsharedengine.h>
+#include "config.h"
+#include <QDBusConnection>
+#include <QDBusError>
+
 
 static constexpr char version[] = "2.0";
 
@@ -41,7 +59,7 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
-    KLocalizedString::setApplicationDomain("mobile.plasma-settings");
+    KLocalizedString::setApplicationDomain("plasma-settings");
 
     // About data
     KAboutData aboutData("mobile.plasmasettings", i18n("Settings"), version, i18n("Touch-friendly settings application."), KAboutLicense::GPL, i18n("Copyright 2011-2015, Sebastian Kügler"));
@@ -57,7 +75,11 @@ int main(int argc, char **argv)
     const QCommandLineOption listOption({QStringLiteral("l"), QStringLiteral("list")}, i18n("List available settings modules"));
     const QCommandLineOption formfactorOption(
         {QStringLiteral("x"), QStringLiteral("formfactor")}, i18n("Limit to modules suitable for <formfactor>, e.g. handset, tablet, mediacenter, desktop, test, all (default handset)"), i18n("formfactor"));
-    const QCommandLineOption moduleOption({QStringLiteral("m"), QStringLiteral("module")}, i18n("Settings module to open"), i18n("modulename"));
+    const QCommandLineOption moduleOption(
+        {QStringLiteral("m"), QStringLiteral("module")}, 
+        i18n("Settings module to open"), i18n("modulename")
+        );
+
     const QCommandLineOption singleModuleOption({QStringLiteral("s"), QStringLiteral("singleModule")}, i18n("Only show a single module, requires --module"));
     const QCommandLineOption fullscreenOption({QStringLiteral("f"), QStringLiteral("fullscreen")}, i18n("Start window fullscreen"));
     const QCommandLineOption layoutOption(QStringLiteral("layout"), i18n("Package to use for the UI (default org.kde.mobile.settings)"), i18n("packagename"));
@@ -80,8 +102,7 @@ int main(int argc, char **argv)
 
         auto formfactor = parser.value(formfactorOption);
 
-        const auto plugins = KPackage::PackageLoader::self()->listPackages(QString(), "kpackage/kcms/");
-        for (const auto &plugin : plugins) {
+        for (const auto &plugin : KPackage::PackageLoader::self()->listPackages(QString(), "kpackage/kcms/")) {
             if (seen.contains(plugin.pluginId())) {
                 continue;
             }
@@ -97,12 +118,9 @@ int main(int argc, char **argv)
 
             seen << plugin.pluginId();
             std::cout << plugin.pluginId().toLocal8Bit().data() << ' ' << std::setw(nameWidth - plugin.pluginId().length() + 2) << '.' << ' ' << plugin.description().toLocal8Bit().data() << std::endl;
-
-            // qDebug() << "Formafactors: " << formFactors;
         }
 
-        const auto kcmPlugin = KPluginLoader::findPlugins("kcms");
-        for (const auto &plugin : kcmPlugin) {
+        for (const auto &plugin : KPluginLoader::findPlugins("kcms")) {
             if (seen.contains(plugin.pluginId())) {
                 continue;
             }
@@ -135,13 +153,21 @@ int main(int argc, char **argv)
     settingsApp->setStartModule(module);
     settingsApp->setSingleModule(singleModule);
 
+    qmlRegisterType<SettingsConfig>("org.kde.plasma.settings", 0, 1, "SettingsConfig");
     qmlRegisterType<ModulesModel>("org.kde.plasma.settings", 0, 1, "ModulesModel");
     qmlRegisterType<Module>("org.kde.plasma.settings", 0, 1, "Module");
     qmlRegisterSingletonInstance<SettingsApp>("org.kde.plasma.settings", 0, 1, "SettingsApp", settingsApp);
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextObject(new KLocalizedContext(&engine));
-    engine.load(package.filePath("mainscript"));
 
+    SettingsConfig settingsConfig;
+
+    settingsConfig.setSelectName("wifi");
+    engine.rootContext()->setContextProperty(QStringLiteral("_settingsConfig"), &settingsConfig);
+    
+    qputenv("QML_DISABLE_DISK_CACHE", "1");
+    engine.load(package.filePath("mainscript"));
+    
     return app.exec();
 }

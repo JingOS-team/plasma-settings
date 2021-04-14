@@ -1,6 +1,8 @@
-# Plasma Settings
+# Jingos Settings
 
-Settings application for Plasma Mobile.
+Settings application for Jingos system device , which is based on `Plasma-settings` .
+
+With beautify the interface of the application, in line with the design language of Jingos , and added a lot of features adapted to jingos
 
 ## Configuration modules
 
@@ -24,13 +26,15 @@ cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${PWD}/install
 cmake --build build --target install -j4
 ```
 
-Defining the installation prefix (with `CMAKE_INSTALL_PREFIX`)
-generates a file in the build folder (`build/prefix.sh`) with
-environment variables for `plasma-settings` to find the freshly built modules.
+## Links
 
-To run `plasma-settings` first source the environment variables and then start the binary.
+* Plasma-settings page: https://invent.kde.org/plasma-mobile/plasma-settings
 
-```sh
-source build/prefix.sh
-./install/bin/plasma-settings
-```
+* Home page: https://www.jingos.com/
+
+* Project page: https://github.com/JingOS-team/jing-settings
+
+* Issues: https://github.com/JingOS-team/jing-settings/issues
+
+* Development channel: https://forum.jingos.com/
+

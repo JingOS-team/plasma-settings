@@ -6,6 +6,8 @@ set_source_files_properties(org.freedesktop.Accounts.xml
 set_source_files_properties(org.freedesktop.Accounts.User.xml
                         PROPERTIES NO_NAMESPACE TRUE)
 
+
+
 qt5_add_dbus_interface(kcm_password_SRCS
     org.freedesktop.Accounts.User.xml
     user_interface
@@ -16,7 +18,9 @@ qt5_add_dbus_interface(kcm_password_SRCS
     accounts_interface
 )
 
-add_library(kcm_password MODULE ${kcm_password_SRCS})
+qt5_add_resources(RESOURCES resources.qrc)
+
+add_library(kcm_password MODULE ${kcm_password_SRCS} ${RESOURCES})
 
 target_link_libraries(kcm_password
     Qt5::Gui

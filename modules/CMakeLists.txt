@@ -1,20 +1,28 @@
 # Install the packages, also make it known to the system
 
+# Cellular Network
+add_subdirectory(cellularnetwork)
+
+
+add_subdirectory(theme)
 add_subdirectory(time)
 
 # Power
-# The port to C++ is happening, this is just
-# a quick and dirty hack so we have this fast
-# while the real powermanagement is being rewritten for plasma 5.22
+# needs porting to C++ / QML KCM api or a rewrite
 add_subdirectory(powermanagement)
 
 # Info
 add_subdirectory(info)
 
-# Cellular Network
-add_subdirectory(cellularnetwork)
+#add_subdirectory(wifi)
+add_subdirectory(display)
+add_subdirectory(sound)
+add_subdirectory(password)
+add_subdirectory(battery)
+add_subdirectory(storage)
+
 
 # Virtual Keyboard (maliit)
-add_subdirectory(virtualkeyboard)
+# add_subdirectory(virtualkeyboard)
 
-add_subdirectory(password)
+

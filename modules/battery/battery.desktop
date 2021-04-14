@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Battery
+Name[x-test]=xxBatteryxx
+Comment=Battery
+Comment[x-test]=xxBatteryxx
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_battery
+X-KDE-FormFactors=handset,tablet,mediacenter
+Categories=Qt;KDE;X-KDE-settings-system;
+X-KDE-Keywords=info,battery
+X-KDE-Keywords[x-test]=xxinfoxx,xxbatteryxx
+X-KDE-ParentApp=kcontrol
+Exec=plasma-settings -m kcm_battery

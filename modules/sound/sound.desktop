@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=sound
+Name[x-test]=xxsoundxx
+Comment=sound
+Comment[x-test]=xxsoundxx
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_sound
+X-KDE-FormFactors=handset,tablet,mediacenter
+Categories=Qt;KDE;X-KDE-settings-system;
+X-KDE-Keywords=info,sound
+X-KDE-Keywords[x-test]=xxinfoxx,xxsoundxx
+X-KDE-ParentApp=kcontrol
+Exec=plasma-settings -m kcm_sound

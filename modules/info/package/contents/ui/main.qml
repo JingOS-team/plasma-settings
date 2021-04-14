@@ -1,109 +1,89 @@
+/**
+ * SPDX-FileCopyrightText: 2020 Tobias Fella <fella@posteo.de>
+ * SPDX-FileCopyrightText: 2021 Wang Rui <wangrui@jingos.com>
+ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+ */
+
 import org.kde.kcm 1.2 as KCM
 import QtQuick.Layouts 1.2
+import QtQuick.Window 2.2
 import QtQuick 2.7
-import QtQuick.Controls 2.2 as Controls
+import QtQuick.Controls 2.2
 import org.kde.kirigami 2.10 as Kirigami
 
-KCM.SimpleKCM {
-    title: i18n("System Information")
+Item {
+    id: system_info_root
 
-    Kirigami.Theme.colorSet: Kirigami.Theme.Window
+    property int screenWidth: Screen.width
+    property int screenHeight: Screen.height
+    property real appScale: 1.3 * screenWidth / 1920
+    property int appFontSize: theme.defaultFont.pointSize
 
-    // This only works in plasma-settings
-    actions.contextualActions: [
-        Kirigami.Action {
-            text: i18n("Copy to clipboard")
-            icon.name: "edit-copy"
-            onTriggered: kcm.copyInfoToClipboard()
-        }
-    ]
+    width: parent.width
+    height: parent.height
 
-    ColumnLayout {
-        width: parent.width
-        spacing: Kirigami.Units.largeSpacing
+    StackView {
+        id: stack
 
-        Kirigami.Icon {
-            Layout.alignment: Qt.AlignHCenter
-            width: Kirigami.Units.iconSizes.huge
-            height: width
-            source: kcm.distroInfo.logo ? kcm.distroInfo.logo : "kde"
-        }
-        Kirigami.Heading {
-            Layout.alignment: Qt.AlignHCenter
-            text: kcm.distroInfo.name
-        }
+        anchors.fill: parent
 
-        Kirigami.UrlButton {
-            Layout.alignment: Qt.AlignHCenter
-            text: kcm.distroInfo.homeUrl
-        }
-
-        Kirigami.Heading {
-            level: 2
-            Layout.alignment: Qt.AlignHCenter
-            text: i18n("Software")
-        }
-        Kirigami.FormLayout {
-            id: softwareLayout
-
-            Controls.Label {
-                Kirigami.FormData.label: i18n("KDE Plasma Version:")
-                text: kcm.softwareInfo.plasmaVersion
-                visible: kcm.softwareInfo.plasmaVersion
-            }
-            Controls.Label {
-                Kirigami.FormData.label: i18n("KDE Frameworks Version:")
-                text: kcm.softwareInfo.frameworksVersion
-            }
-            Controls.Label {
-                Kirigami.FormData.label: i18n("Qt Version:")
-                text: kcm.softwareInfo.qtVersion
-                visible: kcm.softwareInfo.qtVersion
-            }
-            Controls.Label {
-                Kirigami.FormData.label: i18n("Kernel Version:")
-                text: kcm.softwareInfo.kernelRelease
-                visible: kcm.softwareInfo.kernelRelease
-            }
-            Controls.Label {
-                Kirigami.FormData.label: i18n("OS Type:")
-                text: i18nc("@label %1 is the CPU bit width (e.g. 32 or 64)", "%1-bit", kcm.softwareInfo.osType)
-                visible: kcm.softwareInfo.osType
-            }
-        }
-        Kirigami.Heading {
-            level: 2
-            Layout.alignment: Qt.AlignHCenter
-            text: i18n("Hardware")
-        }
-        Kirigami.FormLayout {
-            id: hardwareLayout
-
-            Controls.Label {
-                Kirigami.FormData.label: i18np("Processor:", "Processors:", kcm.hardwareInfo.processorCount);
-                text: kcm.hardwareInfo.processors
-            }
-            Controls.Label {
-                Kirigami.FormData.label: i18n("Memory:")
-                text: {
-                    if (kcm.hardwareInfo.memory !== "0 B") {
-                        return i18nc("@label %1 is the formatted amount of system memory (e.g. 7,7 GiB)",
-                              "%1 of RAM", kcm.hardwareInfo.memory)
-                    } else {
-                        return i18nc("Unknown amount of RAM", "Unknown")
-                    }
-                }
-            }
+        Component.onCompleted: {
+            stack.push(home_view)
         }
     }
-    // Only display when we can't use Kirigami Actions
-    footer: Controls.Button {
-        visible: !Kirigami.Settings.isMobile
-        implicitHeight: visible ? Kirigami.Units.gridUnit * 2 : 0
-        Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
 
-        text: i18n("Copy to clipboard")
-        icon.name: "edit-copy"
-        onClicked: kcm.copyInfoToClipboard()
+    Component {
+        id: home_view
+
+        Home {}
+    }
+
+    Component {
+        id: about_view
+
+        About {}
+    }
+
+    Component {
+        id: legal_view
+
+        Legal {}
+    }
+
+    Component {
+        id: update_view
+
+        SystemUpdate {}
+    }
+
+    Component {
+        id: update_setting_view
+
+        SystemUpdateSettings {}
+    }
+
+    Component {
+        id: reset_view
+
+        FactoryReset {}
+    }
+
+    function gotoPage(name) {
+        if (name == "about_view") {
+            stack.push(about_view)
+        } else if (name == "legal_view") {
+            stack.push(legal_view)
+        } else if (name == "update_view") {
+            stack.push(update_view)
+        } else if (name == "reset_view") {
+            stack.push(reset_view)
+        } else if (name == "update_setting_view") {
+            stack.push(update_setting_view)
+        }
+    }
+
+    function popView() {
+        stack.pop()
     }
 }
+

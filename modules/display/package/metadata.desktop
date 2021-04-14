@@ -1,0 +1,24 @@
+[Desktop Entry]
+Name=Display
+Name[x-test]=xxDisplayxx
+Comment=Display By Jake
+Comment[x-test]=xxDisplay By Jakexx
+Encoding=UTF-8
+Type=Service
+Icon=lock
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_display
+X-KDE-PluginInfo-Author=Jake Wu
+X-KDE-PluginInfo-Email=fella@posteo.de
+X-KDE-PluginInfo-Name=kcm_display
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=https://kde.org
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-FormFactors=handset,tablet,mediacenter,desktop
+X-Plasma-Package=kcm_display
+X-Plasma-MainScript=ui/Display.qml
+X-KDE-ParentApp=kcontrol
+X-KDE-System-Settings-Parent-Category=personalization

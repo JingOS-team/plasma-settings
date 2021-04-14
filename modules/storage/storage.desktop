@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Storage
+Name[x-test]=xxStoragexx
+Comment=Storage
+Comment[x-test]=xxStoragexx
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_storage
+X-KDE-FormFactors=handset,tablet,mediacenter
+Categories=Qt;KDE;X-KDE-settings-system;
+X-KDE-Keywords=info,storage
+X-KDE-Keywords[x-test]=xxinfoxx,xxstoragexx
+X-KDE-ParentApp=kcontrol
+Exec=plasma-settings -m kcm_storage

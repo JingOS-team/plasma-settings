@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="Password.qml">package/contents/ui/Password.qml</file>
+        <file alias="Keyboard.qml">package/contents/ui/Keyboard.qml</file>
+    </qresource>
+</RCC>

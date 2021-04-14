@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+	<file alias="main.qml">../package/contents/ui/main.qml</file>
+	<file alias="ApplicationPage.qml">../package/contents/ui/ApplicationPage.qml</file>
+	<file alias="JBackground.qml">../package/contents/ui/JBackground.qml</file>
+	<file alias="KCMContainer.qml">../package/contents/ui/KCMContainer.qml</file>
+	<file alias="MenuItem.qml">../package/contents/ui/MenuItem.qml</file>
+	<file alias="ModulesList.qml">../package/contents/ui/ModulesList.qml</file>
+    </qresource>
+</RCC>

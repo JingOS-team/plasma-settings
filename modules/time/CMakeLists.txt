@@ -2,6 +2,7 @@ set(timesettings_SRCS
     timesettings.cpp
     timezonemodel.cpp
     timezonesi18n.cpp
+    timetool.cpp
 )
 
 qt5_add_dbus_interface(timesettings_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/timedated1.xml timedated_interface)

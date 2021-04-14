@@ -3,9 +3,11 @@ set(plasma-settings_SRCS
     settingsapp.cpp
     modulesmodel.cpp
     module.cpp
+    config.cpp
 )
 
-add_executable(plasma-settings ${plasma-settings_SRCS})
+qt5_add_resources(RESOURCES resources.qrc)
+add_executable(plasma-settings ${plasma-settings_SRCS} ${RESOURCES})
 
 target_link_libraries(plasma-settings
     Qt5::Quick
@@ -19,6 +21,3 @@ target_link_libraries(plasma-settings
 )
 
 install( TARGETS plasma-settings ${INSTALL_TARGETS_DEFAULT_ARGS} )
-
-install(DIRECTORY package/ DESTINATION ${KDE_INSTALL_DATAROOTDIR}/kpackage/genericqml/org.kde.plasma.settings)
-

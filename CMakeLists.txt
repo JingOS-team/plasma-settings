@@ -14,6 +14,8 @@ include(FeatureSummary)
 
 ################# set KDE specific information #################
 
+set(CMAKE_CXX_FLAGS " -ggdb")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -43,7 +45,6 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     DBusAddons
     I18n
     Plasma
-    Service
     Declarative
     KIO
 )
@@ -58,7 +59,11 @@ ecm_find_qmlmodule(org.kde.kcm 1.0)
 add_subdirectory(src)
 add_subdirectory(modules)
 
+install(DIRECTORY package/ DESTINATION ${KDE_INSTALL_DATAROOTDIR}/kpackage/genericqml/org.kde.plasma.settings)
+
 install(FILES org.kde.mobile.plasmasettings.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+# install(FILES settings.svg DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES settings.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps/)
 
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})

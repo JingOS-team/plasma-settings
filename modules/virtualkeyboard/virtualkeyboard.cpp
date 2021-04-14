@@ -1,15 +1,27 @@
 /*
- * SPDX-FileCopyrightText: 2020 Bhushan Shah <bshah@kde.org>
+ * Copyright 2020  Bhushan Shah <bshah@kde.org>
  *
- * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License or (at your option) version 3 or any later version
+ * accepted by the membership of KDE e.V. (or its successor approved
+ * by the membership of KDE e.V.), which shall act as a proxy
+ * defined in Section 14 of version 3 of the license.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "virtualkeyboard.h"
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KPluginFactory>
-
-#include <QDir>
 
 #include "languagemodel.h"
 
@@ -48,15 +60,6 @@ VirtualKeyboard::VirtualKeyboard(QObject *parent, const QVariantList &args)
 
     m_soundFeedback = m_gsettings->value("key-press-feedback").toBool();
     m_vibrateFeedback = m_gsettings->value("key-press-haptic-feedback").toBool();
-    
-    m_theme = m_gsettings->value("theme").toString();
-    
-    // get available themes
-    QDir themesFolder(MALIIT_KEYBOARD_THEMES_DIR);
-    const auto files = themesFolder.entryList({"*.json"}, QDir::Files);
-    for (const QString &fileName : files) {
-        m_availableThemes.append(fileName.split('.')[0]);
-    }
 }
 
 SETTER(setAutoCapitalize, m_autoCapitalize, "auto-capitalization", autoCapitalizeChanged)
@@ -67,14 +70,5 @@ SETTER(setSpellCheck, m_spellCheck, "spell-checking", spellCheckChanged)
 
 SETTER(setSoundFeedback, m_soundFeedback, "key-press-feedback", soundFeedbackChanged)
 SETTER(setVibrateFeedback, m_vibrateFeedback, "key-press-haptic-feedback", vibrateFeedbackChanged)
-
-void VirtualKeyboard::setTheme(QString theme)
-{
-    if (m_theme != theme) {
-        m_theme = theme;
-        m_gsettings->set("theme", theme);
-        Q_EMIT themeChanged();
-    }
-}
 
 #include "virtualkeyboard.moc"
