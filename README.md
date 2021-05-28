@@ -62,9 +62,9 @@ cmake --build build --target install -j4
 
 * Home page: https://www.jingos.com/
 
-* Project page: https://github.com/JingOS-team/jing-settings
+* Project page: https://github.com/JingOS-team/settings
 
-* Issues: https://github.com/JingOS-team/jing-settings/issues
+* Issues: https://github.com/JingOS-team/settings/issues
 
 * Development channel: https://forum.jingos.com/
 
