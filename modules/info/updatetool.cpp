@@ -32,6 +32,8 @@
 #include <KConfigGroup>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <BluezQt/Manager>
+#include <BluezQt/Adapter>
 
 #include "mynetworkobject.h"
 #include "updatetool.h"
@@ -39,10 +41,13 @@
 QString UpdateTool::settingFileName = "/usr/share/lastCheckedTime.ini" ;
 
 UpdateTool::UpdateTool() {
+
+
     myNetworkObject = new MyNetworkObject();
     connect(myNetworkObject , SIGNAL(requestSuccessSignal(QString)) , this , SLOT(readRemoteSuccess(QString)));
     connect(myNetworkObject , SIGNAL(requestFailSignal(QString)) , this , SLOT(readRemoteFailure(QString)));
 }
+
 
 void UpdateTool::launchDistUpgrade(QString v_version)
 {
@@ -90,8 +95,10 @@ QString UpdateTool::readLocalInfo()
     QTextCodec * code = QTextCodec::codecForName("utf8");
     QFile file("/usr/share/jingosinfo/systeminfo.conf");
 
-    if ( !file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        emit checkedFinish(3 , "Read local info failure" , "");
         return "";
+    }
 
     QTextStream stream(&file);
     stream.setCodec(code);
@@ -128,10 +135,12 @@ void UpdateTool::readRemoteVersion()
     QString urlStr = "https://om.jingos.com/api/v1/ota/versioncheck";
     QString version = readLocalInfo();
     if(version== ""){
+        emit checkedFinish(4 , "" , "");
         return ;
     }
     urlStr.append(version);
     QUrl url = QUrl(urlStr);
+    
     myNetworkObject->get(url);
 }
 
@@ -150,7 +159,11 @@ void UpdateTool::readRemoteSuccess(QString data)
 
 void UpdateTool::readRemoteFailure(QString error) 
 {
-    emit checkedFinish(3 , error , "");
+    if(error == "Timeout") {
+        emit checkedFinish(4 , "" , "");
+    } else {
+        emit checkedFinish(3 , error , "");
+    }
 }
 
 void UpdateTool::setCheckCycle(int cycle)
@@ -206,26 +219,24 @@ int UpdateTool::Parse_Seniverse_Now_Json(QString& seniverse_now_json)
         QString changedLog = "\n" ; 
         QJsonValue result_Value = root_Obj.value("versionNodeList");
         if(result_Value.isArray()) {
-            for(int i = 0 ; i < result_Value.toArray().size() ; i ++) {
-                QJsonObject result_Obj = result_Value.toArray().at(i).toObject();
+
+                QJsonObject result_Obj = result_Value.toArray().at(result_Value.toArray().size()-1).toObject();
                 QString versionName = result_Obj.value("versionName").toString();
                 qDebug() << "VersionNum::: "<<versionName;
-                if(i == result_Value.toArray().size() -1) {
+                // if(i == result_Value.toArray().size() -1) {
                     valueVersion = versionName;
-                }
-                changedLog.append("Version Code: " + versionName +" \n");
+                // }
                 QJsonValue changloglist = result_Obj.value("changeLogList");
                 if(changloglist.isArray()) {
                     for(int j = 0 ; j < changloglist.toArray().size() ; j++) {
                         QJsonObject change_Obj = changloglist.toArray().at(j).toObject();
                         QString changeType = change_Obj.value("type").toString();
                         QString changeInfo = change_Obj.value("info").toString();
-                        changedLog.append("- type: " + changeType +" \n");
-                        changedLog.append("- info: " + changeInfo +" \n");      
+                        changedLog.append("type: " + changeType +" \n");
+                        changedLog.append("info: " + changeInfo +" \n");      
                         changedLog.append("\n");
                     }   
                 }
-            }
         }
 
         if(newVersion) {

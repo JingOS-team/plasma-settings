@@ -32,6 +32,7 @@ K_PLUGIN_CLASS_WITH_JSON(Storage, "storage.json")
 Storage::Storage(QObject *parent, const QVariantList &args)
 : KQuickAddons::ConfigModule(parent, args)
 {
+    KLocalizedString::setApplicationDomain("kcm_storage");
     qmlRegisterType<StorageModel>("jingos.storage", 1, 0, "StorageModel");
 
     KAboutData *about = new KAboutData("kcm_storage", i18n("Storage"), "1.0", QString(), KAboutLicense::GPL);

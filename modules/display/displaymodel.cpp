@@ -38,22 +38,33 @@ void DisplayModel::setScreenIdleTime(int sec)
 {
     QDBusInterface brightnessIface(
         QStringLiteral("org.kde.Solid.PowerManagement"),
-        QStringLiteral("/org/kde/Solid/PowerManagement/Actions/DimDisplay"),
-        QStringLiteral("org.kde.Solid.PowerManagement.Actions.DimDisplay"));
-    brightnessIface.asyncCall(QStringLiteral("setBatteryDimIdleTime"), sec);
+        QStringLiteral("/org/kde/Solid/PowerManagement/Actions/DPMSControl"),
+        QStringLiteral("org.kde.Solid.PowerManagement.Actions.DPMS"));
+    brightnessIface.asyncCall(QStringLiteral("setDPMSIdleTime"), sec);
 }
 
 int DisplayModel::getScreenIdleTime()
 {
     QDBusMessage screenMsg=QDBusMessage::createMethodCall("org.kde.Solid.PowerManagement",
-                            QStringLiteral("/org/kde/Solid/PowerManagement/Actions/DimDisplay"),
-                            QStringLiteral("org.kde.Solid.PowerManagement.Actions.DimDisplay"),
-                            QStringLiteral("batteryDimIdleTime"));
+                            QStringLiteral("/org/kde/Solid/PowerManagement/Actions/DPMSControl"),
+                            QStringLiteral("org.kde.Solid.PowerManagement.Actions.DPMS"),
+                            QStringLiteral("DPMSIdleTime"));
 
-    QDBusPendingReply<int> screenReply=QDBusConnection::sessionBus().asyncCall(screenMsg);
-    if(screenReply.isValid()){
-        return screenReply.value();
+    QDBusInterface interface("org.kde.Solid.PowerManagement", "/org/kde/Solid/PowerManagement/Actions/DPMSControl",
+                             "org.kde.Solid.PowerManagement.Actions.DPMS",
+                             QDBusConnection::sessionBus());
+    double tmpValue = 0; 
+    if (interface.isValid()) {
+        QDBusReply<int> reply = interface.call("DPMSIdleTime");
+        if (reply.isValid()) {
+            qCritical() << "tmpValue"<< tmpValue;
+            tmpValue = reply.value();
+            return tmpValue;
+        } else {
+            qCritical() << "DPMSIdleTime method called failed!";
+        }
     }
+
     return 0;
 }
 

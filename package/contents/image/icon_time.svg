@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Content, Edit/Document</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="A-WLAN" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="a02-1设置-标题与结构示意(暗色）" transform="translate(-957.000000, -2267.000000)">
+            <g id="Content,-Edit/Document" transform="translate(957.000000, 2267.000000)">
+                <rect id="矩形" fill="#C34848" x="0" y="0" width="44" height="44" rx="14"></rect>
+                <g filter="url(#filter-1)" id="Group">
+                    <g transform="translate(6.000000, 6.000000)">
+                        <line x1="27.0116667" y1="9.67111111" x2="3.00166667" y2="9.67111111" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <path d="M28.3455556,22.3430556 C28.3455556,25.6581448 25.6581448,28.3455556 22.3430556,28.3455556 C19.0279663,28.3455556 16.3405556,25.6581448 16.3405556,22.3430556 C16.3405556,19.0279663 19.0279663,16.3405556 22.3430556,16.3405556 C25.6581448,16.3405556 28.3455556,19.0279663 28.3455556,22.3430556 Z" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M18.5721517,27.0116667 L7.00333333,27.0116667 C4.79327386,27.0116667 3.00166667,25.2200594 3.00166667,23.01 L3.00166667,7.00333333 C3.00166667,4.79327386 4.79327386,3.00166667 7.00333333,3.00166667 L23.01,3.00166667 C25.2200594,3.00166667 27.0116667,4.79327386 27.0116667,7.00333333 L27.0116667,18.5721517" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <line x1="22.6389121" y1="19.3945075" x2="22.6389121" y2="22.5844761" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <line x1="20.04067" y1="22.5844761" x2="22.6389121" y2="22.5844761" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <path d="M8.06911056,14.3397222 C8.06911056,14.3765565 8.03925044,14.4064167 8.00241611,14.4064167 C7.96558178,14.4064167 7.93572167,14.3765565 7.93572167,14.3397222 C7.93572167,14.3028879 7.96558178,14.2730278 8.00241611,14.2730278" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M8.00241611,14.2730278 C8.03925044,14.2730278 8.06911056,14.3028879 8.06911056,14.3397222" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12.7390556,14.3397222 C12.7390556,14.3765565 12.7091954,14.4064167 12.6723611,14.4064167 C12.6355268,14.4064167 12.6056667,14.3765565 12.6056667,14.3397222 C12.6056667,14.3028879 12.6355268,14.2730278 12.6723611,14.2730278" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12.6723611,14.2730278 C12.7091954,14.2730278 12.7390556,14.3028879 12.7390556,14.3397222" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M8.06911056,18.3413889 C8.06911056,18.3782232 8.03925044,18.4080833 8.00241611,18.4080833 C7.96558178,18.4080833 7.93572167,18.3782232 7.93572167,18.3413889 C7.93572167,18.3045546 7.96558178,18.2746944 8.00241611,18.2746944" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M8.00241611,18.2746944 C8.03925044,18.2746944 8.06911056,18.3045546 8.06911056,18.3413889" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12.7390556,18.3413889 C12.7390556,18.3782232 12.7091954,18.4080833 12.6723611,18.4080833 C12.6355268,18.4080833 12.6056667,18.3782232 12.6056667,18.3413889 C12.6056667,18.3045546 12.6355268,18.2746944 12.6723611,18.2746944" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12.6723611,18.2746944 C12.7091954,18.2746944 12.7390556,18.3045546 12.7390556,18.3413889" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M17.4063328,14.3397222 C17.4063328,14.3765565 17.3764726,14.4064167 17.3396383,14.4064167 C17.3028041,14.4064167 17.2729439,14.3765565 17.2729439,14.3397222 C17.2729439,14.3028879 17.3028041,14.2730278 17.3396383,14.2730278" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M17.3396383,14.2730278 C17.3764726,14.2730278 17.4063328,14.3028879 17.4063328,14.3397222" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M8.06911056,22.3430556 C8.06911056,22.3798898 8.03925044,22.40975 8.00241611,22.40975 C7.96558178,22.40975 7.93572167,22.3798898 7.93572167,22.3430556 C7.93572167,22.3062213 7.96558178,22.2763611 8.00241611,22.2763611" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M8.00241611,22.2763611 C8.03925044,22.2763611 8.06911056,22.3062213 8.06911056,22.3430556" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12.7390556,22.3430556 C12.7390556,22.3798898 12.7091954,22.40975 12.6723611,22.40975 C12.6355268,22.40975 12.6056667,22.3798898 12.6056667,22.3430556 C12.6056667,22.3062213 12.6355268,22.2763611 12.6723611,22.2763611" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12.6723611,22.2763611 C12.7091954,22.2763611 12.7390556,22.3062213 12.7390556,22.3430556" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <rect id="Rectangle" x="0" y="0" width="32" height="32"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -19,6 +19,6 @@ X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=true
 X-KDE-FormFactors=handset,tablet,mediacenter,desktop
 X-Plasma-Package=kcm_display
-X-Plasma-MainScript=ui/Display.qml
+X-Plasma-MainScript=ui/main.qml
 X-KDE-ParentApp=kcontrol
 X-KDE-System-Settings-Parent-Category=personalization

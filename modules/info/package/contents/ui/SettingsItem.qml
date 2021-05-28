@@ -35,10 +35,13 @@ Rectangle {
     property bool withArrow: true
     property bool withNew: false
 
+    property int radiusCommon: 10 
+    property int fontNormal: 14
 
     width: parent.width
-    height: 69 * system_info_root.appScale
+    height: default_setting_item_height + 1
     color: "transparent"
+    // color : "#aa00ff00"
 
     signal itemClicked
 
@@ -55,14 +58,15 @@ Rectangle {
 
         anchors {
             left: parent.left
-            leftMargin: 31 * system_info_root.appScale
-            verticalCenter: parent.verticalCenter
+            leftMargin: marginLeftAndRight
+            verticalCenter: settings_item_root.verticalCenter
         }
 
-        width: 331 * appScale
-        height: 26 * appScale
+        width: 331 
+        height: 17
 
-        font.pointSize: system_info_root.appFontSize + 2
+        // font.pointSize: system_info_root.appFontSize + 2
+        font.pixelSize: fontNormal
     }
 
     Text {
@@ -71,13 +75,14 @@ Rectangle {
         anchors {
             verticalCenter: parent.verticalCenter
             right: parent.right
-            rightMargin: 34 * appScale
+            rightMargin: marginLeftAndRight
         }
 
         visible: withContent
         text: mContent
         color: "#99000000"
-        font.pointSize: appFontSize + 2
+        // font.pointSize: appFontSize + 2
+        font.pixelSize: fontNormal
     }
 
     Image {
@@ -86,11 +91,11 @@ Rectangle {
         anchors {
             verticalCenter: parent.verticalCenter
             right: item_arrow.right
-            rightMargin: 34 * appScale
+            rightMargin: marginLeftAndRight
         }
 
-        sourceSize.width: 25 * system_info_root.appScale
-        sourceSize.height: 25 * system_info_root.appScale
+        sourceSize.width: 17
+        sourceSize.height: 17
 
         visible: withNew
         source: "../image/new.png"
@@ -102,11 +107,11 @@ Rectangle {
         anchors {
             verticalCenter: parent.verticalCenter
             right: parent.right
-            rightMargin: 34 * appScale
+            rightMargin: marginLeftAndRight
         }
 
-        sourceSize.width: 25 * system_info_root.appScale
-        sourceSize.height: 25 * system_info_root.appScale
+        sourceSize.width: 17
+        sourceSize.height: 17
 
         visible: withArrow
         source: "../image/icon_right.png"
@@ -118,10 +123,10 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 31 * system_info_root.appScale
-        anchors.rightMargin: 31 * system_info_root.appScale
+        anchors.leftMargin: marginLeftAndRight
+        anchors.rightMargin: marginLeftAndRight
 
-        height: 1 * system_info_root.appScale
+        height: 1
         color: "#f0f0f0"
     }
 }

@@ -8,6 +8,7 @@ add_library(kcm_storage MODULE ${storage_SRCS})
 target_link_libraries(kcm_storage
     Qt5::Core
     KF5::CoreAddons
+    KF5::Solid
     KF5::I18n
     KF5::QuickAddons
     KF5::ConfigCore

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="A-WLAN" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="a02-1设置-标题与结构示意(暗色）" transform="translate(-710.000000, -2267.000000)">
+            <g id="Group" transform="translate(710.000000, 2267.000000)">
+                <rect id="矩形" fill="#C953EB" x="0" y="0" width="44" height="44" rx="14"></rect>
+                <g filter="url(#filter-1)" id="编组-6">
+                    <g transform="translate(6.000000, 6.000000)">
+                        <path d="M4.00166667,9.33722222 C4.00166667,6.39047626 6.39047626,4.00166667 9.33722222,4.00166667 L22.6761111,4.00166667 C25.6228571,4.00166667 28.0116667,6.39047626 28.0116667,9.33722222 L28.0116667,22.6761111 C28.0116667,25.6228571 25.6228571,28.0116667 22.6761111,28.0116667 L9.33722222,28.0116667 C6.39047626,28.0116667 4.00166667,25.6228571 4.00166667,22.6761111 L4.00166667,9.33722222 Z" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M16.0066667,21.3422222 L22.1238811,15.2250078 C23.1656479,14.1835555 24.8543521,14.1835555 25.8961189,15.2250078 L28.0116667,17.3405556" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <circle id="Oval" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" cx="10.0041667" cy="10.0041667" r="2.00083333"></circle>
+                        <path d="M4.47252944,24.8690244 L10.1148794,19.2266744 C11.1566463,18.1852222 12.8453504,18.1852222 13.8871172,19.2266744 L22.4466822,27.7862394" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <polygon id="Path" points="0 0 32 0 32 32 0 32"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

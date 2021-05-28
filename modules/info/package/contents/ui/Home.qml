@@ -15,12 +15,22 @@ import org.jingos.info 1.0
 Item {
     id: info_root
 
-    property real appScale: 1.3 * parent.width / (1920 * 0.7)
+    property int screenWidth: 888
+    property int screenHeight: 648
     property int appFontSize: theme.defaultFont.pointSize
+
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
     property bool hasNewVersion: false
 
-    width: parent.width
-    height: parent.height
+    width: screenWidth * 0.7
+    height: screenHeight
 
     UpdateTool {
         id: updateTool
@@ -42,14 +52,15 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 72 * appScale
-                topMargin: 68 * appScale
+                leftMargin: marginLeftAndRight  
+                topMargin: marginTitle2Top  
             }
 
-            width: 500
-            height: 50
+            width: 329
+            height: 14
             text: i18n("System & Update")
-            font.pointSize: appFontSize + 11
+            // font.pointSize: appFontSize + 11
+            font.pixelSize: 20 
             font.weight: Font.Bold
         }
 
@@ -59,14 +70,14 @@ Item {
             anchors {
                 left: parent.left
                 top: info_title.bottom
-                leftMargin: 72 * appScale
-                topMargin: 42 * appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginItem2Title
             }
 
-            width: parent.width - 144 * appScale
-            height: 138 * appScale
+            width: parent.width - marginLeftAndRight* 2
+            height: default_setting_item_height * 2
             color: "#fff"
-            radius: 15 * appScale
+            radius: 10
 
             SettingsItem {
                 id: item_about
@@ -100,14 +111,14 @@ Item {
             anchors {
                 left: parent.left
                 top: info_top.bottom
-                leftMargin: 72 * appScale
-                topMargin: 36 * appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginItem2Top
             }
 
-            width: parent.width - 144 * appScale
-            height: 69 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height
             color: "#fff"
-            radius: 15 * appScale
+            radius: 10
 
             SettingsItem {
                 id: item_legal
@@ -127,15 +138,15 @@ Item {
             anchors {
                 left: parent.left
                 top: info_mid.bottom
-                leftMargin: 72 * appScale
-                topMargin: 36 * appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginItem2Top
             }
 
-            width: parent.width - 144 * appScale
-            height: 69 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height
             visible: false
             color: "#fff"
-            radius: 15 * appScale
+            radius: 10
 
             SettingsItem {
                 id: update_about

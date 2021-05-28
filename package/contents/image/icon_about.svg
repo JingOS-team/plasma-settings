@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="A-WLAN" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="a02-1设置-标题与结构示意(暗色）" transform="translate(-834.000000, -2267.000000)">
+            <g id="icon" transform="translate(834.000000, 2267.000000)">
+                <rect id="矩形" fill="#2EB093" x="0" y="0" width="44" height="44" rx="14"></rect>
+                <g filter="url(#filter-1)" id="Group">
+                    <g transform="translate(6.000000, 6.000000)">
+                        <polyline id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="14.6847828 15.0049161 16.218755 15.0049161 16.218755 20.6739439"></polyline>
+                        <line x1="14.6727778" y1="20.673437" x2="17.7531807" y2="20.673437" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <path d="M16.1400556,10.9990744 C16.1400556,11.183246 15.990755,11.3325466 15.8065833,11.3325466 C15.6224117,11.3325466 15.4731111,11.183246 15.4731111,10.9990744 C15.4731111,10.8149027 15.6224117,10.6656021 15.8065833,10.6656021" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M15.8065833,10.6656021 C15.990755,10.6656021 16.1400556,10.8149027 16.1400556,10.9990744" id="Path" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <rect id="Rectangle" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x="4.00166667" y="3.9998259" width="24.01" height="24.01" rx="6.66666667"></rect>
+                        <polygon id="Path" points="32 32 0 32 0 0 32 0"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

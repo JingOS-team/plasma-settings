@@ -18,16 +18,26 @@
 
 #include "accounts_interface.h"
 #include "user_interface.h"
+#include <KConfigGroup>
+#include <KSharedConfig>
+#include <QDBusConnection>
 
 K_PLUGIN_CLASS_WITH_JSON(Password, "metadata.json")
 
 Password::Password(QObject *parent, const QVariantList &args)
     : KQuickAddons::ConfigModule(parent, args)
 {
+    KLocalizedString::setApplicationDomain("kcm_password");
     KAboutData *about = new KAboutData("kcm_password", i18n("Lockscreen PIN"), "1.0", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Tobias Fella"), QString(), "fella@posteo.de");
     setAboutData(about);
     setButtons(KQuickAddons::ConfigModule::NoAdditionalButton);
+
+    bool rv = QDBusConnection::sessionBus().connect(QString(), QString("/org/kde/Polkit1AuthAgent"), "org.kde.Polkit1AuthAgent",
+                                                        "sigConfirm", this, SLOT(slotReceiveDbusConfirm()));
+    if(rv == false){
+        qWarning() << "dbus connect sigCancel fail";
+    }
 }
 
 static char saltCharacter() {
@@ -65,8 +75,9 @@ static QString saltPassword(const QString &plain)
     return QString::fromUtf8(salted);
 }
 
-void Password::setPassword(const QString &password)
+void Password::setPassword(const QString &password, const QString &type)
 {
+    m_passwordType = type;
     auto accountsInterface = new OrgFreedesktopAccountsInterface(QStringLiteral("org.freedesktop.Accounts"), QStringLiteral("/org/freedesktop/Accounts"), QDBusConnection::systemBus(), this);
     auto reply = accountsInterface->FindUserByName(qgetenv("USER"));
     reply.waitForFinished();
@@ -82,5 +93,21 @@ void Password::setPassword(const QString &password)
 
     userInterface->SetPassword(saltPassword(password), QString());
 }
+
+void Password::savePasswordType(const QString type)
+{
+    auto kdeglobals = KSharedConfig::openConfig("kdeglobals");
+    KConfigGroup cfg(kdeglobals, "LockScreen");
+    cfg.writeEntry("passwordType", type);
+    kdeglobals->sync();
+}
+
+void Password::slotReceiveDbusConfirm()
+{
+    qDebug()<<"slotReceiveDbusConfirm "<<m_passwordType;
+    savePasswordType(m_passwordType);
+    emit confirmSuccess();
+}
+
 
 #include "password.moc"

@@ -20,17 +20,57 @@
 
 #include "mynetworkobject.h"
 
+#include <QObject>
+#include <QTimer>
+#include <QNetworkReply>
+
+class QReplyTimeout : public QObject 
+{
+    Q_OBJECT
+
+public:
+    QReplyTimeout(QNetworkReply *reply, const int timeout) : QObject(reply) {
+        Q_ASSERT(reply);
+        if (reply && reply->isRunning()) {  
+            QTimer::singleShot(timeout, this, SLOT(onTimeout()));
+        }
+    }
+
+    ~QReplyTimeout(){}
+
+signals:
+    void timeout();  
+
+private slots:
+
+    void onTimeout() {  
+        QNetworkReply *reply = static_cast<QNetworkReply*>(parent());
+        if (reply->isRunning()) {
+            reply->abort();
+            reply->deleteLater();
+            emit timeout();
+        }
+    }
+
+};
+
 MyNetworkObject::MyNetworkObject(QObject *parent) : QObject(parent) {
     networkAccessManager = new QNetworkAccessManager(this);
     dataStr="";
-    QObject::connect(networkAccessManager, SIGNAL(finished(QNetworkReply *)), this, SLOT(finishedSlot(QNetworkReply *)));
+    QObject::connect(networkAccessManager, SIGNAL(finished(QNetworkReply *)), 
+        this, SLOT(finishedSlot(QNetworkReply *)));
 }
 
 void MyNetworkObject::get(QUrl url) {
     QNetworkRequest request = QNetworkRequest(url);
     request.setHeader(QNetworkRequest::UserAgentHeader, \
                       QVariant("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36"));
-    networkAccessManager->get(request);
+    pReply = networkAccessManager->get(request);
+    QReplyTimeout *pTimeout = new QReplyTimeout(pReply, 5000);
+
+    connect(pTimeout, &QReplyTimeout::timeout, [=]() {
+        emit requestFailSignal("Timeout");
+    });
 }
 
 void MyNetworkObject::finishedSlot(QNetworkReply *reply) {
@@ -45,6 +85,7 @@ void MyNetworkObject::finishedSlot(QNetworkReply *reply) {
         emit requestFailSignal(reply->errorString());
     }
     reply->deleteLater();
+    pReply->deleteLater();
 }
 
 void MyNetworkObject::printAttribute(QNetworkReply *reply, QNetworkRequest::Attribute code, QString codeStr) {
@@ -52,3 +93,4 @@ void MyNetworkObject::printAttribute(QNetworkReply *reply, QNetworkRequest::Attr
     QString result = QString("%1 = %2").arg(codeStr).arg(attributeVarient.toString());
 }
 
+#include "mynetworkobject.moc"

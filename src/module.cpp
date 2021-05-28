@@ -50,6 +50,7 @@ void Module::setName(const QString &name)
     m_name = name;
     Q_EMIT nameChanged();
 
+    KQuickAddons::ConfigModule * module = loadedPlugins.take(m_name);
     const QString pluginPath = KPluginLoader::findPlugin(QLatin1String("kcms/") + "kcm_" + name);
 
     KPluginLoader loader(pluginPath);
@@ -58,9 +59,15 @@ void Module::setName(const QString &name)
         qWarning() << "Error loading KCM plugin:" << loader.errorString();
     } else {
         m_kcm = factory->create<KQuickAddons::ConfigModule>(this);
+        loadedPlugins.insert(m_name, m_kcm);
         if (!m_kcm) {
             qWarning() << "Error creating object from plugin" << loader.fileName();
         }
     }
-    Q_EMIT kcmChanged();
+
+   Q_EMIT kcmChanged();
+
+   if (module != nullptr)
+      delete module;
+
 }

@@ -15,12 +15,19 @@ import org.jingos.info 1.0
 Item {
     id: legal_sub
 
-    property real appScale: 1.3 * parent.width / (1920 * 0.7)
-    property int appFontSize: theme.defaultFont.pointSize
+    // property real appScale: 1.3 * parent.width / (1920 * 0.7)
+    // property int appFontSize: theme.defaultFont.pointSize
     property string dimTime: "Every day"
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
 
-    width: parent.width
-    height: parent.height
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36 
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
+    property int radiusCommon: 10 
+    property int fontNormal: 14
 
     UpdateTool {
         id: updateTool
@@ -28,25 +35,25 @@ Item {
 
     Component.onCompleted: {
         var cycle = updateTool.getCheckCycle()
-
+        console.log("current cycle is ", cycle)
         switch (cycle) {
         case 24 * 60 * 60 * 1000:
-            dimTime = "Every day"
+            dimTime = i18n("Every day")
             break
         case 24 * 60 * 60 * 1000 * 2:
-            dimTime = "Every two days"
+            dimTime = i18n("Every two days")
             break
         case 24 * 60 * 60 * 1000 * 7:
-            dimTime = "Weekly"
+            dimTime = i18n("Weekly")
             break
         case 24 * 60 * 60 * 1000 * 14:
-            dimTime = "Every two weeks"
+            dimTime = i18n("Every two weeks")
             break
-        case 24 * 60 * 60 * 1000 * 10000:
-            dimTime = "Never"
+        case 24 * 60 * 60 * 1000 * 15:
+            dimTime = i18n("Never")
             break
         default:
-            dimTime = "Every day"
+            dimTime = i18n("Every day")
             break
         }
         console.log("current dimTime is ", dimTime)
@@ -68,15 +75,15 @@ Item {
 
     function getIndex(dimTime) {
         switch (dimTime) {
-        case "Every day":
+        case i18n("Every day"):
             return 0
-        case "Every two days":
+        case i18n("Every two days"):
             return 1
-        case "Weekly":
+        case i18n("Weekly"):
             return 2
-        case "Every two weeks":
+        case i18n("Every two weeks"):
             return 3
-        case "Never":
+        case i18n("Never"):
             return 4
         }
         return 0
@@ -84,6 +91,7 @@ Item {
 
     function setIdleTime(val) {
         // 24* 60 * 60 * 1000
+        console.log("set idle time : ",val);
         updateTool.setCheckCycle(val)
     }
 
@@ -99,20 +107,20 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 34 * system_info_root.appScale
-                topMargin: 68 * system_info_root.appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
 
-            width: 400 * appScale
-            height: 41 * appScale
-            color:"transparent"
+            width: parent.width - marginLeftAndRight * 2
+            height: statusbar_height
+            color: "transparent"
 
             Image {
                 id: back_icon
 
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: 34 * appScale
+                width: statusbar_icon_size
                 height: width
                 sourceSize.width: width
                 sourceSize.height: width
@@ -123,26 +131,25 @@ Item {
                     anchors.fill: parent
 
                     onClicked: {
-                        console.log("back..about")
                         system_info_root.popView()
                     }
                 }
             }
 
-            Text {
+             Text {
                 id: title
 
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 * appScale
+                    leftMargin: 9 
                 }
 
-                width: 500
-                height: 50
-
+                width: 359
+                height: 14
                 text: i18n("Update Settings")
-                font.pointSize: appFontSize + 11
+                // font.pointSize: appFontSize + 11
+                font.pixelSize: 20
                 font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
             }
@@ -154,15 +161,15 @@ Item {
             anchors {
                 left: parent.left
                 top: page_statusbar.bottom
-                leftMargin: 72 * appScale
-                topMargin: 36 * 2 * appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginItem2Title
             }
 
-            width: parent.width - 144 * appScale
-            height: 69 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height
 
             color: "#fff"
-            radius: 15 * appScale
+            radius: radiusCommon
 
             Text {
                 anchors {
@@ -172,18 +179,20 @@ Item {
                 }
 
                 text: i18n("Automatically check for updates ")
-                font.pointSize: appFontSize + 2
+                // font.pointSize: appFontSize + 2
+                font.pixelSize: fontNormal
             }
 
             Text {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
-                    rightMargin: 34 * appScale
+                    rightMargin: marginLeftAndRight
                 }
 
                 text: dimTime
-                font.pointSize: appFontSize + 2
+                // font.pointSize: appFontSize + 2
+                font.pixelSize: fontNormal
                 color: "#99000000"
             }
 
@@ -205,24 +214,24 @@ Item {
             onMenuSelectChanged: {
                 switch (value) {
                 case 0:
-                    dimTime = "Every day"
+                    dimTime = i18n("Every day")
                     setIdleTime(24 * 60 * 60 * 1000)
                     break
                 case 1:
-                    dimTime = "Every two days"
+                    dimTime = i18n("Every two days")
                     setIdleTime(24 * 60 * 60 * 1000 * 2)
                     break
                 case 2:
-                    dimTime = "Weekly"
+                    dimTime = i18n("Weekly")
                     setIdleTime(24 * 60 * 60 * 1000 * 7)
                     break
                 case 3:
-                    dimTime = "Every two weeks"
+                    dimTime = i18n("Every two weeks")
                     setIdleTime(24 * 60 * 60 * 1000 * 14)
                     break
                 case 4:
-                    dimTime = "Never"
-                    setIdleTime(24 * 60 * 60 * 1000 * 10000)
+                    dimTime = i18n("Never")
+                    setIdleTime(24 * 60 * 60 * 1000 * 15)
                     break
                 }
             }

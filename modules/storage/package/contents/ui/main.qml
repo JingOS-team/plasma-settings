@@ -24,11 +24,21 @@ import org.kde.kirigami 2.10 as Kirigami
 import QtQuick.Controls 2.10
 import jingos.storage 1.0
 
+import "./StringUtils.js" as StringUtils
+
 Rectangle {
     id: storage_root
 
-    property real appScale: 1.3 * parent.width / (1920 * 0.7)
-    property int appFontSize: theme.defaultFont.pointSize
+    property int screenWidth: 888
+    property int screenHeight: 648
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 18 
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
+
     property string storageName: "Storage space:"
     property string storageType: ""
     property double storageTotal: 0
@@ -36,8 +46,8 @@ Rectangle {
     property double storageAvailable: 0
     property string storageAvailableValue: ""
 
-    width: parent.width
-    height: parent.height
+    width: screenWidth * 0.7
+    height: screenHeight
 
     Component.onCompleted: {
         storageName = sm.getStorageName()
@@ -50,7 +60,7 @@ Rectangle {
                     1) + "GB"
         console.log("storageName: ", storageName)
         if (storageName == "") {
-            storageName = "Storage Info："
+            storageName = i18n("Storage Info")
         }
         console.log("storageType: ", storageType)
         console.log("storageTotal: ", storageTotal)
@@ -59,6 +69,35 @@ Rectangle {
 
     StorageModel {
         id: sm
+
+        onRefreshListView :{
+            device_list.model = null
+            device_list.model = sm.subPixelOptionsModel
+        }
+    }
+
+    function getStorageDeviceName(display){
+        var b = StringUtils.splitString(display , ",");
+        console.log("getStorageDeviceName:" , b[0])
+        return b[0]
+    }
+
+    function getStorageDeviceTotal(display){
+        var b = StringUtils.splitString(display , ",");
+        console.log("getStorageDeviceName:" , b[1])
+        return b[1]
+    }
+
+    function getStorageDeviceAvail(display){
+        var b = StringUtils.splitString(display , ",");
+        console.log("getStorageDeviceName:" , b[2])
+        return b[2]
+    }
+
+    function getStorageDeviceFree(display){
+        var b = StringUtils.splitString(display , ",");
+        console.log("getStorageDeviceFree:" , b[3])
+        return b[3]
     }
 
     Rectangle {
@@ -72,14 +111,14 @@ Rectangle {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 72 * appScale
-                topMargin: 68 * appScale
+                leftMargin: marginLeftAndRight  
+                topMargin: marginTitle2Top  
             }
 
-            width: 500
-            height: 50
+            width: 329
+            height: 14
             text: i18n("Storage")
-            font.pointSize: appFontSize + 11
+            font.pixelSize: 20 
             font.weight: Font.Bold
         }
 
@@ -89,35 +128,35 @@ Rectangle {
             anchors {
                 top: storage_title.bottom
                 left: parent.left
-                topMargin: 42 * appScale
-                leftMargin: 72 * appScale
+                topMargin: 36  
+                leftMargin: marginLeftAndRight  
                 right: parent.right
-                rightMargin: 72 * appScale
+                rightMargin: marginLeftAndRight  
             }
-
-            height: 69 * 2 * appScale
+            height: 90
             color: "#fff"
-            radius: 15 * appScale
+            radius: 10
 
             Rectangle {
                 id: s1_top
 
                 width: parent.width
-                height: 69 * appScale
+                height: 45
+                radius: 10
 
                 Text {
                     id: auto_title
 
                     anchors {
                         left: parent.left
-                        leftMargin: 31 * appScale
+                        leftMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
 
                     width: 331
-                    height: 26 * appScale
+                    height: 17
                     text: storageName
-                    font.pointSize: appFontSize + 2
+                    font.pixelSize: 17
                 }
 
                 Text {
@@ -125,15 +164,14 @@ Rectangle {
 
                     anchors {
                         right: parent.right
-                        rightMargin: 31 * appScale
+                        rightMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
 
-                    width: 331
-                    height: 26 * appScale
-                    text: i18n("used: %1 / %2 " , storageAvailableValue , storageTotalValue)
+                    height: 17
+                    text: i18n("%1 of %2 Used" , storageAvailableValue , storageTotalValue)
                     color: "#993C3C43"
-                    font.pointSize: appFontSize + 2
+                    font.pixelSize: 17
                 }
             }
 
@@ -141,15 +179,94 @@ Rectangle {
                 anchors {
                     left: parent.left
                     right: parent.right
-                    leftMargin: 31 * appScale
-                    rightMargin: 31 * appScale
+                    leftMargin: marginLeftAndRight
+                    rightMargin: marginLeftAndRight
                     top: s1_top.bottom
-                    topMargin: 8 * appScale
+                    topMargin: 3
                 }
 
-                height: 28 * appScale
+                height: 18
                 totalValue: 100
                 usedPower: (1 - (storageAvailable / storageTotal).toFixed(2)) * 100
+            }
+        }
+
+        Rectangle {
+            anchors {
+                top: storage1_area.bottom
+                left: parent.left
+                topMargin: 36  
+                leftMargin: marginLeftAndRight  
+                right: parent.right
+                rightMargin: marginLeftAndRight  
+            }
+
+             ListView {
+                id: device_list
+
+                width: parent.width
+                height: storage_root.height - 200
+                model: sm.subPixelOptionsModel
+
+
+                delegate: Rectangle {
+                    width:parent.width
+                    height: 90
+                    color: "#fff"
+                    radius: 10
+
+                    Rectangle {
+                        id: s2_top
+                        width: parent.width
+                        height: 45
+                        radius: 10
+
+                        Text {
+                            id: auto_title
+
+                            anchors {
+                                left: parent.left
+                                leftMargin: marginLeftAndRight
+                                verticalCenter: parent.verticalCenter
+                            }
+
+                            width: 331
+                            height: 17
+                            text: getStorageDeviceName(display)
+                            font.pixelSize: 17
+                        }
+
+                        Text {
+                            id: auto_value2
+
+                            anchors {
+                                right: parent.right
+                                rightMargin: marginLeftAndRight
+                                verticalCenter: parent.verticalCenter
+                            }
+
+                            height: 17
+                            text: i18n("%1 of %2 Used" , getStorageDeviceAvail(display), getStorageDeviceTotal(display))
+                            color: "#993C3C43"
+                            font.pixelSize: 17
+                        }
+                    }
+
+                    JProgress {
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            leftMargin: marginLeftAndRight
+                            rightMargin: marginLeftAndRight
+                            top: s2_top.bottom
+                            topMargin: 3
+                        }
+
+                        height: 18
+                        totalValue: 100
+                        usedPower: (1 - Number(getStorageDeviceFree(display)))* 100 
+                    }
+                }
             }
         }
     }

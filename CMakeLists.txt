@@ -33,6 +33,7 @@ include(KDECompilerSettings)
 include(ECMQMLModules)
 include(KDEClangFormat)
 
+
 ################# now find all used packages #################
 
 find_package(Qt5 ${QT_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS Core Quick Test Gui Widgets)
@@ -47,9 +48,11 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Plasma
     Declarative
     KIO
+    BluezQt
 )
 
 find_package(PkgConfig)
+ki18n_install(po)
 
 pkg_check_modules(GOBJECT gobject-2.0 REQUIRED IMPORTED_TARGET)
 pkg_check_modules(GIO gio-2.0 REQUIRED IMPORTED_TARGET)

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Content, Edit/Document, Content 2</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="A-WLAN" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="a02-1设置-标题与结构示意(暗色）" transform="translate(-1020.000000, -2267.000000)">
+            <g id="Content,-Edit/Document,-Content-2" transform="translate(1020.000000, 2267.000000)">
+                <rect id="矩形" fill="#2EB093" x="0" y="0" width="44" height="44" rx="14"></rect>
+                <g filter="url(#filter-1)" id="Group">
+                    <g transform="translate(6.000000, 6.000000)" id="Path">
+                        <polygon points="0 0 32.0000001 0 32.0000001 32.0000001 0 32.0000001"></polygon>
+                        <line x1="9.33333337" y1="13.3333334" x2="9.33333337" y2="18.6666667" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <line x1="14.6666667" y1="13.3333334" x2="14.6666667" y2="18.6666667" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <line x1="20.0000001" y1="13.3333334" x2="20.0000001" y2="18.6666667" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <path d="M22.6666668,24 L6.66666669,24 C5.19333335,24 4.00000002,22.8066668 4.00000002,21.3333334 L4.00000002,10.6666667 C4.00000002,9.19333337 5.19333335,8.00000003 6.66666669,8.00000003 L22.6666668,8.00000003 C24.1400001,8.00000003 25.3333334,9.19333337 25.3333334,10.6666667 L25.3333334,21.3333334 C25.3333334,22.8066668 24.1400001,24 22.6666668,24 Z" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M25.3333334,12.0000001 L26.6853334,12.0000001 C26.8920001,12.0000001 27.0960001,12.0480001 27.2813334,12.1413334 L27.9293334,12.4653334 C28.3813335,12.6906667 28.6666668,13.1533334 28.6666668,13.6573334 L28.6666668,18.3426667 C28.6666668,18.8480001 28.3813335,19.3093334 27.9293334,19.5346667 L27.2813334,19.8586667 C27.0960001,19.9520001 26.8920001,20.0000001 26.6853334,20.0000001 L25.3333334,20.0000001" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

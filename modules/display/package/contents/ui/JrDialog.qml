@@ -33,11 +33,23 @@ Popup {
     property int py: 0
     property int selectIndex
 
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+    property int screenWidth: 888
+    property int screenHeight: 648
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36 
+    property int marginLeftAndRight : 10 
+    property int marginItem2Top : 24 
+    property int radiusCommon: 10 
+    property int fontNormal: 14
+
     signal menuSelectChanged(int value)
 
     x: px
     y: py
-    width: 369 * appScale
+    width: 240 
     height: contentItem.height
 
     modal: true
@@ -55,14 +67,14 @@ Popup {
         anchors.right: parent.right
 
         width: parent.width
-        height: 69 * appScale * 5 + 28 * appScale
-        radius: 15 * appScale
+        height: default_setting_item_height  * 5 + 8 * 2 + 4
+        radius: 10
         color: "#fff"
 
         layer.enabled: true
         layer.effect: DropShadow {
             horizontalOffset: 0
-            radius: 20
+            radius: 10
             samples: 25
             color: "#1A000000"
             verticalOffset: 0
@@ -73,17 +85,14 @@ Popup {
             id: menu_content
 
             anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                topMargin: 28
-                bottomMargin: 28
-                leftMargin: 28
-                rightMargin: 28
+                fill:parent 
+                topMargin: 8
+                bottomMargin: 0
+                leftMargin: marginLeftAndRight
+                rightMargin: marginLeftAndRight
             }
 
-            width: root.width - 28 * 2 * appScale
+            width: root.width - marginLeftAndRight * 2 
             color: "transparent"
 
             Column {
@@ -93,29 +102,29 @@ Popup {
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: 14
                         text: i18n("2 Minutes")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 0 ? true : false
                     }
@@ -129,33 +138,42 @@ Popup {
                             root.close()
                         }
                     }
+
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: "#f0f0f0"
+                    }
                 }
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: 14
                         text: i18n("5 Minutes")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 1 ? true : false
                     }
@@ -169,75 +187,90 @@ Popup {
                             root.close()
                         }
                     }
+
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: "#f0f0f0"
+                    }
                 }
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: 14
                         text: i18n("10 Minutes")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
-
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 2 ? true : false
                     }
 
                     MouseArea {
                         anchors.fill: parent
-
                         onClicked: {
                             selectIndex = 2
                             menuSelectChanged(selectIndex)
                             root.close()
                         }
                     }
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: "#f0f0f0"
+                    }
                 }
+
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
-
+                    height: default_setting_item_height 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: 14
                         text: i18n("15 Minutes")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 3 ? true : false
                     }
@@ -251,32 +284,43 @@ Popup {
                             root.close()
                         }
                     }
+
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: "#f0f0f0"
+                    }
                 }
+
+               
+
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
-
+                    height: default_setting_item_height 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: 14
                         text: i18n("Never")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight 
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 4 ? true : false
                     }

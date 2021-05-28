@@ -25,7 +25,9 @@
 #include <QGuiApplication>
 #include "mynetworkobject.h"
 #include <QException>
+#include <BluezQt/Manager>
 #include <QStorageInfo>
+#include <BluezQt/InitManagerJob>
 
 using namespace std;
 
@@ -33,9 +35,11 @@ class UpdateTool : public QObject
 {
     Q_OBJECT
 public:
+    Q_PROPERTY(QString localDeviceName READ localDeviceName NOTIFY localDeviceNameChanged)
     explicit UpdateTool();
     ~UpdateTool(){};
 
+    QString localDeviceName(){ return m_localDeviceName; };
     MyNetworkObject *myNetworkObject;
     static QString settingFileName  ;
 
@@ -52,20 +56,23 @@ public:
     Q_INVOKABLE void setCheckCycle(int cycle);
     Q_INVOKABLE int getCheckCycle();
     Q_INVOKABLE double getStorageTotalSize();
+    // Q_INVOKABLE QString getLocalDeviceName();
+    // Q_INVOKABLE void setLocalDeviceName(const QString localName);
 
     static QString loadSetting( QString key , QString value ) ;
 	static QString saveSetting( QString key , QString value ) ;
 
 private:
     QStorageInfo storage = QStorageInfo::root();  
+    QString m_localDeviceName = "";
     
 public slots: 
     void readRemoteSuccess(QString data);
     void readRemoteFailure(QString error);
-    
 
 signals: 
-    void checkedFinish(int status , QString log , QString version);    
+    void checkedFinish(int status , QString log , QString version);  
+    void localDeviceNameChanged(const QString localDeviceName);  
 };
 
 #endif

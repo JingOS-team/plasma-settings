@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=keyboard
+Name[x-test]=xxkeyboardxx
+Comment=keyboard
+Comment[x-test]=xxkeyboardxx
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_keyboard
+X-KDE-FormFactors=handset,tablet,mediacenter
+Categories=Qt;KDE;X-KDE-settings-system;
+X-KDE-Keywords=info,keyboard
+X-KDE-Keywords[x-test]=xxinfoxx,xxkeyboardxx
+X-KDE-ParentApp=kcontrol
+Exec=plasma-settings -m kcm_keyboard

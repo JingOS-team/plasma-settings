@@ -46,5 +46,6 @@ signals:
 
 private:
     QNetworkAccessManager *networkAccessManager;
+    QNetworkReply *pReply;
 };
 #endif // MYNETWORKOBJECT_H

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=location
+Name[x-test]=xxlocationxx
+Comment=location
+Comment[x-test]=xxlocationxx
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_location
+X-KDE-FormFactors=handset,tablet,mediacenter
+Categories=Qt;KDE;X-KDE-settings-system;
+X-KDE-Keywords=info,location
+X-KDE-Keywords[x-test]=xxinfoxx,xxlocationxx
+X-KDE-ParentApp=kcontrol
+Exec=plasma-settings -m kcm_location

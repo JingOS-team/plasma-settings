@@ -16,7 +16,8 @@ Rectangle {
 
     property int mWidth: parent.width
     property int mHeight: parent.height
-    property real appScale: 1.3
+    property real appScale: 1
+    //property real appScale: 1.3 * parent.width / (1920 * 0.7)
     property int defaultFontSize: theme.defaultFont.pointSize
     property string titleName: "Passcode"
     property string inputText: ""
@@ -36,6 +37,8 @@ Rectangle {
     function gotoPage(name) {
         if (name == "keyboard_view") {
             stack.push(keyboard_view)
+        } else if( name == "complex_view"){
+            stack.push(complex_view)
         }
     }
 
@@ -50,42 +53,31 @@ Rectangle {
     }
 
     Component {
+        id: complex_view
+
+        Complex {}
+    }
+
+    Component {
         id: home_view
 
         Item {
             anchors.fill: parent
             //color: "#FFF2F2F7"
 
-            Image {
-                id: backLabel
-
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    topMargin: 68 * appScale
-                    leftMargin: 38 * appScale
-                }
-
-                sourceSize.width: 34 * appScale
-                sourceSize.height: 34 * appScale
-
-                visible: false
-                source: "../image/arrow_left.png"
-            }
-
             Kirigami.Label {
                 id: title
 
                 anchors {
                     top: parent.top
-                    left: backLabel.right
-                    topMargin: 68 * appScale
-                    leftMargin: 12 * appScale
+                    left: parent.left
+                    topMargin: 48 * appScale
+                    leftMargin: 20 * appScale
                 }
-
-                font.pointSize: defaultFontSize + 9
+                height: 20 * appScale
+                font.pixelSize: 20
                 font.bold: true
-                text: "Password"
+                text: i18n("Password")
             }
 
             Rectangle {
@@ -94,46 +86,132 @@ Rectangle {
                 anchors {
                     top: title.bottom
                     left: parent.left
-                    topMargin: 42 * appScale
-                    leftMargin: 72 * appScale
+                    topMargin: 18 * appScale
+                    leftMargin: 20 * appScale
                     horizontalCenter: parent.horizontalCenter
                 }
 
-                width: 923 * appScale
-                height: 69 * appScale
+                width: root.width - 40 * appScale
+                height: 45 * appScale * 2
 
                 color: "white"
-                radius: 15 * appScale
+                radius: 10 * appScale
 
-                Kirigami.Label {
-                    anchors.left: parent.left
-                    anchors.leftMargin: 32 * appScale
-                    anchors.verticalCenter: parent.verticalCenter
+                
+                Item {
 
-                    text: "Change Password"
-                    color: "#FF3C4BE8"
-                    font.pointSize: defaultFontSize
-                }
-
-                Image {
-                    anchors.right: parent.right
-                    anchors.rightMargin: 18 * appScale
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    sourceSize.width: 34 * appScale
-                    sourceSize.height: 34 * appScale
-
-                    source: "../image/arrow_right.png"
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    
-                    onClicked: {
-                        gotoPage("keyboard_view")
+                    id: change_pwd
+                    anchors {
+                        top: parent.top 
                     }
+                    width: parent.width
+                    height : 45
+
+                    Kirigami.Label {
+                        anchors.left: parent.left
+                        anchors.leftMargin: 20 * appScale
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        text: i18n("Simple Password")
+                        color:"black"
+                        font.pixelSize: 14
+                        
+                    }
+
+                    Image {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 20 * appScale
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        sourceSize.width: 22 * appScale
+                        sourceSize.height: 22 * appScale
+
+                        source: "../image/arrow_right.png"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        
+                        onClicked: {
+                            gotoPage("keyboard_view")
+                        }
+                    }
+
                 }
+                Kirigami.Separator{
+                    id:separator
+                    anchors{
+                        top: change_pwd.bottom
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 20 * appScale
+                        rightMargin: 20 * appScale
+                    }
+                    color: "#FFF0F0F0"
+                }
+
+                Item {
+
+                    id: complex_pwd
+                    anchors {
+                        top: separator.bottom
+                        bottom : parent.bottom 
+                    }
+                    width: parent.width
+                    height : 45
+
+                    Kirigami.Label {
+                        anchors.left: parent.left
+                        anchors.leftMargin: 20 * appScale
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        text: i18n("Complex Password")
+                        color:"black"
+                        font.pixelSize: 14
+                        
+                    }
+
+                    Image {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 20 * appScale
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        sourceSize.width: 22 * appScale
+                        sourceSize.height: 22 * appScale
+
+                        source: "../image/arrow_right.png"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        
+                        onClicked: {
+                            gotoPage("complex_view")
+                        }
+                    }
+
+                }
+
             }
         }
+    }
+
+    Connections{
+        target: kcm
+
+        onConfirmSuccess:{
+            showToast(i18n("Password reset complete"))
+        }
+    }
+    ToastView{
+        id:toastShow
+    }
+
+    function showToast(tips)
+    {
+        toastShow.toastContent = tips
+        toastShow.x = (root.width - toastShow.width - 200) / 2
+        toastShow.y = root.width - toastShow.height - 36
+        toastShow.visible = true
     }
 }

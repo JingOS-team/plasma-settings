@@ -56,6 +56,7 @@ TimeSettings::TimeSettings(QObject *parent, const QVariantList &args)
     m_timeZonesModel = nullptr;
     setTimeZone(QTimeZone::systemTimeZone().id());
 
+    KLocalizedString::setApplicationDomain("kcm_mobile_time");
     KAboutData *about = new KAboutData(QStringLiteral("kcm_mobile_time"), i18n("Date and Time"), QStringLiteral("0.1"), QString(), KAboutLicense::LGPL);
     about->addAuthor(i18n("Sebastian Kügler"), QString(), QStringLiteral("sebas@kde.org"));
     setAboutData(about);

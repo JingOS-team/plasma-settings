@@ -16,7 +16,17 @@ class Password : public KQuickAddons::ConfigModule
 public:
     Password(QObject *parent, const QVariantList &args);
 
-    Q_INVOKABLE void setPassword(const QString &password);
+    Q_INVOKABLE void setPassword(const QString &password, const QString &type);
+    Q_INVOKABLE void savePasswordType(const QString type);
+
+signals: 
+    void confirmSuccess();
+    
+public slots:
+    void slotReceiveDbusConfirm();
+
+private:
+    QString m_passwordType = "simple";
 };
 
 #endif
