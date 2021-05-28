@@ -45,7 +45,7 @@ KCM.SimpleKCM {
             header: Kirigami.Heading {
                 horizontalAlignment: Text.AlignHCenter
 
-                text: ofonoManager.modems.length == 1 ? i18n("Network") : i18n(
+                text: ofonoManager.modems.length == 1 ? i18n("Network") : i18nc(
                                                             "Network %1",
                                                             modemId + 1)
                 level: 2

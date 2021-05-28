@@ -20,7 +20,11 @@ add_subdirectory(sound)
 add_subdirectory(password)
 add_subdirectory(battery)
 add_subdirectory(storage)
+add_subdirectory(location)
+#add_subdirectory(vpn)
 
+add_subdirectory(wallpaper)
+add_subdirectory(keyboard)
 
 # Virtual Keyboard (maliit)
 # add_subdirectory(virtualkeyboard)

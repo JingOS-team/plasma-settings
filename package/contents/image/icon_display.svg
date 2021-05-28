@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="A-WLAN" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="a02-1设置-标题与结构示意(暗色）" transform="translate(-650.000000, -2267.000000)">
+            <g id="Group" transform="translate(650.000000, 2267.000000)">
+                <rect id="矩形" fill="#0091FF" x="0" y="0" width="44" height="44" rx="14"></rect>
+                <g filter="url(#filter-1)">
+                    <g transform="translate(6.000000, 6.000000)">
+                        <path d="M28.2305083,21.3405556 L4.44726944,21.3405556 C3.64827,21.3405556 3,20.6922856 3,19.8932861 L3,5.44726944 C3,4.64827 3.64827,4 4.44726944,4 L28.2318422,4 C29.0295078,4 29.6777778,4.64827 29.6777778,5.44726944 L29.6777778,19.89462 C29.6777778,20.6922856 29.0295078,21.3405556 28.2305083,21.3405556 Z" id="Path" stroke="#F7F7F7" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <rect id="Rectangle" stroke="#F7F7F7" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" x="13.0041667" y="21.3405556" width="6.66944444" height="6.66944444"></rect>
+                        <rect id="Rectangle" x="0.332222222" y="-0.00166666667" width="32" height="32"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

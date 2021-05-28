@@ -66,7 +66,7 @@ Rectangle {
             id: progressBarBackground
 
             color: "#FFD6D9FF"
-            radius: 15 * battery_root.appScale
+            radius: 4
             layer.enabled: true
             layer.effect: OpacityMask {
                 maskSource: Rectangle {

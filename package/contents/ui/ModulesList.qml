@@ -24,10 +24,11 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.2 as Controls
 
-import org.kde.kirigami 2.8 as Kirigami
+import org.kde.kirigami 2.15 as Kirigami
 import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 
 import org.kde.plasma.settings 0.1
+import org.kde.bluezqt 1.0 as BluezQt
 
 Kirigami.Page {
     id: settingsRoot
@@ -35,7 +36,9 @@ Kirigami.Page {
     property string titleColor: "#4D000000"
     property string selectMenu: "wifi"
     property string wifiConnectedName: editorProxyModel != null ? editorProxyModel.currentConnectedName : "Not connected"
-    
+    property bool isBluetoothOn: !BluezQt.Manager.bluetoothBlocked
+    property bool isVpnConnected: vpnProxyModel.vpnConnectedName != "" ?  true : false
+
     width: parent.width
     height: parent.height
     title: i18n("Settings")
@@ -61,6 +64,17 @@ Kirigami.Page {
     PlasmaNM.NetworkStatus {
         id: networkStatus
     }
+
+    PlasmaNM.VpnProxyModel {
+       id: vpnProxyModel
+
+        sourceModel: connectionModel
+
+        onConnectedNameChanged:{
+            isVpnConnected = name != "" ? true : false
+        }
+    }
+
 
     Repeater {
         model: editorProxyModel
@@ -89,11 +103,11 @@ Kirigami.Page {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 38 * appScale
-                topMargin: 62 * appScale
+                leftMargin: 25
+                topMargin: 40
             }
             width: parent.width
-            height: 46 * appScale
+            height: 30
             color: "transparent"
 
             Text {
@@ -101,9 +115,10 @@ Kirigami.Page {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
                 }
-                text: "Settings"
+                text: i18n("Settings")
                 font.bold: true
-                font.pointSize: appFontSize + 16
+                // font.pointSize: appFontSize + 16
+                font.pixelSize: 25
             }
         }
 
@@ -112,8 +127,8 @@ Kirigami.Page {
             anchors {
                 left: parent.left
                 top: settings_title.bottom
-                leftMargin: 18 * appScale
-                topMargin: 26 * appScale
+                leftMargin: 12
+                topMargin: 28
             }
 
             width: parent.width
@@ -121,18 +136,35 @@ Kirigami.Page {
             color: "transparent"
 
             Controls.ScrollView {
-                width: 380 * appScale
-                height: parent.height - (52 + 59 + 55) * appScale
+                id: scrollView
+                width: 888* 0.3 -12-13
+                height: parent.height -  (40+ 30+28)
                 Controls.ScrollBar.horizontal.policy: Controls.ScrollBar.AlwaysOff
-                Controls.ScrollBar.vertical.policy: Controls.ScrollBar.AlwaysOff
+                // Controls.ScrollBar.vertical.policy: Controls.ScrollBar.AlwaysOff
                 contentWidth: -1
+
+                Controls.ScrollBar.vertical: Controls.ScrollBar {
+                    parent: scrollView
+                    x: scrollView.mirrored ? 0 : scrollView.width - width
+                    y: scrollView.topPadding
+                    policy: Controls.ScrollBar.AsNeeded
+                    height: scrollView.availableHeight
+                    active: scrollView.ScrollBar.horizontal.active
+                    contentItem: Rectangle {
+                        implicitWidth: 4
+                        implicitHeight: 80
+                        radius: width/2
+                        // color: scrollView.pressed ? "orange" : "green"
+                        color: "transparent"
+                    }
+                }
 
                 Column {
                     spacing: 2
 
                     Item {
                         width: parent.width
-                        height: 10 * appScale
+                        height: 2 
                     }
 
                     Text {
@@ -140,28 +172,28 @@ Kirigami.Page {
 
                         text: i18n("Network and connectivity")
                         color: titleColor
-                        width: 269 * appScale
-                        height: 18 * appScale
-                        font.pointSize: appFontSize - 2
+                        width: 175
+                        height: 12
+                        font.pixelSize: 12
                         anchors {
                             left: parent.left
-                            leftMargin: 18 * appScale
+                            leftMargin: 12
                         }
                     }
 
                     Item {
                         width: parent.width
-                        height: 8 * appScale
+                        height: 6
                     }
 
                     MenuItem {
                         id: wifiMenu
 
-                        menuTitle: "WLAN"
+                        menuTitle: i18n("WLAN")
                         menuType: 2
-                        menuContent: !enabledConnections.wirelessEnabled ? "Off" : networkStatus.networkStatus == "Connecting" ? "On connection" : networkStatus.networkStatus == "Connected" ? wifiConnectedName : "Not connected"
-                        menuIconSource: "../image/icon_wifi.png"
-                        menuIconSourceHighlight: "../image/icon_wifi_hi.png"
+                        menuContent: !enabledConnections.wirelessEnabled ? i18n("Off") : networkStatus.networkStatus == "Connecting" ? i18n("On connection") : networkStatus.networkStatus == "Connected" ? wifiConnectedName : i18n("Not connected")
+                        menuIconSource: "../image/icon_wifi.svg"
+                        menuIconSourceHighlight: "../image/icon_wifi.svg"
                         isSelect: selectMenu == "wifi"
 
                         onMenuClicked: {
@@ -169,14 +201,14 @@ Kirigami.Page {
                             openModule("wifi")
                         }
                     }
-                    /*
-                    MenuItem {
+
+		            MenuItem {
                         id: btMenu
-                        menuTitle: "Bluetooth"
+                        menuTitle: i18n("Bluetooth")
                         menuType : 2
-                        menuContent : ""
-                        menuIconSource: "../image/icon_bt.png"
-                        menuIconSourceHighlight: "../image/icon_bt_hi.png"
+                        menuContent : isBluetoothOn ? i18n("On") : i18n("Off")
+                        menuIconSource: "../image/icon_bt.svg"
+                        menuIconSourceHighlight: "../image/icon_bt.svg"
                         isSelect: selectMenu == "bluetooth"
                         onMenuClicked : {
                             selectMenu = "bluetooth"
@@ -184,6 +216,21 @@ Kirigami.Page {
                         }
                     }
 
+                    MenuItem {
+                        id: vpnMenu
+                        menuTitle: "VPN"
+                        menuType : 2
+                        menuContent: isVpnConnected ? i18n("On") : i18n("Not connected")
+                        menuIconSource: "../image/icon_vpn.svg"
+                        menuIconSourceHighlight: "../image/icon_vpn.svg"
+                        isSelect: selectMenu == "vpn"
+                        onMenuClicked : {
+                            selectMenu = "vpn"
+                             openModule("vpn")
+                        }
+                    }
+
+                    /*
                     MenuItem {
                         id: cellMenu
                         menuTitle: "Cellular"
@@ -197,18 +244,7 @@ Kirigami.Page {
                         }
                     }
 
-                    MenuItem {
-                        id: vpnMenu
-                        menuTitle: "VPN"
-                        menuType : 2
-                        menuContent : "333"
-                        menuIconSource: "../image/icon_cell.png"
-                        isSelect: selectMenu == "vpn"
-                        onMenuClicked : {
-                            selectMenu = "vpn"
-                             openModule("mobile_theme")
-                        }
-                    }
+                    
 
                     MenuItem {
                         id: hotspotMenu
@@ -224,7 +260,7 @@ Kirigami.Page {
 
                     Item {
                         width: parent.width
-                        height: 43 * appScale
+                        height: 28 
                     }
 
                     Text {
@@ -232,19 +268,19 @@ Kirigami.Page {
 
                         anchors {
                             left: parent.left
-                            leftMargin: 18 * appScale
-                            bottomMargin: 8 * appScale
+                            leftMargin: 18 
+                            bottomMargin: 6 
                         }
-                        width: 269 * appScale
-                        height: 18 * appScale
+                        width: 269 
+                        height: 18 
                         text: i18n("Display and sound")
                         color: titleColor
-                        font.pointSize: appFontSize - 2
+                        font.pixelSize: 12
                     }
 
                     Item {
                         width: parent.width
-                        height: 8 * appScale
+                        height: 6 
                     }
 
                     MenuItem {
@@ -252,8 +288,8 @@ Kirigami.Page {
 
                         menuTitle: i18n("Display & Brightness")
                         menuType: 0
-                        menuIconSource: "../image/icon_display.png"
-                        menuIconSourceHighlight: "../image/icon_display_hi.png"
+                        menuIconSource: "../image/icon_display.svg"
+                        menuIconSourceHighlight: "../image/icon_display.svg"
                         isSelect: selectMenu == "display"
 
                         onMenuClicked: {
@@ -261,28 +297,27 @@ Kirigami.Page {
                             openModule("display")
                         }
                     }
-
-                    /*
                     MenuItem {
                         id: wallpaperMenu
-                        menuTitle: "Wallpaper"
+                        menuTitle: i18n("Wallpaper")
                         menuType : 0
-                        menuIconSource: "../image/icon_cell.png"
+                        menuIconSource: "../image/icon_wallpaper.svg"
+                        menuIconSourceHighlight: "../image/icon_wallpaper.svg"
                         isSelect: selectMenu == "wallpaper"
                         onMenuClicked : {
                             selectMenu = "wallpaper"
-                            penModule("wallpaper")
+                            openModule("wallpaper")
                         }
                     }
-                    */
+
 
                     MenuItem {
                         id: soundMenu
 
-                        menuTitle: i18n("Sound")
+                        menuTitle: i18n("Sounds")
                         menuType: 0
-                        menuIconSource: "../image/icon_sound.png"
-                        menuIconSourceHighlight: "../image/icon_sound_hi.png"
+                        menuIconSource: "../image/icon_sound.svg"
+                        menuIconSourceHighlight: "../image/icon_sound.svg"
                         isSelect: selectMenu == "sound"
 
                         onMenuClicked: {
@@ -293,7 +328,7 @@ Kirigami.Page {
 
                     Item {
                         width: parent.width
-                        height: 43 * appScale
+                        height: 28
                     }
 
                     Text {
@@ -301,19 +336,19 @@ Kirigami.Page {
 
                         anchors {
                             left: parent.left
-                            leftMargin: 18 * appScale
-                            bottomMargin: 8 * appScale
+                            leftMargin: 18 
+                            bottomMargin: 6 
                         }
-                        width: 269 * appScale
-                        height: 18 * appScale
+                        width: 269 
+                        height: 18 
                         text: i18n("Security and privacy")
                         color: titleColor
-                        font.pointSize: appFontSize - 2
+                        font.pixelSize: 12
                     }
 
                     Item {
                         width: parent.width
-                        height: 8 * appScale
+                        height: 6 
                     }
 
                     MenuItem {
@@ -321,8 +356,8 @@ Kirigami.Page {
 
                         menuTitle: i18n("Password")
                         menuType: 0
-                        menuIconSource: "../image/icon_password.png"
-                        menuIconSourceHighlight: "../image/icon_password_hi.png"
+                        menuIconSource: "../image/icon_password.svg"
+                        menuIconSourceHighlight: "../image/icon_password.svg"
                         isSelect: selectMenu == "password"
 
                         onMenuClicked: {
@@ -331,20 +366,22 @@ Kirigami.Page {
                         }
                     }
 
-                    // MenuItem {
-                    //     id: locationMenu
-                    //     menuTitle: "Location"
-                    //     menuType : 0
-                    //     menuIconSource: "../image/icon_cell.png"
-                    //     isSelect: selectMenu == "location"
-                    //     onMenuClicked : {
-                    //         selectMenu = "location"
-                    //     }
-                    // }
+                    MenuItem {
+                        id: locationMenu
+                        menuTitle: i18n("Location Service")
+                        menuType : 0
+                        menuIconSource: "../image/icon_location.svg"
+                        menuIconSourceHighlight: "../image/icon_location.svg"
+                        isSelect: selectMenu == "location"
+                        onMenuClicked : {
+                            selectMenu = "location"
+                            openModule("location")
+                        }
+                    }
 
                     Item {
                         width: parent.width
-                        height: 43 * appScale
+                        height: 28 
                     }
 
                     Text {
@@ -352,41 +389,69 @@ Kirigami.Page {
                         
                         anchors {
                             left: parent.left
-                            leftMargin: 18 * appScale
+                            leftMargin: 18 
                         }
-                        width: 269 * appScale
-                        height: 18 * appScale
+                        width: 269 
+                        height: 18 
                         text: i18n("System")
                         color: titleColor
-                        font.pointSize: appFontSize - 2
+                        font.pixelSize: 12
                     }
 
                     Item {
                         width: parent.width
-                        height: 8 * appScale
+                        height: 6 
                     }
-                   /*  
+
+                    MenuItem {
+                        id: systemMenu
+
+                        menuTitle: i18n("System & Update")
+                        menuType: 0
+                        menuIconSource: "../image/icon_about.svg"
+                        menuIconSourceHighlight: "../image/icon_about.svg"
+                        isSelect: selectMenu == "mobile_info"
+
+                        onMenuClicked: {
+                            selectMenu = "mobile_info"
+                            openModule("mobile_info")
+                        }
+                    }
+
+                    MenuItem {
+                        id: languageMenu
+                        menuTitle: i18n("Language")
+                        menuType : 0
+                        menuIconSource: "../image/icon_language.svg"
+                        menuIconSourceHighlight: "../image/icon_language.svg"
+                        isSelect: selectMenu == "language"
+                        onMenuClicked : {
+                            selectMenu = "language"
+                            openModule("translations")
+                        }
+                    }
+                    
                     MenuItem {
                         id: timeMenu
-                        menuTitle: "Date & Time"
+                        menuTitle: i18n("Date & Time")
                         menuType : 0
-                        menuIconSource: "../image/icon_time.png"
-                        menuIconSourceHighlight: "../image/icon_time_hi.png"
+                        menuIconSource: "../image/icon_time.svg"
+                        menuIconSourceHighlight: "../image/icon_time.svg"
                         isSelect: selectMenu == "Time"
                         onMenuClicked : {
                             selectMenu = "Time"
                             openModule("mobile_time")
 
                         }
-                    } */
-                    
+                    }
+
                     MenuItem {
                         id: batteryMenu
 
                         menuTitle: i18n("Battery")
                         menuType: 0
-                        menuIconSource: "../image/icon_battery.png"
-                        menuIconSourceHighlight: "../image/icon_battery_hi.png"
+                        menuIconSource: "../image/icon_battery.svg"
+                        menuIconSourceHighlight: "../image/icon_battery.svg"
                         isSelect: selectMenu == "battery"
 
                         onMenuClicked: {
@@ -400,8 +465,8 @@ Kirigami.Page {
 
                         menuTitle: i18n("Storage")
                         menuType: 0
-                        menuIconSource: "../image/icon_storage.png"
-                        menuIconSourceHighlight: "../image/icon_storage_hi.png"
+                        menuIconSource: "../image/icon_storage.svg"
+                        menuIconSourceHighlight: "../image/icon_storage.svg"
                         isSelect: selectMenu == "storage"
 
                         onMenuClicked: {
@@ -409,22 +474,57 @@ Kirigami.Page {
                             openModule("storage")
                         }
                     }
-
+		
                     MenuItem {
-                        id: systemMenu
+                        id: keyboardMenu
 
-                        menuTitle: i18n("System & Update")
+                        menuTitle: i18n("Keyboard")
                         menuType: 0
-                        menuIconSource: "../image/icon_about.png"
-                        menuIconSourceHighlight: "../image/icon_about_hi.png"
-                        isSelect: selectMenu == "mobile_info"
+                        menuIconSource: "../image/icon_keyboard.svg"
+                        menuIconSourceHighlight: "../image/icon_keyboard.svg"
+                        isSelect: selectMenu == "keyboard"
 
                         onMenuClicked: {
-                            selectMenu = "mobile_info"
-                            openModule("mobile_info")
+                            selectMenu = "keyboard"
+                            openModule("keyboard")
                         }
                     }
 
+                    MenuItem {
+                        id: trackpadMenu
+
+                        menuTitle: i18n("Trackpad")
+                        menuType: 0
+                        menuIconSource: "../image/icon_touch.svg"
+                        menuIconSourceHighlight: "../image/icon_touch.svg"
+                        isSelect: selectMenu == "trackpad"
+
+                        onMenuClicked: {
+                            selectMenu = "trackpad"
+                            openModule("trackpad")
+                        }
+                    }
+
+                    MenuItem {
+                        id: pointerMenu
+
+                        menuTitle: i18n("Mouse")
+                        menuType: 0
+                        menuIconSource: "../image/icon_mouse.svg"
+                        menuIconSourceHighlight: "../image/icon_mouse.svg"
+                        isSelect: selectMenu == "pointer"
+
+                        onMenuClicked: {
+                            selectMenu = "pointer"
+                            openModule("pointer")
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: 10 
+                    }
+		
                     Item {
                         Layout.fillHeight: true
                     }

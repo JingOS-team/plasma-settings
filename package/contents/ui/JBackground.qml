@@ -38,6 +38,6 @@ Rectangle {
     FastBlur {
         anchors.fill: backImage
         source: backImage
-        radius: 15 * appScale
+        radius: 10
     }
 }

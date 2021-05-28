@@ -35,7 +35,21 @@ Item {
 
     id: sound_root
 
-    property real appScale: 1.3 * width / (1920 * 0.7)
+    property int screenWidth: 888
+    property int screenHeight: 648
+    // property int appFontSize: theme.defaultFont.pointSize
+
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36
+    property int marginLeftAndRight : 20
+    property int marginItem2Top : 24 
+    property int fontNormal: 14
+
+    // property real appScale: 1.3 * width / (1920 * 0.7)
     property int appFontSize: theme.defaultFont.pointSize
     property real currentRingtone
     property bool volumeFeedback: true
@@ -46,8 +60,13 @@ Item {
     readonly property int currentVolume: paSinkModel.preferredSink.volume
     property bool isMuted: false
 
-    width: Screen.width * 0.7
-    height: Screen.height
+    width:parent.width
+    height:parent.height 
+
+    // width: Screen.width * 0.7
+    // height: Screen.height
+    // width: screenWidth * 0.7
+    // height: screenHeight
 
     Component.onCompleted: {
         isMuted = paSinkModel.preferredSink.muted
@@ -147,8 +166,9 @@ Item {
         }
         // var toMute = !paSinkModel.preferredSink.muted;
         paSinkModel.preferredSink.muted = value
-        osd.show(toMute ? 0 : volumePercent(paSinkModel.preferredSink.volume,
-                                            maxVolumeValue))
+        console.log("setMute :::::" , value )
+        // osd.show(toMute ? 0 : volumePercent(paSinkModel.preferredSink.volume,
+        //                                     maxVolumeValue))
         if (!value) {
             playFeedback()
         }
@@ -231,20 +251,18 @@ Item {
 
     Timer {
         id: helloTimer2
-
-        interval: 200 //定时周期
+        interval: 200 
         repeat: false
         triggeredOnStart: false
-
         onTriggered: {
             ringtone_slider.value = pluseModel.getVolume()
         }
     }
 
     Rectangle {
-        width: parent.width
-        height: parent.height
-
+        id: sound_layout
+        width:parent.width
+        height:parent.height
         color: "#FFF6F9FF"
 
         Text {
@@ -252,16 +270,17 @@ Item {
 
             anchors {
                 left: parent.left
-                top: parent.top
-                leftMargin: 72 * appScale
-                topMargin: 68 * appScale
+                top: sound_layout.top
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
 
-            width: 500
-            height: 50
-            text: "Sound"
-            font.pointSize: appFontSize + 11
+            width: 329
+            height: 14
+            text: i18n("Sounds")
+            font.pixelSize: 20
             font.weight: Font.Bold
+            verticalAlignment:Text.verticalAlignment
         }
 
         Rectangle {
@@ -269,15 +288,17 @@ Item {
 
             anchors {
                 left: parent.left
+                right: parent.right
                 top: sound_title.bottom
-                leftMargin: 72 * appScale
-                topMargin: 42 * appScale
+                leftMargin: marginLeftAndRight
+                rightMargin: marginLeftAndRight
+                topMargin: marginItem2Title
             }
 
-            width: parent.width - 144 * appScale
-            height: 208 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height * 3
             color: "#fff"
-            radius: 15 * appScale
+            radius: 10
 
             Rectangle {
                 id: sound_slience
@@ -285,7 +306,6 @@ Item {
                 anchors {
                     top: parent.top
                 }
-
                 width: parent.width
                 height: parent.height / 3
                 color: "transparent"
@@ -294,13 +314,13 @@ Item {
                     id: slince_title
                     anchors {
                         left: parent.left
-                        leftMargin: 31 * appScale
+                        leftMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
                     width: 331
-                    height: 26 * appScale
-                    text: "Silent mode"
-                    font.pointSize: appFontSize + 2
+                    height: 17
+                    text: i18n("Silent mode")
+                    font.pixelSize: fontNormal
                 }
 
                 Kirigami.JSwitch {
@@ -309,11 +329,11 @@ Item {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         right: parent.right
-                        rightMargin: 34 * appScale
+                        rightMargin: marginLeftAndRight
                     }
                     checked: isMuted
                     onCheckedChanged: {
-                        switchMute(value)
+                        switchMute(checked)
                     }
                 }
 
@@ -321,8 +341,8 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.leftMargin: 31 * appScale
-                    anchors.rightMargin: 31 * appScale
+                    anchors.leftMargin: marginLeftAndRight
+                    anchors.rightMargin: marginLeftAndRight
                     color: "#f0f0f0"
                 }
             }
@@ -342,23 +362,22 @@ Item {
                     anchors {
                         left: parent.left
                         verticalCenter: parent.verticalCenter
-                        leftMargin: 27 * appScale
+                        leftMargin: marginLeftAndRight
                     }
-
                     source: "../image/ic_voice.png"
-                    sourceSize.width: 28 * appScale
-                    sourceSize.height: 28 * appScale
+                    sourceSize.width: 17
+                    sourceSize.height: 17
                 }
 
                 Text {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         left: voice_ic.right
-                        leftMargin: 15 * appScale
+                        leftMargin: 10
                     }
+                    text: i18n("Voice")
+                    font.pixelSize: fontNormal
 
-                    text: "Voice"
-                    font.pointSize: appFontSize + 2
                 }
 
                 Kirigami.JSlider {
@@ -367,8 +386,8 @@ Item {
                     anchors {
                         left: voice_ic.right
                         right: parent.right
-                        leftMargin: 139 * appScale
-                        rightMargin: 31 * appScale
+                        leftMargin: 80
+                        rightMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
 
@@ -384,9 +403,8 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.leftMargin: 31 * appScale
-                    anchors.rightMargin: 31 * appScale
-
+                    anchors.leftMargin: marginLeftAndRight
+                    anchors.rightMargin: marginLeftAndRight
                     color: "#f0f0f0"
                 }
             }
@@ -397,7 +415,6 @@ Item {
                 anchors {
                     top: voice_area.bottom
                 }
-
                 width: parent.width
                 height: parent.height / 3
                 color: "transparent"
@@ -408,12 +425,10 @@ Item {
                     anchors {
                         left: parent.left
                         verticalCenter: parent.verticalCenter
-                        leftMargin: 27 * appScale
+                        leftMargin: marginLeftAndRight
                     }
-
-                    sourceSize.width: 28 * appScale
-                    sourceSize.height: 28 * appScale
-
+                    sourceSize.width: 17
+                    sourceSize.height: 17
                     source: "../image/ic_ringtone.png"
                 }
 
@@ -421,10 +436,11 @@ Item {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         left: rt_icon.right
-                        leftMargin: 15 * appScale
+                        leftMargin: 10
                     }
-                    text: "Ringtone"
-                    font.pointSize: appFontSize + 2
+                    text: i18n("Ringtone")
+                    font.pixelSize: fontNormal
+
                 }
 
                 Kirigami.JSlider {
@@ -433,8 +449,8 @@ Item {
                     anchors {
                         left: rt_icon.right
                         right: parent.right
-                        leftMargin: 139 * appScale
-                        rightMargin: 31 * appScale
+                        leftMargin: 80
+                        rightMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
                     value: pluseModel.getVolume()

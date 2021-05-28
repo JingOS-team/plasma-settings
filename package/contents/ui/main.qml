@@ -30,7 +30,7 @@ import org.kde.plasma.settings 0.1
 Kirigami.ApplicationWindow {
     id: main
 
-    property int screenWidth: Screen.width
+    property int screenWidth: Screen.width 
     property int screenHeight: Screen.height
 
     width: screenWidth
@@ -38,13 +38,17 @@ Kirigami.ApplicationWindow {
 
     pageStack.initialPage: appPage
     pageStack.interactive: false
-    property real appScale: 1.3 * screenWidth / 1920
-    property int appFontSize: theme.defaultFont.pointSize
+    // property real appScale: 1.3 * screenWidth / 1920
+    // property int appFontSize: theme.defaultFont.pointSize
     pageStack.separatorVisible: false
-    pageStack.defaultColumnWidth: 418 * appScale
+    pageStack.defaultColumnWidth: 888 * 0.3
+
+    Component.onCompleted: {
+        main.fullScreenWindow()
+    }
 
     onVisibleChanged: {
-        main.globalToolBarStyle = ApplicationHeaderStyle.None
+        main.globalToolBarStyle = Kirigami.ApplicationHeaderStyle.None
     }
 
     ApplicationPage {
@@ -56,17 +60,18 @@ Kirigami.ApplicationWindow {
 
         onPasswordErrorChanged: {
             errorDialog.visible = true
-            errorDialog.text = "Incorrect password for \"" + name + "\""
+            errorDialog.text = i18n("Incorrect password for \"%1\"",name)
 
             handler.removeConnection(connectionPath)
         }
     }
 
-    JDialog {
+    Kirigami.JDialog {
         id: errorDialog
-        
-        title: "Failed to join"
-        centerButtonText: qsTr("OK")
+
+        title: i18n("Failed to join")
+        inputEnable: false
+        centerButtonText: i18n("Ok")
         onCenterButtonClicked: {
             errorDialog.visible = false
         }

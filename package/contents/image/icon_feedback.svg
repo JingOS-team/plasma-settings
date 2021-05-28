@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Interface, Essential/@-email-mail</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 0 0.968627 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="A-WLAN" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="a02-1设置-标题与结构示意(暗色）" transform="translate(-1389.000000, -2267.000000)">
+            <g id="Interface,-Essential/@-email-mail" transform="translate(1389.000000, 2267.000000)">
+                <rect id="矩形" fill="#2EB093" x="0" y="0" width="44" height="44" rx="14"></rect>
+                <g filter="url(#filter-1)" id="Group">
+                    <g transform="translate(6.000000, 6.000000)">
+                        <circle id="Oval" stroke="#F7F7F7" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" cx="16.0066667" cy="16.0066667" r="12.005"></circle>
+                        <path d="M12.9196076,12.9196076 C13.2356387,11.5575296 14.47622,10.6131308 15.8732778,10.6711111 C17.4368289,10.584509 18.7772198,11.7759676 18.8745278,13.3388889 C18.8745278,15.3449377 16.0066667,16.0066667 16.0066667,17.3405556" id="Path" stroke="#F7F7F7" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M16.1734028,21.00875 C16.1734028,21.1008358 16.0987525,21.1754861 16.0066667,21.1754861 C15.9145808,21.1754861 15.8399306,21.1008358 15.8399306,21.00875 C15.8399306,20.9166642 15.9145808,20.8420139 16.0066667,20.8420139" id="Path" stroke="#F7F7F7" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M16.0066667,20.8420139 C16.0987525,20.8420139 16.1734028,20.9166642 16.1734028,21.00875" id="Path" stroke="#F7F7F7" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <polygon id="Path" points="0 0 32.0133333 0 32.0133333 32.0133333 0 32.0133333"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

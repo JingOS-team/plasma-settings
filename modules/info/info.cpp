@@ -27,6 +27,7 @@
 #include <KPluginFactory>
 #include <QClipboard>
 #include <QGuiApplication>
+#include <BluezQt/Adapter>
 
 K_PLUGIN_CLASS_WITH_JSON(Info, "info.json")
 
@@ -36,6 +37,7 @@ Info::Info(QObject *parent, const QVariantList &args)
     , m_softwareInfo(new SoftwareInfo(this))
     , m_hardwareInfo(new HardwareInfo(this))
 {
+    KLocalizedString::setApplicationDomain("kcm_mobile_info");
     KAboutData *about = new KAboutData("kcm_mobile_info", i18n("Info"), "1.0", QString(), KAboutLicense::LGPL);
     about->addAuthor(i18n("Jonah Brüchert"), QString(), "jbb@kaidan.im");
     setAboutData(about);
@@ -44,6 +46,18 @@ Info::Info(QObject *parent, const QVariantList &args)
     int result = qmlRegisterType<UpdateTool>("org.jingos.info", 1, 0,  "UpdateTool");
 
     qDebug() << "Info module loaded." << result;
+    m_manager = new BluezQt::Manager(this);
+    initJob = m_manager->init();
+    initJob->start();
+    connect(initJob, &BluezQt::InitManagerJob::result, this, &Info::initJobResult);
+}
+
+Info::~Info() 
+{
+    if (m_manager != nullptr) 
+    {
+        delete m_manager;
+    }
 }
 
 void Info::copyInfoToClipboard() const
@@ -84,4 +98,33 @@ HardwareInfo *Info::hardwareInfo() const
     return m_hardwareInfo;
 }
 
+void Info::initJobResult(BluezQt::InitManagerJob *job)
+{   
+    if (job->error()) {
+        qApp->exit(1);
+        return;
+    }
+     BluezQt::AdapterPtr adaptor = m_manager->usableAdapter();
+    if(adaptor){
+        m_localDeviceName = adaptor->name();
+        Q_EMIT localDeviceNameChanged(m_localDeviceName);
+    }
+}
+
+QString Info::getLocalDeviceName()
+{
+    BluezQt::AdapterPtr adaptor = m_manager->adapters().at(0);
+    if(adaptor){
+       return adaptor->name(); 
+    }
+    return "";
+}
+
+void Info::setLocalDeviceName(const QString localName)
+{
+    BluezQt::AdapterPtr adaptor = m_manager->adapters().at(0);
+    adaptor->setName(localName);
+    m_localDeviceName = localName;
+    Q_EMIT localDeviceNameChanged(m_localDeviceName);
+}
 #include "info.moc"

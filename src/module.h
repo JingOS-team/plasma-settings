@@ -40,6 +40,7 @@ Q_SIGNALS:
     void nameChanged();
 
 private:
+    QHash<QString, KQuickAddons::ConfigModule *> loadedPlugins;
     KQuickAddons::ConfigModule *m_kcm = nullptr;
     QString m_name;
 };

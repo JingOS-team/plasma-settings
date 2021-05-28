@@ -29,6 +29,7 @@ target_link_libraries(kcm_password
     KF5::CoreAddons
     KF5::QuickAddons
     KF5::I18n
+    KF5::ConfigCore
     crypt
     )
 kcoreaddons_desktop_to_json(kcm_password "package/metadata.desktop")

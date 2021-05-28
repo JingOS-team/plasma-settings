@@ -22,27 +22,42 @@
 
 
 
-#include <QObject>
-#include <QStorageInfo>
-
 #ifndef STORAGE_MODEL_H
 #define STORAGE_MODEL_H
 
+#include <QObject>
+#include <QStorageInfo>
+#include <QObject>
+#include <QAbstractItemModel>
+#include <QStandardItemModel>
+#include <QTimer>
 
 class StorageModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel *subPixelOptionsModel READ subPixelOptionsModel CONSTANT)
+   
+    
 public:
     explicit StorageModel();
-    ~StorageModel(){};
+    ~StorageModel();
 
     Q_INVOKABLE QString getStorageName();
     Q_INVOKABLE QString getStorageType();
     Q_INVOKABLE double getStorageTotalSize();
     Q_INVOKABLE double getStorageAvailableSize();  
+    Q_INVOKABLE void getAllMountedInfo();
+    QString GetStorageSize(qint64 size);
+    QString GetFreeSizePrecent(qint64 freeSize ,qint64 totalSize);
 
+    QAbstractItemModel *subPixelOptionsModel() const;
+
+signals: 
+    void refreshListView();
 private:
     QStorageInfo storage = QStorageInfo::root();  
+    QStandardItemModel *m_subPixelOptionsModel;
+    QTimer *mTimer;
 };
 
 #endif // STORAGE_MODEL_H

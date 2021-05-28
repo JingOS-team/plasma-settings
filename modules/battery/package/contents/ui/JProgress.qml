@@ -32,8 +32,8 @@ Rectangle {
     property int leftPower
     property bool isCharging
     property int fontSize: 80
-    property real widgetWidth: 640 * battery_root.appScale
-    property real widgetHeight: 80 * 2 * battery_root.appScale
+    property real widgetWidth: 888 * 0.7 -   40
+    property real widgetHeight: 133
     property string remainingString: ""
 
     width: widgetWidth
@@ -69,7 +69,7 @@ Rectangle {
             id: progressBarBackground
 
             color: "#FFD6D9FF"
-            radius: 18 * appScale
+            radius: 12
 
             layer.enabled: true
             layer.effect: OpacityMask {
@@ -83,7 +83,27 @@ Rectangle {
             Rectangle {
                 width: (leftPower / totalPower) * parent.width
                 height: parent.height
-                color: isCharging ? "#39c17b" : "#FF6F82F5"
+                // color: isCharging ? "#39c17b" : "#FF6F82F5"
+                color: "transparent"
+            
+                LinearGradient {
+                ///--[Mark]
+                anchors.fill: parent
+                start: Qt.point(0, 0)
+                gradient: Gradient {
+                    
+                    
+                    GradientStop {
+                        position: 0.0
+                        color: "#FF6F82F5"
+                    }
+
+                    GradientStop {
+                        position: 1.0
+                        color: "#FF3C4BE8"
+                    }
+                }
+            }
             }
         }
     }
@@ -95,8 +115,9 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        width: 480 * battery_root.appScale
+        width: 480  
         color: "transparent"
+        // color:"red"
 
         Text {
             id: battery_left
@@ -104,12 +125,20 @@ Rectangle {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 31 * battery_root.appScale
-                topMargin: 48 * battery_root.appScale
+                leftMargin: 31  
+                topMargin: 25
             }
 
-            text: leftPower
-            font.pointSize: battery_root.appFontSize + 35
+            text: {
+                    if(leftPower == -1){
+                        return i18n("Synchronizing...")
+                    }else {
+                        return leftPower
+                    }
+            }
+            // font.pointSize: battery_root.appFontSize + 35
+
+            font.pixelSize: 36
             color: "white"
         }
 
@@ -119,12 +148,14 @@ Rectangle {
             anchors {
                 left: battery_left.right
                 bottom: battery_left.bottom
-                bottomMargin: 5 * appScale
-                leftMargin: 5 * battery_root.appScale
+                bottomMargin: 5  
+                leftMargin: 5  
             }
 
             text: "%"
-            font.pointSize: battery_root.appFontSize + 6
+            visible: leftPower != -1
+            // font.pointSize: battery_root.appFontSize + 6
+            font.pixelSize: 17
             color: "white"
         }
 
@@ -133,11 +164,11 @@ Rectangle {
 
             anchors {
                 left: battery_pa.right
-                leftMargin: 18 * battery_root.appScale
+                leftMargin: 18  
                 bottom: battery_pa.bottom
             }
 
-            width: 37 * battery_root.appScale
+            width: 24
             height: width
             visible: isCharging
             source: "../image/battery_charging.png"
@@ -149,12 +180,13 @@ Rectangle {
             anchors {
                 left: parent.left
                 top: battery_left.bottom
-                leftMargin: 31 * battery_root.appScale
-                topMargin: 17 * battery_root.appScale
+                leftMargin: 31  
+                topMargin: 11
             }
 
-            text: isCharging ? remainingString + " until full" : remainingString + " remaining"
-            font.pointSize: battery_root.appFontSize + 6
+            text: isCharging ? i18n("%1 until full" , remainingString) : i18n("%1 remaining" , remainingString)
+            // font.pointSize: battery_root.appFontSize + 6
+            font.pixelSize: 17
             color: "white"
         }
     }

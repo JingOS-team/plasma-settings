@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=wallpaper
+Name[x-test]=xxwallpaperxx
+Comment=wallpaper
+Comment[x-test]=xxwallpaperxx
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_wallpaper
+X-KDE-FormFactors=handset,tablet,mediacenter
+Categories=Qt;KDE;X-KDE-settings-system;
+X-KDE-Keywords=info,wallpaper
+X-KDE-Keywords[x-test]=xxinfoxx,xxwallpaperxx
+X-KDE-ParentApp=kcontrol
+Exec=plasma-settings -m kcm_wallpaper

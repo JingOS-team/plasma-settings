@@ -15,16 +15,31 @@ import org.jingos.info 1.0
 Item {
     id: display_sub
 
-    property real appScale: system_info_root.appScale
-    property int appFontSize: system_info_root.appFontSize
     property double storageTotal: 0
     property string storageTotalValue: ""
+    property int screenWidth: 888
+    property int screenHeight: 648
+    property int appFontSize: theme.defaultFont.pointSize
 
-    width: parent.width
-    height: parent.height
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 18 
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
+    property string deviceName : kcm.localDeviceName
 
     UpdateTool {
         id: updateTool
+    }
+
+    Connections {
+        target: kcm
+        onLocalDeviceNameChanged: {
+            deviceName = localDeviceName 
+        }
     }
 
     Component.onCompleted :{
@@ -34,6 +49,7 @@ Item {
     }
 
     Rectangle {
+        id: info_parent
         width: parent.width
         height: parent.height
         color: "#FFF6F9FF"
@@ -42,14 +58,14 @@ Item {
             id: page_statusbar
 
             anchors {
-                top: parent.top
                 left: parent.left
-                leftMargin: 34 * system_info_root.appScale
-                topMargin: 68 * system_info_root.appScale
+                top: parent.top
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
 
-            width: 400
-            height: 41 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: statusbar_height
             color: "transparent"
 
             Image {
@@ -57,7 +73,7 @@ Item {
 
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: 34 * appScale
+                width: statusbar_icon_size
                 height: width
                 source: "../image/icon_left.png"
                 sourceSize.width: width
@@ -78,14 +94,13 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 * appScale
+                    leftMargin: 9 
                 }
 
-                width: 500
-                height: 50
-
+                width: 359
+                height: 14
                 text: i18n("About")
-                font.pointSize: appFontSize + 11
+                font.pixelSize: 20
                 font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
             }
@@ -96,14 +111,59 @@ Item {
 
             anchors {
                 top: page_statusbar.bottom
-                topMargin: 36 * appScale
+                topMargin: 35
                 horizontalCenter: parent.horizontalCenter
             }
 
-            width: 152 * appScale
-            height: 152 * appScale
+            width: 60
+            height: 60
             Layout.alignment: Qt.AlignHCenter
-            source: "../image/jingos_logo.png"
+            source: "../image/jingos_logo_update.svg"
+        }
+
+        Rectangle {
+            id: device_name_area
+            height: 22
+            width: childrenRect.width
+            color:"transparent"
+
+            anchors {
+                horizontalCenter: info_parent.horizontalCenter
+                top: system_logo.bottom
+                topMargin: marginItem2Title
+            }
+
+            Text {
+                id: device_name_txt
+                font.pixelSize: 20
+                color: "black"
+                verticalAlignment: Text.AlignVCenter
+                anchors.verticalCenter:parent.verticalCenter
+                anchors.left:parent.left 
+                text: deviceName
+            }
+
+            Image {
+                id:device_name_icon
+                anchors{
+                    left: device_name_txt.right
+                    leftMargin: 12
+                    verticalCenter: parent.verticalCenter
+                }
+
+                width : 22
+                height : 22
+                sourceSize.width : 22
+                sourceSize.height : 22
+                source: "../image/device_name_modify.svg"
+
+                MouseArea {
+                    anchors.fill:parent
+                    onClicked: {
+                        editDialog.open()
+                    }
+                }
+            }
         }
 
         Rectangle {
@@ -111,15 +171,15 @@ Item {
             anchors {
                 left: parent.left
                 right: parent.right
-                top: system_logo.bottom
-                leftMargin: 72 * system_info_root.appScale
-                rightMargin: 72 * system_info_root.appScale
-                topMargin: 47 * system_info_root.appScale
+                top: device_name_area.bottom
+                leftMargin: marginLeftAndRight
+                rightMargin: marginLeftAndRight
+                topMargin: marginItem2Title
             }
 
-            width: 923 * appScale
-            height: 69 * 7 * appScale
-            radius: 15 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height * 7
+            radius: 10 
             
             SettingsItem {
                 id: model_name
@@ -137,7 +197,7 @@ Item {
                 anchors.top: model_name.bottom
 
                 mTitle: i18n("Software Version")
-                mContent: "0.8.0" //kcm.softwareInfo.frameworksVersion
+                mContent: updateTool.readLocalVersion()
                 withArrow: false
                 withContent: true
                 withSeparator: true
@@ -204,10 +264,10 @@ Item {
                 anchors.top: kernel_version.bottom
 
                 mTitle: i18n("Serial Number")
-                mContent: ""
+                mContent: kcm.softwareInfo.frameworksVersion
                 withArrow: false
                 withContent: true
-                withSeparator: true
+                withSeparator: false
             }
 
       /*       SettingsItem {
@@ -220,6 +280,26 @@ Item {
                 withContent: false
                 withSeparator: false
             } */
+        }
+
+        Kirigami.JDialog {
+            id: editDialog
+
+            title:i18n("Device Name")
+            text: i18n("Other devices will see this name when you use Bluetooth,WLAN Direct,Personal hotspot and USB.")
+            inputEnable: true
+            showPassword: false
+            leftButtonText: i18n("Cancel")
+            rightButtonText: i18n("Ok")
+            onRightButtonClicked: {
+                if(editDialog.inputText.length != 0){
+                    kcm.setLocalDeviceName(editDialog.inputText)
+                }
+                editDialog.visible = false
+            }
+            onLeftButtonClicked: {
+                editDialog.visible = false
+            }
         }
     }
 }

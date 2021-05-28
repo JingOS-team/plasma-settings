@@ -51,15 +51,19 @@
 #include "config.h"
 #include <QDBusConnection>
 #include <QDBusError>
+#include <QDateTime>
 
 
 static constexpr char version[] = "2.0";
 
 int main(int argc, char **argv)
 {
+    qint64 startTime = QDateTime::currentMSecsSinceEpoch();
+    qDebug()<<Q_FUNC_INFO << " loadtime:: main start time:" << startTime;
     QApplication app(argc, argv);
 
-    KLocalizedString::setApplicationDomain("plasma-settings");
+    // KLocalizedString::setApplicationDomain("plasma-settings");
+    KLocalizedString::setApplicationDomain("settings"); 
 
     // About data
     KAboutData aboutData("mobile.plasmasettings", i18n("Settings"), version, i18n("Touch-friendly settings application."), KAboutLicense::GPL, i18n("Copyright 2011-2015, Sebastian Kügler"));
@@ -94,6 +98,8 @@ int main(int argc, char **argv)
 
     parser.process(app);
     aboutData.processCommandLine(&parser);
+
+     
 
     if (parser.isSet(listOption)) {
         int nameWidth = 24;
@@ -160,6 +166,7 @@ int main(int argc, char **argv)
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextObject(new KLocalizedContext(&engine));
+    engine.rootContext()->setContextProperty("MainStartTime",startTime);
 
     SettingsConfig settingsConfig;
 

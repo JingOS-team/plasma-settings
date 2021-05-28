@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>package/contents/ui/main.qml</file>
+        <file>package/contents/image/icon_right.png</file>
+        <file>package/contents/ui/LockScrrenView.qml</file>
+        <file>package/contents/ui/MainInterface.qml</file>
+        <file>package/contents/ui/RadiusImage.qml</file>
+        <file>package/contents/image/bg.png</file>
+        <file>package/contents/image/camera.png</file>
+        <file>package/contents/ui/RectshowView.qml</file>
+        <file>package/contents/ui/JGridView.qml</file>
+        <file>package/contents/ui/GridDelegate.qml</file>
+        <file>package/contents/ui/SystemWallpaperView.qml</file>
+        <file>package/contents/image/arrow_left.png</file>
+        <file>package/contents/ui/WallpaperEditView.qml</file>
+        <file>package/contents/ui/openUtils.js</file>
+        <file>package/contents/ui/JSetMenu.qml</file>
+        <file>package/contents/image/loading.png</file>
+        <file>package/contents/ui/HoverItem.qml</file>
+    </qresource>
+</RCC>

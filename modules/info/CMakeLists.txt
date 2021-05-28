@@ -16,6 +16,7 @@ target_link_libraries(kcm_mobile_info
     KF5::QuickAddons
     KF5::ConfigCore
     KF5::Solid
+    KF5::BluezQt 
     KF5::DBusAddons
 )
 

@@ -70,7 +70,7 @@ Kirigami.Page {
         Rectangle {
             id: menuLayout
 
-            width: 418 * appScale
+            width: 265
             height: parent.height
             visible: true
             color: "transparent"
@@ -90,7 +90,7 @@ Kirigami.Page {
             id: contentLayout
 
             visible: true
-            width: 1069 * appScale
+            width: 623
             height: parent.height
             color: "#FFF6F9FF"
             anchors {

@@ -31,6 +31,7 @@ Battery::Battery(QObject *parent, const QVariantList &args)
 {
 
     KAboutData *about = new KAboutData("kcm_battery", i18n("Battery"), "1.0", QString(), KAboutLicense::GPL);
+    KLocalizedString::setApplicationDomain("kcm_battery");
     about->addAuthor(i18n("Jake Wu"), QString(), "jake@jingos.com");
     setAboutData(about);
 

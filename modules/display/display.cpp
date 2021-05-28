@@ -15,6 +15,8 @@
 #include <KPluginFactory>
 
 #include "displaymodel.h"
+#include "fontmodel.h"
+#include "fontssettings.h"
 
 #include <unistd.h>
 
@@ -24,7 +26,10 @@ Display::Display(QObject *parent, const QVariantList &args)
     : KQuickAddons::ConfigModule(parent, args)
 {
     qmlRegisterType<DisplayModel>("display", 1, 0, "DisplayModel");
+    qmlRegisterType<FontModel>("jingos.font", 1, 0, "FontModel");
+    qmlRegisterType<FontsSettings>();
 
+    KLocalizedString::setApplicationDomain("kcm_display");
     KAboutData *about = new KAboutData("kcm_display", i18n("Display"), "1.0", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Tobias Fella"), QString(), "fella@posteo.de");
     setAboutData(about);

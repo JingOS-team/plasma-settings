@@ -27,11 +27,21 @@ import QtQuick.Controls 2.10
 Rectangle {
     id: battery_root
 
-    property real appScale: 1.3 * parent.width / (1920 * 0.7)
+    // property real appScale: 1.3 * parent.width / (1920 * 0.7)
+    // property int appFontSize: theme.defaultFont.pointSize
+
+    property int screenWidth: 888
+    property int screenHeight: 648
     property int appFontSize: theme.defaultFont.pointSize
 
-    width: parent.width
-    height: parent.height
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 18 
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
 
     StackView {
         id: stack

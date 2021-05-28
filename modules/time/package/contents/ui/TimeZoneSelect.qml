@@ -17,15 +17,23 @@ import org.jingos.settings.time 1.0
 Item {
     id: timezone_layout
 
-    property int screenWidth: Screen.width
-    property int screenHeight: Screen.height
-    property real appScale: 1.3 * screenWidth / 1920
     property int appFontSize: theme.defaultFont.pointSize
     property string cTimeZone : "" 
     property string sTimeZone : ""
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+    property int screenWidth: 888
+    property int screenHeight: 648
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36 
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
+    property int radiusCommon: 10 
+    property int fontNormal: 14
 
-    width: screenWidth * 0.7
-    height: screenHeight
+    width: parent.width
+    height: parent.height
 
     TimeTool {
         id: timeTool 
@@ -36,7 +44,7 @@ Item {
 
         onDlgCancel : {
             console.log("onDlgCancel");
-            kcm.saveTimeZone(cTimeZone)
+            // kcm.saveTimeZone(cTimeZone)
         }
 
     }
@@ -48,14 +56,14 @@ Item {
     Component {
         id: listDelegateComponent
 
-        // Kirigami.BasicListItem {
         Rectangle{
-            width:parent.width
-            height: 69 * appScale
+            width: input_parent.width
+            height: default_setting_item_height 
+            color: "transparent"
             
             Text {
                 anchors.verticalCenter:parent.verticalCenter
-                font.pointSize: appFontSize + 2
+                font.pixelSize: 17
                 text: {
                     if (model) {
                         if (model.region) {
@@ -66,12 +74,11 @@ Item {
                     }
                     return ""
                 }
-                // text: model.timeZoneId
             }
 
             Image {
                 source:"../image/menu_select.png"
-                width: 34 * appScale
+                width: 22 
                 height:width
                 anchors{
                     verticalCenter:parent.verticalCenter
@@ -80,11 +87,12 @@ Item {
                 }
                 visible: model.timeZoneId == kcm.timeZone ? true : false 
             }
+
             Kirigami.Separator {
                 anchors.bottom:parent.bottom
                 anchors.left:parent.left
                 anchors.right: parent.right
-                height: 1 *appScale
+                height: 1 
                 color: "#f0f0f0"
             }
             
@@ -93,6 +101,7 @@ Item {
                 onClicked: {
                     sTimeZone = model.timeZoneId
                     kcm.saveTimeZone(sTimeZone)
+                    kcm.timeZonesModel.filterString = ""
                     main.popView();
                 }
             }
@@ -100,6 +109,7 @@ Item {
     }
 
     Rectangle {
+        id: root 
         width: parent.width
         height: parent.height
 
@@ -111,12 +121,12 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 34 * appScale
-                topMargin: 68 * appScale
+                leftMargin: marginLeftAndRight 
+                topMargin: 48 
             }
 
             width: parent.width
-            height: 41 * appScale
+            height: 27 
 
             color: "transparent"
 
@@ -124,19 +134,17 @@ Item {
                 id: back_icon
 
                 anchors.verticalCenter: parent.verticalCenter
-
-                width: 34 * appScale
+                width: 22 
                 height: width
-
                 source: "../image/icon_left.png"
                 sourceSize.width: width
                 sourceSize.height: width
 
                 MouseArea {
                     anchors.fill: parent
-
                     onClicked: {
                         console.log("back..about")
+                        kcm.timeZonesModel.filterString = ""
                         popView()
                     }
                 }
@@ -148,13 +156,13 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
-                    rightMargin: 34* 2 * appScale
+                    rightMargin: marginLeftAndRight * 2 
                 }
 
-                height: 36 * appScale
+                height: 22 
                 color:"#FF3C4BE8"
                 text: i18n(" ")
-                font.pointSize: appFontSize + 6
+                font.pixelSize: 17
                 font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
             }
@@ -162,73 +170,74 @@ Item {
             Rectangle {
                 id:input_parent
                 
-                height: 36 * appScale
+                height: 36
                 color:"transparent"
+
                 anchors {
                     left: back_icon.right
                     right: confirmBtn.left
-                    leftMargin:17 * appScale
-                    rightMargin: 17 * appScale
+                    leftMargin:marginLeftAndRight 
+                    rightMargin: marginLeftAndRight 
                     verticalCenter: parent.verticalCenter
                 }
 
                 Kirigami.JSearchField {
                     id: timezone_input
-                    // Layout.fillWidth: true      
-                    // Layout.fillHeight: true 
-                    anchors.fill:parent
-                    font.pointSize: appFontSize -2
+                    width: parent.width
+                    anchors.verticalCenter:parent.verticalCenter
+                    font.pixelSize: 17
+                    bgColor:"#FFFFFFFF"
                     focus: true
                     onTextChanged: {
-                        kcm.timeZonesModel.setFilterFixedString(text)
+                        kcm.timeZonesModel.filterString = text
                     }
                 }
             }
-
-             
         }
+
         Rectangle {
-            
+            id:time_select_area
             anchors {
                 top: page_statusbar.bottom
                 left: parent.left
                 right: parent.right
                 bottom:parent.bottom
-                topMargin: 47 * appScale
+                bottomMargin: 2
+                topMargin: 10
             }
+            color:"transparent"
 
             Rectangle {
+                id:list_wrap
                 anchors {
                     left: parent.left
                     right: parent.right
-                    leftMargin: 72 * appScale
-                    rightMargin: 72 * appScale
-
+                    bottom:time_select_area.bottom
+                    top: time_select_area.top
+                    leftMargin: marginLeftAndRight 
+                    rightMargin: marginLeftAndRight 
+                    bottomMargin: 2
+                    topMargin: 10 
                 }
-                height:parent.height
-
+                height:parent.height - 22
+                color:"transparent"
+                clip: true
 
                 ListView {
                     id:tz_list
                     clip: true
                     anchors.fill: parent
-                    implicitWidth: 18 * Kirigami.Units.gridUnit
+                    anchors.leftMargin: marginLeftAndRight * 2
+                    implicitWidth: list_wrap.width - marginLeftAndRight * 3
                     model: kcm.timeZonesModel 
-                    delegate: Kirigami.DelegateRecycler {
-                        width: parent.width
-                        sourceComponent: listDelegateComponent
-                    }
-                        // AdaptiveSearch {
-                        //     id: adaptive
-                        //     anchors.fill: parent
-                        //     model: parent.model
-                    
-                        //     onFilterUpdated: {
-                        //         tz_list.model = adaptive.filtermodel
-                        //     }
-                        // }
+                    // delegate: Kirigami.DelegateRecycler {
+                    //     width: parent.width
+                    //     sourceComponent: listDelegateComponent
+                    // }
+                    delegate:listDelegateComponent
+
                 }
-            }
+            } 
         }
         
     }

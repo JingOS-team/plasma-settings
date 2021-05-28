@@ -34,9 +34,23 @@ Popup {
     property int py: 0
     property int mScaleValue
 
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+
+    property int screenWidth: 888
+    property int screenHeight: 648
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36 
+    property int marginLeftAndRight : 10 
+    property int marginItem2Top : 24 
+    property int radiusCommon: 10 
+    property int fontNormal: 14
+
     x: px
     y: py
-    width: 369 * appScale
+    width: 248 
     height: contentItem.height
     modal: true
     focus: true
@@ -54,8 +68,8 @@ Popup {
         anchors.left: parent.left
         anchors.right: parent.right
         width: parent.width
-        height: 69 * appScale * 5 + 28 * appScale
-        radius: 15 * appScale
+        height: default_setting_item_height  * 5 + 8 
+        radius: 10 
         color: "#fff"
         layer.enabled: true
         layer.effect: DropShadow {
@@ -75,13 +89,13 @@ Popup {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
-                topMargin: 28
-                bottomMargin: 28
-                leftMargin: 28
-                rightMargin: 28
+                topMargin: 8
+                bottomMargin: 8
+                leftMargin: marginLeftAndRight
+                rightMargin:marginLeftAndRight
             }
 
-            width: root.width - 28 * 2 * appScale
+            width: root.width - marginLeftAndRight* 2 
             color: "transparent"
 
             ScrollView {
@@ -98,31 +112,40 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "100%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
                             source: "../image/menu_select.png"
                             visible: mScaleValue == 100 ? true : false
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight
+                            anchors.rightMargin: marginLeftAndRight
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -138,31 +161,39 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "110%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
                             visible: mScaleValue == 110 ? true : false
                             source: "../image/menu_select.png"
+                        }
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -178,33 +209,42 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "120%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
 
                             visible: mScaleValue == 120 ? true : false
                             source: "../image/menu_select.png"
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -220,25 +260,25 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "130%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
@@ -247,6 +287,15 @@ Popup {
 
                             visible: mScaleValue == 130 ? true : false
                             source: "../image/menu_select.png"
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -262,25 +311,25 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
                         
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "140%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
@@ -289,6 +338,15 @@ Popup {
 
                             visible: mScaleValue == 140 ? true : false
                             source: "../image/menu_select.png"
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -304,34 +362,42 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "150%"
                         }
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
 
                             visible: mScaleValue == 150 ? true : false
                             source: "../image/menu_select.png"
                         }
 
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
+                        }
                         MouseArea {
                             anchors.fill: parent
 
@@ -345,33 +411,42 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
                         
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "160%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
 
                             source: "../image/menu_select.png"
                             visible: mScaleValue == 160 ? true : false
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -387,32 +462,41 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "170%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
                             visible: mScaleValue == 170 ? true : false
                             source: "../image/menu_select.png"
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -427,32 +511,41 @@ Popup {
                     }
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "180%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
                             visible: mScaleValue == 180 ? true : false
                             source: "../image/menu_select.png"
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -468,31 +561,40 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "190%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
                             visible: mScaleValue == 190 ? true : false
                             source: "../image/menu_select.png"
+                        }
+
+                        Kirigami.Separator {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: marginLeftAndRight 
+                            anchors.rightMargin: marginLeftAndRight 
+                            color: "#f0f0f0"
                         }
 
                         MouseArea {
@@ -508,30 +610,30 @@ Popup {
 
                     Rectangle {
                         width: menu_content.width
-                        height: 69 * appScale
+                        height: default_setting_item_height 
 
                         color: "transparent"
 
                         Text {
                             anchors {
                                 left: parent.left
-                                leftMargin: 31 * appScale
+                                leftMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            font.pointSize: appFontSize + 2
+                            font.pixelSize: 14
                             text: "200%"
                         }
 
                         Image {
                             anchors {
                                 right: parent.right
-                                rightMargin: 31 * appScale
+                                rightMargin: marginLeftAndRight 
                                 verticalCenter: parent.verticalCenter
                             }
 
-                            width: 34
-                            height: 34
+                            width: 17
+                            height: 17
                             source: "../image/menu_select.png"
                             visible: mScaleValue == 200 ? true : false
                         }

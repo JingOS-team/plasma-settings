@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 36备份 5</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="100" height="100" rx="24"></rect>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="桌面" transform="translate(-1646.000000, -110.000000)">
+            <g id="编组-16" transform="translate(155.000000, 110.000000)">
+                <g id="编组-35" transform="translate(1491.000000, 0.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="矩形备份-6" fill="#FFFFFF" xlink:href="#path-1"></use>
+                    <rect id="矩形" fill="#FF3D49" mask="url(#mask-2)" transform="translate(92.672131, 31.000000) rotate(-315.000000) translate(-92.672131, -31.000000) " x="48" y="-19" width="89.3442623" height="100"></rect>
+                    <rect id="矩形备份-118" fill="#FFC300" mask="url(#mask-2)" transform="translate(54.343146, 100.156854) rotate(-315.000000) translate(-54.343146, -100.156854) " x="33.3431458" y="74.6568542" width="42" height="51"></rect>
+                    <rect id="矩形备份-117" fill="#394BF1" mask="url(#mask-2)" transform="translate(-0.500000, 36.000000) rotate(-315.000000) translate(0.500000, -36.000000) " x="-19" y="18" width="37" height="36"></rect>
+                    <rect id="矩形" fill="#3C494F" mask="url(#mask-2)" transform="translate(37.474228, 24.733925) rotate(-315.000000) translate(-37.474228, -24.733925) " x="34.4742281" y="-35.9218131" width="6" height="121.311475"></rect>
+                    <rect id="矩形备份-23" fill="#3C494F" mask="url(#mask-2)" transform="translate(40.050253, 86.449747) rotate(-315.000000) translate(-40.050253, -86.449747) " x="37.0502525" y="59.9497475" width="6" height="53"></rect>
+                    <rect id="矩形" fill="#3C494F" mask="url(#mask-2)" transform="translate(44.414214, 56.414214) rotate(-315.000000) translate(-44.414214, -56.414214) " x="-17.5857864" y="53.4142136" width="124" height="6"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

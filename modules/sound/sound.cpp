@@ -29,6 +29,7 @@ K_PLUGIN_CLASS_WITH_JSON(Sound, "sound.json")
 Sound::Sound(QObject *parent, const QVariantList &args)
     : KQuickAddons::ConfigModule(parent, args)
 {
+    KLocalizedString::setApplicationDomain("kcm_sound");
     KAboutData *about = new KAboutData("kcm_sound", i18n("Sound"), "1.0", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Jake Wu"), QString(), "jake@jingos.com");
     setAboutData(about);

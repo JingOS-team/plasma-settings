@@ -20,8 +20,6 @@ import display 1.0
 Item {
     id: display_root
 
-    property real appScale: 1.3 * parent.width / (1920 * 0.7)
-    property int appFontSize: theme.defaultFont.pointSize
     property real brightnessValue: -1
     property real scaleValue: 0
     property real initScale: -1
@@ -31,12 +29,37 @@ Item {
     property int screenDim: 0
     property string dimTime: "2 Minutes"
     property bool positiveChange: false
+    property bool isDarkTheme: false 
 
+    // property int screenWidth: 888
+    // property int screenHeight: 648
+    property int appFontSize: theme.defaultFont.pointSize
+
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+    property int default_inner_title_height: 30 
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
+    property int radiusCommon: 10 
+    property int fontNormal: 14
+
+    // width: screenWidth * 0.7
+    // height: screenHeight
+
+    
+
+    // property real appScale: 1.3 * parent.width / (1920 * 0.7)
+    // property int appFontSize: theme.defaultFont.pointSize
     width: parent.width
     height: parent.height
 
     Component.onCompleted: {
         getCurrentBright.start()
+        isDarkTheme: false 
     }
 
     DisplayModel {
@@ -45,6 +68,7 @@ Item {
         Component.onCompleted: {
             dimTime = getIdleTime()
             scaleValue = displayModel.getApplicationScale()
+            
         }
     }
 
@@ -135,34 +159,35 @@ Item {
     }
 
     function getIdleTime() {
-        var time = 300
+        var time = displayModel.getScreenIdleTime()
+        console.log("getSystemIdleTime: ",time)
         switch (time) {
         case 2 * 60:
-            return "2 Minutes"
+            return i18n("2 Minutes")
         case 5 * 60:
-            return "5 Minutes"
+            return i18n("5 Minutes")
         case 10 * 60:
-            return "10 Minutes"
+            return i18n("10 Minutes")
         case 15 * 60:
-            return "15 Minutes"
+            return i18n("15 Minutes")
         case 30 * 60 * 60:
-            return "Never"
+            return i18n("Never")
         default:
-            return "2 Minutes"
+            return i18n("2 Minutes")
         }
     }
 
     function getIndex(dimTime) {
         switch (dimTime) {
-        case "2 Minutes":
+        case i18n("2 Minutes"):
             return 0
-        case "5 Minutes":
+        case i18n("5 Minutes"):
             return 1
-        case "10 Minutes":
+        case i18n("10 Minutes"):
             return 2
-        case "15 Minutes":
+        case i18n("15 Minutes"):
             return 3
-        case "Never":
+        case i18n("Never"):
             return 4
         }
         return 0
@@ -179,66 +204,204 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 72 * appScale
-                topMargin: 68 * appScale
+                leftMargin: marginLeftAndRight  
+                topMargin: marginTitle2Top  
             }
-            width: 500
-            height: 50
+            width: 329
+            height: 14
             text: i18n("Display & Brightness")
-            font.pointSize: appFontSize + 11
+            font.pixelSize: 20 
             font.weight: Font.Bold
         }
 
-        Text {
-            id: brightness_title
+        Rectangle {
+            id: dark_theme_item
 
             anchors {
                 left: parent.left
                 top: title.bottom
-                leftMargin: 103 * appScale
-                topMargin: 42 * appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginItem2Title
             }
-            width: 500
-            height: 50
-            text: i18n("Brightness")
-            font.pointSize: appFontSize - 2
-            color: "#4D000000"
-        }
 
+            width: parent.width - marginLeftAndRight* 2
+            height: 189
+            color: "#fff"
+            radius: radiusCommon
+            visible: false 
+
+            Rectangle {
+                id: light_area
+                width: parent.width /2 
+                height: parent.height 
+
+                anchors {
+                    left: parent.left
+                    top: parent.top 
+                }
+
+                MouseArea {
+                    anchors.fill:parent
+                    onClicked: {
+                        if(!isDarkTheme){
+                            return 
+                        }
+                        isDarkTheme = false  
+                    }
+                }
+
+                Image {
+                    id: light_icon
+                    width : 130
+                    height : 95
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top:parent.top
+                    anchors.topMargin: marginItem2Top
+                    sourceSize.width : width 
+                    sourceSize.height : height 
+                    source: "../image/light_icon.png"
+                }
+
+                Text {
+                    id:light_txt
+                    text:"Light"
+                    anchors.horizontalCenter:parent.horizontalCenter
+                    anchors.top:light_icon.bottom
+                    anchors.topMargin: 6
+                    font.pixelSize: 14
+
+                }
+
+                Image {
+                    id: light_select
+                    width : 17
+                    height : 17
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top:light_txt.bottom
+                    anchors.topMargin:7
+                    sourceSize.width : width 
+                    sourceSize.height : height 
+                    source: isDarkTheme ? "../image/dark_unselect.png" : "../image/dark_select.png"
+
+                }
+            }
+
+            Rectangle {
+                id: dark_area
+                width: parent.width /2 
+                height: parent.height 
+
+                anchors {
+                    left: light_area.right 
+                    top: parent.top 
+                }
+
+                MouseArea {
+                    anchors.fill:parent
+                    onClicked: {
+                        if(isDarkTheme){
+                            return 
+                        }
+                        isDarkTheme = true 
+                    }
+                }
+
+                Image {
+                    id:  dark_icon
+                    width : 130
+                    height : 95
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top:parent.top
+                    anchors.topMargin: marginItem2Top
+                    sourceSize.width : width 
+                    sourceSize.height : height 
+                    source: "../image/dark_icon.png"
+                }
+
+                Text {
+                    id: dark_txt
+                    text:"Dark"
+                    anchors.horizontalCenter:parent.horizontalCenter
+                    anchors.top:dark_icon.bottom
+                    anchors.topMargin: 6
+                    font.pixelSize: 14
+                }
+
+                Image {
+                    id:  dark_select
+                    width : 17
+                    height : 17
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: dark_txt.bottom
+                    anchors.topMargin:7
+                    sourceSize.width : width 
+                    sourceSize.height : height 
+                    source: isDarkTheme ? "../image/dark_select.png" : "../image/dark_unselect.png"
+                }
+            }
+        }
+        
         Rectangle {
             id: brightness_area
 
             anchors {
                 left: parent.left
-                top: brightness_title.bottom
-                leftMargin: 72 * appScale
-                topMargin: 18 * appScale
+                top: title.bottom
+                leftMargin: marginLeftAndRight
+                // topMargin: marginItem2Top
+                topMargin: marginItem2Title
             }
 
-            width: parent.width - 144 * appScale
-            height: 69 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height + default_inner_title_height
             color: "#fff"
-            radius: 15 * appScale
+            radius: 10
+
+            Rectangle {
+
+                id: brightness_title_item
+
+                width: parent.width
+                height: default_inner_title_height
+                radius:10 
+
+                Text {
+                    id: brightness_title
+
+                    anchors {
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                        leftMargin: marginLeftAndRight
+                    }
+                    width: 329
+                    height: 14
+                    text: i18n("Brightness")
+                    font.pixelSize: 12
+                    color: "#4D000000"
+                }
+
+            }
 
             Rectangle {
                 id: brightness_top
 
+                anchors.top:brightness_title_item.bottom
                 width: parent.width
-                height: parent.height
+                height: default_setting_item_height
                 color: "transparent"
-
+                    
                 Image {
                     id: ic_small
 
                     anchors {
                         left: parent.left
                         verticalCenter: parent.verticalCenter
-                        leftMargin: 27 * appScale
+                        leftMargin: marginLeftAndRight
                     }
 
                     source: "../image/brightness_less.png"
-                    sourceSize.width: 28 * appScale
-                    sourceSize.height: 28 * appScale
+                    sourceSize.width: 17
+                    sourceSize.height: 17
                 }
 
                 Image {
@@ -247,12 +410,12 @@ Item {
                     anchors {
                         right: parent.right
                         verticalCenter: parent.verticalCenter
-                        rightMargin: 27 * appScale
+                        rightMargin: marginLeftAndRight
                     }
 
                     source: "../image/brightness_more.png"
-                    sourceSize.width: 28 * appScale
-                    sourceSize.height: 28 * appScale
+                    sourceSize.width: 17
+                    sourceSize.height: 17
                 }
 
                 Kirigami.JSlider {
@@ -262,14 +425,13 @@ Item {
                         verticalCenter: parent.verticalCenter
                         left: ic_small.right
                         right: ic_large.left
-                        leftMargin: 34 * appScale
-                        rightMargin: 34 * appScale
+                        leftMargin: 17
+                        rightMargin: 17
                     }
 
                     value: brightnessValue
                     from: 8
                     to: maxBrightness
-
                     onValueChanged: {
                         if (brightnessValue == -1) {
                             return
@@ -286,35 +448,35 @@ Item {
             anchors {
                 left: parent.left
                 top: brightness_area.bottom
-                leftMargin: 72 * appScale
-                topMargin: 36 * appScale
+                 leftMargin: marginLeftAndRight
+                topMargin: marginItem2Top
             }
 
-            width: parent.width - 144 * appScale
-            height: 69 * appScale
+            width: parent.width - marginLeftAndRight* 2
+            height: default_setting_item_height
             color: "#fff"
-            radius: 15 * appScale
+            radius: radiusCommon
 
             Text {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 32 * appScale
+                    leftMargin: marginLeftAndRight
                 }
 
                 text: i18n("Sleep")
-                font.pointSize: appFontSize + 2
+                font.pixelSize: fontNormal
             }
 
             Text {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: right_icon1.left
-                    rightMargin: 2 * appScale
+                    rightMargin: 8
                 }
 
                 text: dimTime
-                font.pointSize: appFontSize + 2
+                font.pixelSize: fontNormal
                 color: "#99000000"
             }
 
@@ -324,12 +486,12 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
-                    rightMargin: 17 * appScale
+                    rightMargin: marginLeftAndRight
                 }
                 
                 source: "../image/icon_right.png"
-                sourceSize.width: 34 * appScale
-                sourceSize.height: 34 * appScale
+                sourceSize.width: 17
+                sourceSize.height: 17
             }
 
             MouseArea {
@@ -337,7 +499,7 @@ Item {
 
                 onClicked: {
                     selectDialog.px = sleep_area.x + sleep_area.width - selectDialog.width
-                    selectDialog.py = sleep_area.y + 69 * appScale
+                    selectDialog.py = sleep_area.y + 45
                     selectDialog.selectIndex = getIndex(dimTime)
                     selectDialog.open()
                 }
@@ -350,36 +512,37 @@ Item {
             anchors {
                 left: parent.left
                 top: sleep_area.bottom
-                leftMargin: 72 * appScale
-                topMargin: 36 * appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginItem2Top
             }
 
-            width: parent.width - 144 * appScale
-            height: 69 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height
+            visible:false 
 
             color: "#fff"
-            radius: 15 * appScale
+            radius: radiusCommon
 
             Text {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 32 * appScale
+                    leftMargin: marginLeftAndRight
                 }
 
                 text: i18n("Applications scale")
-                font.pointSize: appFontSize + 2
+                font.pixelSize: fontNormal
             }
 
             Text {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: right_icon.left
-                    rightMargin: 2 * appScale
+                    rightMargin: 8
                 }
 
-                text: i18n("%1 %",scaleValue)
-                font.pointSize: appFontSize + 2
+                text:  scaleValue + "%" 
+                font.pixelSize: fontNormal
                 color: "#99000000"
             }
 
@@ -389,12 +552,12 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
-                    rightMargin: 17 * appScale
+                    rightMargin: marginLeftAndRight
                 }
 
                 source: "../image/icon_right.png"
-                sourceSize.width: 34 * appScale
-                sourceSize.height: 34 * appScale
+                sourceSize.width: 17
+                sourceSize.height: 17
             }
 
             MouseArea {
@@ -406,29 +569,82 @@ Item {
             }
         }
 
+        Rectangle {
+            id: fonts_area
+
+            anchors {
+                left: parent.left
+                // top: scale_area.bottom
+                top: sleep_area.bottom
+                leftMargin: marginLeftAndRight
+                topMargin: marginItem2Top
+            }
+
+            width: parent.width - marginLeftAndRight * 2
+            height: default_setting_item_height
+
+            color: "#fff"
+            radius: radiusCommon
+
+
+            Text {
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    left: parent.left
+                    leftMargin: marginLeftAndRight
+                }
+
+                text: i18n("Fonts")
+                font.pixelSize: fontNormal
+            }
+
+
+            Image {
+                id: fonts_right_icon
+
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: parent.right
+                    rightMargin: marginLeftAndRight
+                }
+
+                source: "../image/icon_right.png"
+                sourceSize.width: 17
+                sourceSize.height: 17
+
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    main.gotoPage("fonts_detail_view")
+                }
+            }
+        }
+
         JrDialog {
             id: selectDialog
 
             onMenuSelectChanged: {
                 switch (value) {
                 case 0:
-                    dimTime = "2 Minutes"
+                    dimTime = i18n("2 Minutes")
                     setIdleTime(2 * 60)
                     break
                 case 1:
-                    dimTime = "5 Minutes"
+                    dimTime = i18n("5 Minutes")
                     setIdleTime(5 * 60)
                     break
                 case 2:
-                    dimTime = "10 Minutes"
+                    dimTime = i18n("10 Minutes")
                     setIdleTime(10 * 60)
                     break
                 case 3:
-                    dimTime = "15 Minutes"
+                    dimTime = i18n("15 Minutes")
                     setIdleTime(15 * 60)
                     break
                 case 4:
-                    dimTime = "Never"
+                    dimTime = i18n("Never")
                     setIdleTime(10 * 24 * 60 * 60)
                     break
                 }
@@ -452,18 +668,18 @@ Item {
             anchors.centerIn: parent
             title: i18n("Set scale ")
             text: i18n("Attention, the running apps will be closed to fit new configuration.")
-            leftButtonText: "OK"
-            rightButtonText: "Cancel"
+            leftButtonText: i18n("Cancel")
+            rightButtonText: i18n("Set")
             dim: true
             focus: true
 
-            onRightButtonClicked: {
+            onLeftButtonClicked: {
                 scaleWarningDlg.close()
             }
 
-            onLeftButtonClicked: {
+            onRightButtonClicked: {
                 selectScaleDialog.px = scale_area.x + scale_area.width - selectScaleDialog.width
-                selectScaleDialog.py = scale_area.y + 69 * appScale
+                selectScaleDialog.py = scale_area.y + 45
                 selectScaleDialog.mScaleValue = scaleValue
                 selectScaleDialog.open()
                 scaleWarningDlg.close()

@@ -11,6 +11,7 @@
 #include <QTimeZone>
 #include <QStringMatcher>
 #include <KLocalizedString>
+#include <QDebug>
 
 TimeZoneFilterProxy::TimeZoneFilterProxy(QObject *parent)
     : QSortFilterProxyModel(parent)
@@ -127,7 +128,11 @@ void TimeZoneModel::update()
     local.comment = i18n("Your system time zone");
     local.checked = false;
 
-    m_data.append(local);
+    if(local.city != ""){
+        m_data.append(local);
+    }else {
+        // do nothing 
+    }
 
     QStringList cities;
     QHash<QString, QTimeZone> zonesByCity;
@@ -167,7 +172,10 @@ void TimeZoneModel::update()
         newData.comment = comment;
         newData.checked = false;
         newData.offsetFromUtc = timeZone.offsetFromUtc(QDateTime::currentDateTimeUtc());
-        m_data.append(newData);
+        if(newData.city != ""){
+            m_data.append(newData);
+        }else {
+        }
     }
 
     endResetModel();

@@ -18,13 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import QtQuick 2.12
-import org.kde.kirigami 2.13 as Kirigami
 import QtQuick.Controls 2.12
-import QtQuick.Window 2.12
-import QtQuick.Layouts 1.12
-import QtGraphicalEffects 1.12
 
-Rectangle {
+Item {
     id: menuItem_root
 
     property bool isSelect: false
@@ -38,89 +34,117 @@ Rectangle {
     signal swichChanged
     signal menuClicked
 
-    width: 369 * appScale
-    height: 60 * appScale
-    radius: 15 * appScale
-    color: isSelect ? "#FF3C4BE8" : "transparent"
+    width: 240
+    height: 35
 
+    //color: isSelect ? "transparent" : "#FF3C4BE8"
     MouseArea {
+        id:bkmouse
         anchors.fill: parent
+        hoverEnabled: true
         onClicked: {
             menuClicked()
         }
+//        onEntered: {
+//            if(!menuItem_root.isSelect){
+//                menuItem_root.color = "#339F9FAA"
+//            }
+//        }
+
+//        onExited: {
+//            menuItem_root.color = menuItem_root.isSelect ?  "transparent" : "#FF3C4BE8"
+
+//        }
+
+//        onPressed: {
+//            if(!menuItem_root.isSelect){
+//                menuItem_root.color = "#4D9F9FAA"
+//            }
+//        }
+
+//        onReleased: {
+//            menuItem_root.color = menuItem_root.isSelect ?  "transparent" : "#FF3C4BE8"
+//        }
     }
 
-    Rectangle {
+    Rectangle{
         anchors.fill: parent
-        color: "transparent"
+        radius: 10
+        visible:bkmouse.containsMouse || menuItem_root.isSelect
+        color: menuItem_root.isSelect ? "#FF3C4BE8" : (bkmouse.pressed ? "#4D9F9FAA" : bkmouse.containsMouse ? "#339F9FAA" : "#ffffff")
+    }
 
-        Image {
-            id: menu_icon
+//    onIsSelectChanged: {
+//        console.log("----------isSelect------------" , isSelect)
+//        menuItem_root.color = menuItem_root.isSelect ?  "transparent" : "#FF3C4BE8"
+//    }
 
-            anchors {
-                left: parent.left
-                verticalCenter: parent.verticalCenter
-                leftMargin: 20 * appScale
-            }
-            width: 25 * appScale
-            height: width
-            source: isSelect ? menuIconSourceHighlight : menuIconSource
-            sourceSize.width: 25 * appScale
-            sourceSize.height: 25 * appScale
+    Image {
+        id: menu_icon
 
+        anchors {
+            left: parent.left
+            verticalCenter: parent.verticalCenter
+            leftMargin: 13
         }
+        width: 17
+        height: width
+        // source: isSelect ? menuIconSourceHighlight : menuIconSource
+        source:menuIconSource
+        sourceSize.width: 17
+        sourceSize.height: 17
+
+    }
+
+    Text {
+        id: menu_title
+
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: menu_icon.right
+            leftMargin: 7
+        }
+        width: 128
+        height: 17
+        font.pixelSize: 14
+        verticalAlignment: Text.AlignVCenter
+        text: menuTitle
+        color: isSelect ? "#fff" : "#000"
+    }
+
+    Item {
+        anchors {
+            right: parent.right
+            rightMargin: 13
+        }
+        width: 102
+        height: parent.height
+        visible: menuType != 0
 
         Text {
-            id: menu_title
-
-            anchors {
-                verticalCenter: parent.verticalCenter
-                left: menu_icon.right
-                leftMargin: 15 * appScale
-            }
-            width: 229 * appScale
-            height: 25 * appScale
-            font.pointSize: appFontSize + 2
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width
+            height: 25
+            font.pixelSize: 14
+            horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter
-            text: menuTitle
-            color: isSelect ? "#fff" : "#000"
+            color: isSelect ? "#fff" : "#993C3C43"
+            text: menuContent
+            visible: menuType == 2
+            wrapMode: Text.WrapAnywhere
+            maximumLineCount: 1
+            elide: Text.ElideRight
         }
 
-        Rectangle {
+        Switch {
+            anchors.centerIn: parent
+//            Layout.columnSpan: 1
+            visible: menuType == 1
+            checked: menuChecked
+            checkable: true
 
-            anchors {
-                right: parent.right
-                rightMargin: 20 * appScale
-            }
-            width: 150 * appScale
-            height: parent.height
-            color: "transparent"
-            visible: menuType != 0
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                width: parent.width
-                height: 25 * appScale
-                font.pointSize: appFontSize + 2
-                horizontalAlignment: Text.AlignRight
-                color: isSelect ? "#fff" : "#993C3C43"
-                text: menuContent
-                visible: menuType == 2
-                wrapMode: Text.WrapAnywhere
-                maximumLineCount: 1
-                elide: Text.ElideRight
-            }
-
-            Switch {
-                anchors.centerIn: parent
-                Layout.columnSpan: 1
-                visible: menuType == 1
-                checked: menuChecked
-                checkable: true
-                
-                onCheckedChanged: {
-                    swichChanged()
-                }
+            onCheckedChanged: {
+                swichChanged()
             }
         }
     }

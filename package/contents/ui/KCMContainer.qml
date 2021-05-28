@@ -29,6 +29,9 @@ Kirigami.Page {
     property QtObject kcm
     property Item internalPage
 
+    width : 888 * 0.7
+    height: 648
+
     leftPadding: 0
     rightPadding: 0
     topPadding: 0
@@ -43,7 +46,7 @@ Kirigami.Page {
     
     onActiveFocusChanged: {
         if (activeFocus) {
-            internalPage.forceActiveFocus()
+            // internalPage.forceActiveFocus()
         }
     }
 

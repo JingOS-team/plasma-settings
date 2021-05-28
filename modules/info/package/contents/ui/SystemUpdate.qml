@@ -18,14 +18,28 @@ import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 Item {
     id: display_sub
 
-    property int screenWidth: Screen.width
-    property int screenHeight: Screen.height
-    property real appScale: 1.3 * screenWidth / 1920
-    property int appFontSize: theme.defaultFont.pointSize
     property string processTxt: i18n("Downloading...")
     property string valueVersion
     property string currentVersion
     property string errorContent
+
+
+    property int screenWidth: 888
+    property int screenHeight: 648
+    property int appFontSize: theme.defaultFont.pixelSize
+
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 17
+    property int default_setting_item_height: 45
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
+
+    // width: screenWidth * 0.7
+    // height: screenHeight
+
 
     /*
         0: checking:
@@ -38,9 +52,6 @@ Item {
     property string changeLog: "Change log: \n\nFeature: \n1. adfasdfasdfasdflaksjdfaksjdf;askjfd;alkjf \n" + "2. l;akdjf;alkjsdf;alksdjfaidsfjpaoijpoijpijdsfuahioueqwhoiru \n" + "3. uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n\n"
                                + "Bug : \n" + "1. adfasdfasdfasdflaksjdfaksjdf;askjfd;alkjf \n "
                                + "2. l;akdjf;alkjsdf;alksdjfaidsfjpaoijpoijpijdsfuahioueqwhoiru \n" + "3. uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "4. uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "5. uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "6. uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "6.1 uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "6.2 uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "6.3 uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "6.4 uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n" + "7. uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf "
-
-    width: parent.width
-    height: parent.height
 
     PlasmaNM.EnabledConnections {
         id: enabledConnections
@@ -61,35 +72,38 @@ Item {
             } else if (upState == 3) {
                 errorContent = i18n("Sever replied: Not Found ")
                 checkErrorDlg.open()
+            } else if (upState == 4) {
+                errorContent = i18n("Request Timeout ")
+                checkErrorDlg.open()
             }
         }
     }
 
     Component.onCompleted: {
-        currentVersion = updateTool.readLocalVersion()
-        updateTool.readRemoteVersion()
-
         if (networkStatus.networkStatus != "Connected") {
             checkNetworkDlg.open()
+        }else {
+            checkVersion.start();
         }
     }
 
     Timer {
         id: checkVersion
 
-        interval: 3000 
+        interval: 2000 
         repeat: false
         triggeredOnStart: false
 
         onTriggered: {
-            upState = 1
+            // upState = 1
+            updateTool.readRemoteVersion()
+            currentVersion = updateTool.readLocalVersion()
         }
     }
 
     Rectangle {
         width: parent.width
         height: parent.height
-
         color: "#FFF6F9FF"
 
         Rectangle {
@@ -98,32 +112,30 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 34 * system_info_root.appScale
-                topMargin: 68 * system_info_root.appScale
-                right: parent.right
-                rightMargin: 67 * system_info_root.appScale
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
 
-            width: parent.width - 111 * appScale
-            height: 41 * appScale
+            width: parent.width - marginLeftAndRight * 2
+            height: statusbar_height
             color: "transparent"
 
             Image {
                 id: back_icon
-                
+
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: 34 * appScale
+                width: statusbar_icon_size
                 height: width
                 source: "../image/icon_left.png"
                 sourceSize.width: width
                 sourceSize.height: width
-                
+
                 MouseArea {
                     anchors.fill: parent
+
                     onClicked: {
-                        console.log("back..about")
-                        system_info_root.popView()
+                        popView()
                     }
                 }
             }
@@ -134,16 +146,16 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 * appScale
+                    leftMargin: 9 
                 }
 
-                width: 500
-                height: 50
-                verticalAlignment: Text.AlignVCenter
-
+                width: 359
+                height: 14
                 text: i18n("System Update")
-                font.pointSize: appFontSize + 11
+                // font.pixelSize: appFontSize + 11
+                font.pixelSize: 20
                 font.weight: Font.Bold
+                verticalAlignment: Text.AlignVCenter
             }
 
             Image {
@@ -151,8 +163,9 @@ Item {
 
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
+                anchors.rightMargin: 25 
 
-                width: 36 * appScale
+                width: 17
                 height: width
                 source: "../image/update_settings.png"
                 sourceSize.width: width
@@ -174,12 +187,11 @@ Item {
 
             anchors {
                 top: page_statusbar.bottom
-                topMargin: 57 * appScale
+                topMargin: marginItem2Title
             }
 
             width: parent.width
-            height: (36 + 15 + 114) * appScale
-
+            height:  21+36+76
             color: "transparent"
             visible: upState != 2
 
@@ -187,8 +199,8 @@ Item {
                 id: gifImage
 
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 105 * appScale
-                height: 116 * appScale
+                width: 69
+                height: 76
                 fillMode: Image.PreserveAspectFit
                 source: "../image/load.gif"
                 visible: upState == 0
@@ -199,10 +211,10 @@ Item {
                 id: jingos_logo
 
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 105 * appScale
-                height: 116 * appScale
+                width: 69
+                height: 76
                 visible: upState == 1
-                source: "../image/jingos_logo_update.png"
+                source: "../image/jingos_logo_update.svg"
             }
             Text {
                 id: check_tag2
@@ -210,12 +222,12 @@ Item {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     top: jingos_logo.bottom
-                    topMargin: 55 * appScale
+                    topMargin: 36
                 }
 
                 visible: upState == 1
                 text: i18n("Discover system updatable version %1" , valueVersion)
-                font.pointSize: appFontSize + 6
+                font.pixelSize: 14
                 color: "black"
             }
         }
@@ -225,11 +237,11 @@ Item {
 
             anchors {
                 top: page_statusbar.bottom
-                topMargin: 257 * appScale
+                topMargin: marginItem2Title
             }
 
             width: parent.width
-            height: (36 + 15 + 114) * appScale
+            height:  21+36+76
             color: "transparent"
             visible: upState == 2
 
@@ -238,8 +250,8 @@ Item {
 
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                width: 105 * appScale
-                height: 116 * appScale
+                width: 69
+                height: 76
                 source: "../image/jingos_logo_update.png"
             }
 
@@ -249,13 +261,13 @@ Item {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     top: jingos_logo2.bottom
-                    topMargin: 55 * appScale
+                    topMargin: 36
                 }
                 horizontalAlignment: Text.AlignHCenter
 
                 visible: upState == 2
                 text: i18n("Your software is already the latest version\n %1" , currentVersion)
-                font.pointSize: appFontSize + 6
+                font.pixelSize: appFontSize + 6
                 color: "black"
             }
         }
@@ -266,8 +278,8 @@ Item {
             anchors {
                 top: content_area.bottom
                 bottom: update_btn.top
-                topMargin: 37 * appScale
-                bottomMargin: 37 * appScale
+                topMargin: 18
+                bottomMargin: 18
             }
 
             width: parent.width
@@ -281,7 +293,7 @@ Item {
 
                 visible: upState == 0
                 text: i18n("Checking for updates...")
-                font.pointSize: appFontSize + 6
+                font.pixelSize: 14
                 color: "#99000000"
             }
 
@@ -290,12 +302,12 @@ Item {
 
                 anchors {
                     fill: parent
-                    topMargin: 30 * appScale
-                    leftMargin: 106 * appScale
-                    rightMargin: 106 * appScale
+                    topMargin: 33 
+                    leftMargin: 102 
+                    rightMargin: 102 
                 }
 
-                width: 854 * appScale
+                width: 854 
                 color: "transparent"
                 visible: upState == 1
                 // clip:true
@@ -313,15 +325,15 @@ Item {
                         anchors {
                             left: changelog_area.left
                             right: changelog_area.right
-                            leftMargin: 10 * appScale
-                            rightMargin: 10 * appScale
+                            leftMargin: 60 
+                            rightMargin: 60 
                         }
                         
-                        width: 750 * appScale
+                        width: 555
 
                         text: changeLog
                         wrapMode: Text.WordWrap
-                        font.pointSize: appFontSize + 6
+                        font.pixelSize: 14
                         color: "#99000000"
                     }
                 }
@@ -334,21 +346,21 @@ Item {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
-                bottomMargin: 100 * appScale
+                bottomMargin: 100 
             }
 
-            width: 400 * appScale
-            height: 68 * appScale
+            width: 370
+            height: 42
 
             color: "blue"
-            radius: 15 * appScale
+            radius: 10
             visible: upState == 1
 
             Text {
                 anchors.centerIn: parent
                 color: "white"
                 text: i18n("Update now")
-                font.pointSize: appFontSize + 2
+                font.pixelSize: 14
             }
 
             MouseArea {
@@ -367,16 +379,12 @@ Item {
 
             title: i18n("Update suggestion")
             text: i18n("It is recommended that the battery reaches 50% or connect to the power supply to update")
-            leftButtonText: i18n("OK")
-            rightButtonText: i18n("Cancel")
+            centerButtonText: i18n("OK")
+            // rightButtonText: i18n("Cancel")
             dim: true
             focus: true
 
-            onRightButtonClicked: {
-                checkBatteryDlg.close()
-            }
-
-            onLeftButtonClicked: {
+            onCenterButtonClicked: {
                 updateTool.launchDistUpgrade(valueVersion)
                 system_info_root.popView()
                 checkBatteryDlg.close()
@@ -388,18 +396,12 @@ Item {
 
             anchors.centerIn: parent
             title: i18n("Unable to check for updates")
-            text: i18n("Please connect to the network and try again")
-            leftButtonText: "OK"
-            rightButtonText: "Cancel"
+            text: i18n("Please connect to the network and \n try again")
+            centerButtonText: i18n("OK")
             dim: true
             focus: true
 
-            onRightButtonClicked: {
-                system_info_root.popView()
-                checkBatteryDlg.close()
-            }
-
-            onLeftButtonClicked: {
+            onCenterButtonClicked: {
                 system_info_root.popView()
                 checkBatteryDlg.close()
             }
@@ -412,17 +414,11 @@ Item {
             
             title: i18n("Unable to check for updates")
             text: errorContent
-            leftButtonText: i18n("OK")
-            rightButtonText: i18n("Cancel")
+            centerButtonText: i18n("OK")
             dim: true
             focus: true
 
-            onRightButtonClicked: {
-                checkBatteryDlg.close()
-                system_info_root.popView()
-            }
-
-            onLeftButtonClicked: {
+            onCenterButtonClicked: {
                 checkBatteryDlg.close()
                 system_info_root.popView()
             }

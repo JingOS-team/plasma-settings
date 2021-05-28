@@ -25,11 +25,22 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 Rectangle {
 
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 36 
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24 
+    property int radiusCommon: 10 
+    property int fontNormal: 14
     property bool hasBattery: getBatteryData('Has Battery', false)
     property string currentBatteryState: getBatteryData('State', false)
     property int remainingTime: getBatteryData('Remaining msec', 0)
 
+
     anchors.fill: parent
+
     color: "#FFF6F9FF"
 
     PlasmaCore.DataSource {
@@ -47,7 +58,7 @@ Rectangle {
             disconnectSource(source)
         }
     }
-
+     
     function getBatteryData(key, def) {
         var value = pmSource.data.Battery[key]
         if (typeof value === 'undefined') {
@@ -59,10 +70,45 @@ Rectangle {
 
     function getRemainTimeString() {
         var msec = getBatteryData("Remaining msec", 0)
+
+        if(msec == 0){
+            return i18n(" %1h %2m " , 0 , 52)
+        }
         var totalMins = Math.floor(msec / (60 * 1000))
         var hours = Math.floor(totalMins / 60)
         var mins = totalMins % 60
-        return hours + "h " + mins + "m "
+        return i18n(" %1h %2m " , hours , mins)
+    }
+
+    onVisibleChanged: {
+        if(!visible){
+            if(pmSource != null){
+                console.log("visible change : disconnect battery connect")
+                pmSource.connectSource("Battery")
+            }
+
+            syncTimer.stop()
+        }
+    }
+
+    Component.onCompleted: {
+        syncTimer.start()
+    }
+
+    Component.onDestruction: {
+        console.log("onDestruction")
+    }
+
+    Timer {
+        id: syncTimer
+        interval: 10*1000 
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            var info = getRemainTimeString()
+            var precent0 = getBatteryData("Percent", -1)
+            console.log("getCurrentPrecent....."+ precent0 )
+        }
     }
 
     Text {
@@ -71,14 +117,14 @@ Rectangle {
         anchors {
             left: parent.left
             top: parent.top
-            leftMargin: 72 * appScale
-            topMargin: 68 * appScale
+            leftMargin: marginLeftAndRight  
+            topMargin: marginTitle2Top  
         }
 
-        width: 500
-        height: 50
+        width: 329
+        height: 14
         text: i18n("Battery")
-        font.pointSize: appFontSize + 11
+        font.pixelSize: 20 
         font.weight: Font.Bold
     }
 
@@ -88,18 +134,23 @@ Rectangle {
         anchors {
             top: title.bottom
             left: parent.left
-            topMargin: 42 * appScale
-            leftMargin: 72 * appScale
+            topMargin: marginItem2Title  
+            leftMargin: marginLeftAndRight  
             right: parent.right
-            rightMargin: 72 * appScale
+            rightMargin: marginLeftAndRight  
         }
         
-        widgetWidth: parent.width - 72 * 2 * appScale
-        widgetHeight: 205 * appScale
-
+        widgetWidth: parent.width - marginLeftAndRight * 2  
+        widgetHeight: 133  
         totalPower: 100
-        leftPower: getBatteryData("Percent", 50)
+        leftPower: pmSource2.data["Battery"]["Percent"]
         remainingString: getRemainTimeString()
         isCharging: currentBatteryState == "Charging"
+
+        PlasmaCore.DataSource {
+            id: pmSource2
+            engine: "powermanagement"
+            connectedSources: ["Battery", "AC Adapter"]
+        }
     }
 }

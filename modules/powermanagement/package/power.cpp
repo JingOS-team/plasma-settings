@@ -23,6 +23,7 @@ K_PLUGIN_CLASS_WITH_JSON(Power, "metadata.json")
 Power::Power(QObject *parent, const QVariantList &args)
     : KQuickAddons::ConfigModule(parent, args)
 {
+    KLocalizedString::setApplicationDomain("kcm_mobile_power");
     KAboutData *about = new KAboutData("kcm_power", i18n("Display"), "1.0", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Tobias Fella"), QString(), "fella@posteo.de");
     setAboutData(about);

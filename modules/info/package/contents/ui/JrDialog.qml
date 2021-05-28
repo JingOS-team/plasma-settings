@@ -36,8 +36,24 @@ Popup {
 
     signal menuSelectChanged(int value)
 
-    width: 369 * appScale
+    property int screenWidth: 888
+    property int screenHeight: 648
+    property int appFontSize: theme.defaultFont.pointSize
+
+    property int statusbar_height : 22
+    property int statusbar_icon_size: 22
+    property int default_setting_item_height: 45
+
+    property int marginTitle2Top : 44 
+    property int marginItem2Title : 18 
+    property int marginLeftAndRight : 20 
+    property int marginItem2Top : 24
+    property int radiusCommon: 10 
+    property int fontNormal: 14 
+
+    width: 300
     height: contentItem.height
+
     x: px
     y: py
     modal: true
@@ -55,9 +71,9 @@ Popup {
         anchors.right: parent.right
 
         width: parent.width
-        height: 69 * appScale * 5 + 28 * appScale
+        height: default_setting_item_height * 5 + 14 
 
-        radius: 15 * appScale
+        radius: radiusCommon
         // layer.enabled: true
         // layer.effect: DropShadow {
         //     horizontalOffset: 0
@@ -77,13 +93,13 @@ Popup {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
-                topMargin: 28
-                bottomMargin: 28
-                leftMargin: 28
-                rightMargin: 28
+                topMargin: 14
+                bottomMargin: 14
+                leftMargin: 14
+                rightMargin: 14
             }
 
-            width: root.width - 28 * 2 * appScale
+            width: root.width - 14 * 2
             color: "transparent"
 
             Column {
@@ -93,29 +109,29 @@ Popup {
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: fontNormal
                         text: i18n("Every day")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
 
                         source: "../image/menu_select.png"
                         visible: selectIndex == 0 ? true : false
@@ -134,30 +150,30 @@ Popup {
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height
 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: fontNormal
                         text: i18n("Every two days")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
 
                         visible: selectIndex == 1 ? true : false
                         source: "../image/menu_select.png"
@@ -176,30 +192,30 @@ Popup {
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height
 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: fontNormal
                         text: i18n("Weekly")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 2 ? true : false
                     }
@@ -217,30 +233,30 @@ Popup {
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height
 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: fontNormal
                         text: i18n("Every two weeks")
                     }
 
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 3 ? true : false
                     }
@@ -258,30 +274,30 @@ Popup {
 
                 Rectangle {
                     width: menu_content.width
-                    height: 69 * appScale
+                    height: default_setting_item_height
 
                     color: "transparent"
 
                     Text {
                         anchors {
                             left: parent.left
-                            leftMargin: 31 * appScale
+                            leftMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        font.pointSize: appFontSize + 2
+                        font.pixelSize: fontNormal
                         text: i18n("Never")
                     }
                     
                     Image {
                         anchors {
                             right: parent.right
-                            rightMargin: 31 * appScale
+                            rightMargin: marginLeftAndRight
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 34
-                        height: 34
+                        width: 17
+                        height: 17
                         source: "../image/menu_select.png"
                         visible: selectIndex == 4 ? true : false
                     }
