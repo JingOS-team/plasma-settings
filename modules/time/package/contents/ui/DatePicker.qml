@@ -35,14 +35,14 @@ Item {
 
     property string isoDate: year + "-" + clockRow.twoDigitString(month) + "-" + clockRow.twoDigitString(day)
 
-    property int fontSize: 14
+    property int fontSize: 14 * appFontSize
     property int _margin: Kirigami.Units.gridUnit
 
     opacity: enabled ? 1.0 : 0.5
 
     Rectangle {
         color: "transparent"
-        border.width: 1
+        border.width: 1 * appScale
         border.color: Kirigami.Theme.textColor
         anchors.fill: parent
         opacity: 0.3

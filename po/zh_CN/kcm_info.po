@@ -23,13 +23,9 @@ msgid "英文"
 
 msgstr "中文"
 
-#: Location+Service
-msgid "Location Service"
-
-msgstr "定位服务"
 
 #: Location+Status
-msgid "Location Status"
+msgid "Location Service"
 
 msgstr "定位开关"
 
@@ -78,6 +74,15 @@ msgstr "调制解调器1"
 msgid "Modem %1"
 
 msgstr "调制解调器1%"
+
+#: Name:
+msgid "Device Name"
+msgstr "设备名称"
+
+
+msgid "Other devices will see this name when you use Bluetooth and USB."
+msgstr "当您使用蓝牙和USB时,其他设备会看到此名称."
+
 
 #: Name:
 msgid "Name:"
@@ -271,7 +276,7 @@ msgstr "处理器"
 #: RAM
 msgid "RAM"
 
-msgstr ""
+msgstr "运行内存"
 
 #: %251+of+RAM
 msgid "%1 of RAM"
@@ -395,7 +400,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"
@@ -3051,5 +3056,18 @@ msgstr "无线局域网"
 
 #: Bluetooth
 msgid "Bluetooth"
-
 msgstr "蓝牙"
+
+msgid "Status"
+msgstr "状态"
+
+
+msgid "IP Address"
+msgstr "IP 地址"
+
+msgid "WLAN Address"
+msgstr "WLAN 地址"
+
+
+msgid "Bluetooth Address"
+msgstr "蓝牙地址"

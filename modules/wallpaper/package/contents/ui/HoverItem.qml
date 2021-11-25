@@ -5,6 +5,7 @@
  */
 import QtQuick 2.0
 import QtQml 2.0
+import org.kde.kirigami 2.15 as Kirigami
 
 Rectangle {
     id: hoverItem
@@ -23,7 +24,7 @@ Rectangle {
             width: hoverItem.width
             height: hoverItem.height
             radius: hoverItem.radius
-            color: hoverItem.itemPressed ? "#4D787880" : "#33767680"
+            color: hoverItem.itemPressed ? Kirigami.JTheme.pressBackground : Kirigami.JTheme.hoverBackground//"#4D787880" : "#33767680"
 
             Behavior on y {
                 SpringAnimation {

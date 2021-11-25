@@ -26,25 +26,14 @@ import QtGraphicalEffects 1.0
 
 Popup {
     id: root
-
-    property string uid
-    property var description: ""
     property int px: 0
     property int py: 0
     property int selectIndex
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
     property int default_setting_item_height: 45
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36 
     property int marginLeftAndRight : 10 
-    property int marginItem2Top : 24 
-    property int radiusCommon: 10 
-    property int fontNormal: 14
-
+    property var textColor: Kirigami.JTheme.majorForeground
+    property var separatorColor: Kirigami.JTheme.dividerForeground
     signal menuSelectChanged(int value)
 
     x: px
@@ -55,12 +44,11 @@ Popup {
     modal: true
     focus: true
 
-    background: Rectangle {
-        id: background
-        color: "transparent"
+    background: Kirigami.JBlurBackground{
+
     }
 
-    contentItem: Rectangle {
+    contentItem: Item {
         id: contentItem
 
         anchors.left: parent.left
@@ -69,17 +57,7 @@ Popup {
         width: parent.width
         height: default_setting_item_height  * 5 + 8 * 2 + 4
         radius: 10
-        color: "#fff"
 
-        layer.enabled: true
-        layer.effect: DropShadow {
-            horizontalOffset: 0
-            radius: 10
-            samples: 25
-            color: "#1A000000"
-            verticalOffset: 0
-            spread: 0
-        }
 
         Rectangle {
             id: menu_content
@@ -114,6 +92,7 @@ Popup {
 
                         font.pixelSize: 14
                         text: i18n("2 Minutes")
+                        color: textColor
                     }
 
                     Image {
@@ -145,7 +124,7 @@ Popup {
                         anchors.right: parent.right
                         anchors.leftMargin: marginLeftAndRight
                         anchors.rightMargin: marginLeftAndRight
-                        color: "#f0f0f0"
+                        color: separatorColor//"#f0f0f0"
                     }
                 }
 
@@ -163,6 +142,7 @@ Popup {
 
                         font.pixelSize: 14
                         text: i18n("5 Minutes")
+                        color: textColor
                     }
 
                     Image {
@@ -194,7 +174,7 @@ Popup {
                         anchors.right: parent.right
                         anchors.leftMargin: marginLeftAndRight
                         anchors.rightMargin: marginLeftAndRight
-                        color: "#f0f0f0"
+                        color: separatorColor//"#f0f0f0"
                     }
                 }
 
@@ -212,6 +192,7 @@ Popup {
 
                         font.pixelSize: 14
                         text: i18n("10 Minutes")
+                        color: textColor
                     }
 
                     Image {
@@ -241,7 +222,7 @@ Popup {
                         anchors.right: parent.right
                         anchors.leftMargin: marginLeftAndRight
                         anchors.rightMargin: marginLeftAndRight
-                        color: "#f0f0f0"
+                        color: separatorColor//"#f0f0f0"
                     }
                 }
 
@@ -260,6 +241,7 @@ Popup {
 
                         font.pixelSize: 14
                         text: i18n("15 Minutes")
+                        color: textColor
                     }
 
                     Image {
@@ -291,7 +273,7 @@ Popup {
                         anchors.right: parent.right
                         anchors.leftMargin: marginLeftAndRight
                         anchors.rightMargin: marginLeftAndRight
-                        color: "#f0f0f0"
+                        color: separatorColor//"#f0f0f0"
                     }
                 }
 
@@ -310,6 +292,7 @@ Popup {
                         }
                         font.pixelSize: 14
                         text: i18n("Never")
+                        color: textColor
                     }
 
                     Image {

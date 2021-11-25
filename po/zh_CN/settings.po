@@ -381,7 +381,7 @@ msgstr "法律信息"
 #: Legal+Notices:%0ACopyright+@+2020+Jingling+Inc.+All+rights+reserved.+%0AJingling,+the+Jingling+logo,+Jing+Pad,+other+cache+objects+have+configurable+update+settings,+and+their+update+frequency+is+set+by+the+Document+Manager+administrator.+The+objects+with+configurable+update+settings+are+controlled+vocabulary+lists+(+CVLs),+library+property+definitions,+library+property+values+lists,+native+folder+lists,+and+user+and+group+lists.If+you+issue+a+ROLLBACK+after+invoking+these+procedures,+policy+settings+will+not+be+updated.+
 msgid "Legal Notices:\nCopyright @ 2020 Jingling Inc. All rights reserved. \nJingling, the Jingling logo, Jing Pad, other cache objects have configurable update settings, and their update frequency is set by the Document Manager administrator. The objects with configurable update settings are controlled vocabulary lists ( CVLs), library property definitions, library property values lists, native folder lists, and user and group lists.If you issue a ROLLBACK after invoking these procedures, policy settings will not be updated. "
 
-msgstr ""
+msgstr "法律声明：\n版权所有@ 2020鲸鲮股份有限公司。保留所有权利。\n Jingling、Jingling标志、Jing Pad和其他缓存对象具有可配置的更新设置，它们的更新频率由文档管理器管理员设置。具有可配置更新设置的对象是受控词汇表(CVLs)、库属性定义、库属性值列表、本机文件夹列表以及用户和组列表。如果在调用这些过程后发出取消，策略设置将不会更新。"
 
 #: Downloading...
 msgid "Downloading..."
@@ -431,7 +431,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"
@@ -2994,9 +2994,9 @@ msgid "Pacific"
 msgstr ""
 
 #: Language
-msgid "Language"
+msgid "Language & Region"
 
-msgstr "语言"
+msgstr "语言和区域"
 
 #: Apply
 msgid "Apply"
@@ -3108,12 +3108,27 @@ msgstr "开"
 msgid "Off"
 msgstr "关"
 
-msgid "On connection"
+msgid "On Connection"
 msgstr "连接中"
 
-msgid "Not connected"
+msgid "Not Connected"
 msgstr "未连接"
 
 msgid "Connected"
 msgstr "已连接"
+
+msgid "Cellular"
+msgstr "蜂窝网络"
+
+msgid "Personal Hotspot"
+msgstr "个人热点"
+
+msgid "Pointer Control"
+msgstr "指针控制"
+
+msgid "No SIM"
+msgstr "无SIM卡"
+
+msgid  "Airplane Mode"
+msgstr "飞行模式"
 

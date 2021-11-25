@@ -22,7 +22,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
 import QtQuick.Shapes 1.12
-import org.kde.kirigami 2.11 as Kirigami
+import org.kde.kirigami 2.15 as Kirigami
 import QtGraphicalEffects 1.0
 
 Rectangle {
@@ -32,9 +32,10 @@ Rectangle {
     property int leftPower
     property bool isCharging
     property int fontSize: 80
-    property real widgetWidth: 888 * 0.7 -   40
-    property real widgetHeight: 133
+    property real widgetWidth: 888 * appScale * 0.7 -   40 * appScale
+    property real widgetHeight: 133 * appScale
     property string remainingString: ""
+    property bool isDarkTheme: Kirigami.JTheme.colorScheme === "jingosDark"
 
     width: widgetWidth
     height: widgetHeight
@@ -52,8 +53,8 @@ Rectangle {
 
         handle: Item {
             visible: true
-            width: 1
-            height: 1
+            width: 1 * appScale
+            height: 1 * appScale
             x: 0
             y: 0
 
@@ -68,8 +69,8 @@ Rectangle {
         background: Rectangle {
             id: progressBarBackground
 
-            color: "#FFD6D9FF"
-            radius: 12
+            color: isDarkTheme ? "#4DD6D9FF" : "#FFD6D9FF"
+            radius: 12 * appScale
 
             layer.enabled: true
             layer.effect: OpacityMask {
@@ -83,27 +84,22 @@ Rectangle {
             Rectangle {
                 width: (leftPower / totalPower) * parent.width
                 height: parent.height
-                // color: isCharging ? "#39c17b" : "#FF6F82F5"
                 color: "transparent"
-            
-                LinearGradient {
-                ///--[Mark]
-                anchors.fill: parent
-                start: Qt.point(0, 0)
-                gradient: Gradient {
-                    
-                    
-                    GradientStop {
-                        position: 0.0
-                        color: "#FF6F82F5"
-                    }
 
-                    GradientStop {
-                        position: 1.0
-                        color: "#FF3C4BE8"
+                LinearGradient {
+                    anchors.fill: parent
+                    start: Qt.point(0, 0)
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0.0
+                            color: "#FF6F82F5"
+                        }
+                        GradientStop {
+                            position: 1.0
+                            color: "#FF3C4BE8"
+                        }
                     }
                 }
-            }
             }
         }
     }
@@ -115,9 +111,8 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        width: 480  
+        width: 480 * appScale
         color: "transparent"
-        // color:"red"
 
         Text {
             id: battery_left
@@ -125,20 +120,19 @@ Rectangle {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: 31  
-                topMargin: 25
+                leftMargin: 31 * appScale
+                topMargin: 25 * appScale
             }
 
             text: {
-                    if(leftPower == -1){
-                        return i18n("Synchronizing...")
-                    }else {
-                        return leftPower
-                    }
+                if (leftPower == -1) {
+                    return i18n("Synchronizing...")
+                } else {
+                    return leftPower
+                }
             }
-            // font.pointSize: battery_root.appFontSize + 35
 
-            font.pixelSize: 36
+            font.pixelSize: 36 * appFontSize
             color: "white"
         }
 
@@ -148,14 +142,13 @@ Rectangle {
             anchors {
                 left: battery_left.right
                 bottom: battery_left.bottom
-                bottomMargin: 5  
-                leftMargin: 5  
+                bottomMargin: 5 * appScale
+                leftMargin: 5 * appScale
             }
 
             text: "%"
             visible: leftPower != -1
-            // font.pointSize: battery_root.appFontSize + 6
-            font.pixelSize: 17
+            font.pixelSize: 17 *appFontSize
             color: "white"
         }
 
@@ -164,11 +157,11 @@ Rectangle {
 
             anchors {
                 left: battery_pa.right
-                leftMargin: 18  
+                leftMargin: 18  * appScale
                 bottom: battery_pa.bottom
             }
 
-            width: 24
+            width: 24 * appScale
             height: width
             visible: isCharging
             source: "../image/battery_charging.png"
@@ -176,17 +169,15 @@ Rectangle {
 
         Text {
             id: time_left
-            
+
             anchors {
                 left: parent.left
                 top: battery_left.bottom
-                leftMargin: 31  
-                topMargin: 11
+                leftMargin: 31  * appScale
+                topMargin: 11 * appScale
             }
-
-            text: isCharging ? i18n("%1 until full" , remainingString) : i18n("%1 remaining" , remainingString)
-            // font.pointSize: battery_root.appFontSize + 6
-            font.pixelSize: 17
+            text: remainingString
+            font.pixelSize: 17 * appFontSize
             color: "white"
         }
     }

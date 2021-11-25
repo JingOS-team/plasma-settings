@@ -18,6 +18,7 @@ public:
 
     Q_INVOKABLE void setPassword(const QString &password, const QString &type);
     Q_INVOKABLE void savePasswordType(const QString type);
+    Q_INVOKABLE bool isDigitStr(const QString pwd);
 
 signals: 
     void confirmSuccess();

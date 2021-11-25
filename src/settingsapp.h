@@ -44,6 +44,12 @@ Q_SIGNALS:
 
     void startModuleChanged();
     void singleModuleChanged();
+    void pause();
+    void resume();
+
+public slots:
+    void onPaused();
+    void onResume();
 
 private:
     void setupKDBus();

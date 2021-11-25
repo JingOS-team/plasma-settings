@@ -28,11 +28,6 @@
 #include <QDir>
 
 K_PLUGIN_CLASS_WITH_JSON(Wallpaper, "wallpaper.json")
-#define SERVICE_NAME  "org.kde.jingwallpaper.qtdbus.edit"
-
-#define WALLPAPER_SERVICE_NAME "org.jing.systemui.wallpaper"
-#define WALLPAPER_PATH "/jing/systemui/wallpaper"
-#define WALLPAPER_INTERFACE "org.jing.systemui.wallpaper"
 #define WALLPAPERDIR "/usr/share/wallpapers/jing/"
 
 Wallpaper::Wallpaper(QObject *parent, const QVariantList &args)
@@ -42,20 +37,18 @@ Wallpaper::Wallpaper(QObject *parent, const QVariantList &args)
     KAboutData *about = new KAboutData("kcm_wallpaper", i18n("Wallpaper"), "1.0", QString(), KAboutLicense::GPL);
     about->addAuthor(i18n("Zhang he gang"), QString(), "zhanghegang@jingos.com");
     setAboutData(about);
+
     connectWallpaperSignal();
-    qDebug() << "Wallpaper module loaded";
+    qDebug() << "Wallpaper module loaded ";
+}
+
+Wallpaper::~Wallpaper()
+{
+    qDebug() << "~Wallpaper module removed11";
 }
 
 void Wallpaper::connectWallpaperSignal()
 {
-//    bool isConnect = QDBusConnection::sessionBus().connect(WALLPAPER_SERVICE_NAME,
-//                                          WALLPAPER_PATH,
-//                                          WALLPAPER_INTERFACE,
-//                                          "wallpaperChanged",
-//                                          this,
-//                                          SLOT(onWallpaerChanged(QString)));
-//    qDebug()<<Q_FUNC_INFO << " connect wallpaper signal:" << isConnect;
-
     // KSharedConfig::Ptr kdeglobals = KSharedConfig::openConfig("kdeglobals");
     // cfg = new KConfigGroup(kdeglobals, "Icons");
     // QString currentTheme = cfg->readEntry("Theme", QString("breeze"));
@@ -65,10 +58,13 @@ void Wallpaper::connectWallpaperSignal()
     for(int i = 0; i < m_systemWallpaperUrls.count();i++){
         m_systemWallpaperUrls[i] = wallpapersPath.path() +"/"+ m_systemWallpaperUrls[i];
     }
-    // setWallpaperUrl("/usr/share/icons/jing/");
     qDebug()<< Q_FUNC_INFO 
-    // << " cfg:" << cfg << " currentTheme:" << currentTheme
             <<" syswallpaperurls:" << m_systemWallpaperUrls;
+    emit systemWallpaperUrlChanged();
+    lp = new ListImageProvider(QQmlImageProviderBase::Image);
+    lp->loadCacheImage(m_systemWallpaperUrls);
+    mainUi();
+    engine()->addImageProvider(QLatin1String("imageProvider"), lp);
 
 }
 
@@ -85,10 +81,12 @@ void Wallpaper::setWallpaperUrl(QString wallpaperUrl)
 
 QString Wallpaper::wallpaperUrl()
 {
-    KSharedConfig::Ptr kdeglobals = KSharedConfig::openConfig("kdeglobals", KConfig::FullConfig);
-    KConfigGroup cfg = KConfigGroup(kdeglobals, "Wallpapers");
-    QString defaultWallpaper = cfg.readEntry("defaultLauncherWallpaper", QString(""));
-    QString currentLauncherpaper = cfg.readEntry("launcherWallpaper", defaultWallpaper);
+    auto kdeglobals = KSharedConfig::openConfig("kdeglobals");
+    KConfigGroup cfg(kdeglobals, "Wallpapers");
+    QString currentLauncherpaper = cfg.readEntry("launcherWallpaper", QString());
+    if(currentLauncherpaper.isEmpty() || currentLauncherpaper.isNull()) {
+       currentLauncherpaper = cfg.readEntry("defaultLauncherWallpaper", QString("file:///usr/share/wallpapers/jing/default.jpg"));
+    }
     qDebug()<< " **wallpaper Url::::" << currentLauncherpaper;
     return currentLauncherpaper;
 }
@@ -101,56 +99,13 @@ void Wallpaper::setLockWallpaperUrl(QString wallpaperUrl)
 
 QString Wallpaper::lockwallpaperUrl()
 {
-    KSharedConfig::Ptr kdeglobals = KSharedConfig::openConfig("kdeglobals", KConfig::FullConfig);
-    KConfigGroup cfg = KConfigGroup(kdeglobals, "Wallpapers");
-    QString defaultWallpaper = cfg.readEntry("defaultLockScreenWallpaper", QString(""));
-    QString currentLauncherpaper = cfg.readEntry("lockscreenWallpaper", defaultWallpaper);
-    qDebug()<< " **lockwallpaper Url::::" << currentLauncherpaper;
-    return currentLauncherpaper;
-}
-
-void Wallpaper::intoLibwallpaper(QString imageUrl)
-{
-    if (!QDBusConnection::sessionBus().isConnected()) {
-        fprintf(stderr, "Cannot connect to the D-Bus session bus.\n"
-                        "To start it, run:\n"
-                        "\teval `dbus-launch --auto-syntax`\n");
-        return ;
+    auto kdeglobals = KSharedConfig::openConfig("kdeglobals");
+    KConfigGroup cfg(kdeglobals, "Wallpapers");
+    QString currentLockScreenWallpaper = cfg.readEntry("lockscreenWallpaper", QString());
+    if(currentLockScreenWallpaper.isEmpty() || currentLockScreenWallpaper.isNull()) {
+       currentLockScreenWallpaper = cfg.readEntry("defaultLockScreenWallpaper", QString("file:///usr/share/wallpapers/jing/default.jpg"));
     }
-
-    QDBusInterface iface(SERVICE_NAME, "/", "", QDBusConnection::sessionBus());
-    if (iface.isValid()) {
-        QDBusReply<QString> reply = iface.call("setWallpaper", imageUrl);
-        if (reply.isValid()) {
-            printf("Reply was: %s\n", qPrintable(reply.value()));
-            return ;
-        }
-
-        fprintf(stderr, "Call failed: %s\n", qPrintable(reply.error().message()));
-        return ;
-    }
-}
-
-QString Wallpaper::getWallpaper()
-{
-    if (!QDBusConnection::sessionBus().isConnected()) {
-        fprintf(stderr, "Cannot connect to the D-Bus session bus.\n"
-                        "To start it, run:\n"
-                        "\teval `dbus-launch --auto-syntax`\n");
-        return "";
-    }
-
-    QDBusInterface iface(WALLPAPER_SERVICE_NAME, WALLPAPER_PATH, WALLPAPER_INTERFACE, QDBusConnection::sessionBus());
-    if (iface.isValid()) {
-        QDBusReply<QString> reply = iface.call("getWallpaper");
-        if (reply.isValid()) {
-            printf("Reply was: %s\n", qPrintable(reply.value()));
-            return reply.value();
-        }
-
-        fprintf(stderr, "Call failed: %s\n", qPrintable(reply.error().message()));
-        return "";
-    }
-    return "";
+    qDebug()<< " **lockwallpaper Url::::" << currentLockScreenWallpaper;
+    return currentLockScreenWallpaper;
 }
 #include "wallpaper.moc"

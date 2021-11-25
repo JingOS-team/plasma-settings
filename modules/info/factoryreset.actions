@@ -1,0 +1,14 @@
+[Domain]
+Name=Factory Manager
+Name[x-test]=xxFactory Managerxx
+Name[zh_CN]=恢复出厂设置管理
+Icon=preferences-desktop-font-installer
+[org.kde.factoryreset.manage]
+Name=Manage factory info.
+Name[x-test]=xxManage factory info.xx
+Name[zh_CN]=管理恢复出厂设置。
+Description=Authentication is required to restore your PAD to the factory.
+Description[x-test]=xxAuthentication is required to restore your PAD to the factory.xx
+Description[zh_CN]=需要验证才能将PAD恢复到出厂状态。
+Policy=auth_admin
+Persistence=session

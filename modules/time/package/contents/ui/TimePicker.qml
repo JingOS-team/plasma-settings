@@ -35,7 +35,7 @@ Item {
     property bool userConfiguring: false
     property bool twentyFour: true
 
-    property int fontSize: 14
+    property int fontSize: 14 * appFontSize
     property int _margin: Kirigami.Units.gridUnit
 
     property string timeString: clockRow.twoDigitString(hours) + ":" + clockRow.twoDigitString(minutes) + ":" +  clockRow.twoDigitString(seconds)

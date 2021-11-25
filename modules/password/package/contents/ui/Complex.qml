@@ -26,8 +26,7 @@ import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kcm 1.2
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-
-Item{
+Item {
     id:complex_pwd
 
     property bool isErrorShow : false
@@ -40,39 +39,41 @@ Item{
     property string  passwordagain
     property alias edittext: keyLineEdit.labelData
 
+    onVisibleChanged: {
+        root.complexShow = visible
+    }
     onEdittextChanged: {
-        if(edittext.length == 0){
-            isErrorShow = false 
+        if (edittext.length == 0) {
+            isErrorShow = false
         }
     }
 
-    Item{
-        id:title
+    Item {
+        id: title
 
-        anchors.top:parent.top
+        anchors.top: parent.top
         width: parent.width
-        height : 22
+        height: 22 * appFontSize
 
-        Image {
-            id:backLabel
+        Kirigami.JIconButton {
+            id: backLabel
 
             anchors {
                 top: parent.top
                 left: parent.left
-                topMargin: 48 * appScale
-                leftMargin: 14 * appScale
+                topMargin: 48 * appScaleSize
+                leftMargin: 14 * appScaleSize
             }
+            width: 32 * appScaleSize
+            height: 32 * appScaleSize
 
-            sourceSize.width: 22 * appScale
-            sourceSize.height: 22 * appScale
-
-            visible:passwordVerify.visible
-            source: "../image/arrow_left.png"
+            visible: passwordVerify.visible
+            source: "qrc:/image/arrow_left.svg"
+            color: Kirigami.JTheme.iconForeground
 
             MouseArea {
-                anchors.fill:parent
-
-                onClicked:{
+                anchors.fill: parent
+                onClicked: {
                     popView()
                 }
             }
@@ -82,111 +83,128 @@ Item{
             anchors {
                 top: parent.top
                 left: backLabel.right
-                topMargin: 48 * appScale
-                leftMargin: 10 * appScale
+                topMargin: 54 * appScaleSize
+                leftMargin: 10 * appScaleSize
             }
 
-            height: 20 * appScale
+            height: 20 * appScaleSize
             font.bold: true
             text: i18n("Complex Password")
-            font.pixelSize: 20
+            font.pixelSize: 20 * appFontSize
+            color: Kirigami.JTheme.majorForeground
         }
     }
 
     Rectangle{
         anchors {
             top : title.bottom
-            topMargin: 80
+            topMargin: 80 * appScaleSize
             horizontalCenter: parent.horizontalCenter
         }
 
-        width: 233
-        height : 17 + 24 + 30 + 8 + 14
+        width: 233 * appScaleSize
+        height: 93 * appScaleSize
         color: "transparent"
 
         Text {
             id: input_title
+
             anchors {
-                top: parent.top 
+                top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
-            width: 164
-            height: 17
+            width: 164 * appScaleSize
+            height: 17 * appScaleSize
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 17 
+
+            font.pixelSize: 17 * appFontSize
+            color: Kirigami.JTheme.majorForeground
             text: isagain ? i18n("Verify your new password") :i18n("Enter your new password")
         }
 
         Kirigami.JKeyBdLineEdit{
-            id:keyLineEdit
-            anchors.centerIn:parent
-            width:233
-            height:30
-         
+            id: keyLineEdit
+
+            anchors.centerIn: parent
+            width: 233 * appScaleSize
+            height: 30 * appScaleSize
+
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: input_title.bottom
-            anchors.topMargin:24
-            courseColor:"#FF3C4BE8"
-            textColor:"black"
-            cleanIconColor:"#FFFFFF"
-            cleanIconBackgroundColor:"#FFAEAEAE"
-            
-            onMousePress:{
+            anchors.topMargin: 24 * appScaleSize
+            courseColor: "#FF3C4BE8"//Kirigami.JTheme.highlightColor
+            textColor: Kirigami.JTheme.majorForeground//"black"
+            cleanIconColor: isDarkTheme ? Kirigami.JTheme.cardBackground : "#FFFFFFFF"
+            cleanIconBackgroundColor: "#FFAEAEAE"
+            color: Kirigami.JTheme.textFieldBackground
+            lengthMaxLimit: true
+
+            onMousePress: {
                 virtuaKey.open()
             }
         }
 
         PlasmaComponents.Label {
-            
             id: errortTip
+
             anchors.top: keyLineEdit.bottom//authenticationinput.bottom
-            anchors.topMargin: 8
-            font.pixelSize: 12
-            height: 14
-            width: 233
-            color: "#FFE95B4E"
+            anchors.topMargin: 8 * appScaleSize
+            font.pixelSize: 12 * appFontSize
+            height: 14 * appScaleSize
+            width: 233 * appScaleSize
+
+            color: Kirigami.JTheme.highlightRed//"#FFE95B4E"
             visible: isErrorShow
 
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignHCenter
-            text:{
-                if(errorStatus == 1){
+            text: {
+                if (errorStatus == 1) {
                     return i18n("Wrong password, please try again")
-                }else if(errorStatus == 2){
-                    return i18n("Password did not match, please try again")                    
-                }else if(errorStatus == 3){
-                    return i18n("Set a 4 to 32-character password") 
+                } else if (errorStatus == 2) {
+                    return i18n("Password did not match, please try again")
+                } else if (errorStatus == 3) {
+                    return i18n("Set a 4 to 32-character\npassword(including at least 1 letter)")
+                } else if (errorStatus == 4) {
+                    return i18n("Must include at least 1 letter")
                 }
-            } 
+            }
         }
 
         PlasmaComponents.Label {
-            
             id: input_tip
+
+            height: 14 * appScaleSize
+            width: 233 * appScaleSize
             anchors.top: keyLineEdit.bottom//authenticationinput.bottom
-            anchors.topMargin: 8
-            anchors.horizontalCenter:parent.horizontalCenter
-            font.pixelSize: 12
-            height: 14
-            color: "#993C3C43"
+            anchors.topMargin: 8 * appScaleSize
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            font.pixelSize: 12 * appFontSize
+            color: Kirigami.JTheme.minorForeground//"#993C3C43"
             visible: !isagain && !isErrorShow
             horizontalAlignment: Text.AlignHCenter
-            text:i18n("Set a 4 to 32-character password") 
+            text:i18n("Set a 4 to 32-character\npassword(including at least 1 letter)")
         }
-
-        
     }
 
     function verifyPasswordWord(passwordStr){
-        if(passwordStr.length >= 4 && passwordStr.length <= 32){
+        if (passwordStr.length >= 4 && passwordStr.length <= 32) {
             // 通过 正则表达式 检测文字的合法性
-            password  = passwordStr
-            isagain = true 
-            keyLineEdit.labelData =""
-            keyLineEdit.labelDisplayData =""
-        } else if (passwordStr.length < 4 | passwordStr.length > 32){
+            if (kcm.isDigitStr(passwordStr)) {
+                isErrorShow = true
+                errorStatus = 4
+            } else {
+                password  = passwordStr
+                isagain = true
+                keyLineEdit.labelData = ""
+                keyLineEdit.labelDisplayData = ""
+            }
+
+        } else if (passwordStr.length < 4 | passwordStr.length > 32) {
             isErrorShow = true
             errorStatus = 3
+
         } else {
             isErrorShow = true
             errorStatus = 1
@@ -194,10 +212,10 @@ Item{
     }
 
     function checkPassword() {
-        if(password == passwordagain) {
-            popView()
-            kcm.setPassword(password,"complex")
+        if (password == passwordagain) {
+            kcm.setPassword(password, "complex")
         } else {
+            keyLineEdit.clearData()
             isErrorShow = true
             errorStatus = 2
         }
@@ -214,55 +232,54 @@ Item{
         return text;
     }
 
-
-
     RegExpValidator {
         id: pinValidator
 
         regExp: /[0-9]+/
     }
 
-    Component.onCompleted: {   
-       complex_pwd.focus = true     
+    Component.onCompleted: {
+       complex_pwd.focus = true
        complex_pwd.forceActiveFocus()
     }
 
-    Kirigami.JPasswdKeyBd{
+    Kirigami.JPasswdKeyBd {
             id:virtuaKey
-            boardHeight:648*0.5069
-            y:complex_pwd.height-boardHeight
-            closePolicy:Popup.NoAutoClose
-            onKeyBtnClick:{
-                if(isErrorShow){
-                    isErrorShow = false 
+
+            boardHeight: 648 * appScaleSize * 0.5069
+            y: complex_pwd.height-boardHeight
+            closePolicy: Popup.NoAutoClose
+
+            onKeyBtnClick: {
+                if (isErrorShow) {
+                    isErrorShow = false
                 }
                 keyLineEdit.opAddStr(str)
             }
-            onKeyBtnEnter:{
-                if(isagain){
+            onKeyBtnEnter: {
+                if (isagain) {
                     passwordagain = keyLineEdit.labelData
                     checkPassword()
-                }else {
+                } else {
                     verifyPasswordWord(keyLineEdit.labelData)
                 }
             }
-            onKeyBtnDel:{
-                isErrorShow = false 
+            onKeyBtnDel: {
+                isErrorShow = false
                 keyLineEdit.opSubStr()
             }
     }
 
     Keys.onPressed: {
-        if(event.key === Qt.Key_Return){
-            if(isagain){
+        if (event.key === Qt.Key_Return) {
+            if (isagain) {
                 passwordagain = keyLineEdit.labelData
                 checkPassword()
-            }else {
+            } else {
                 verifyPasswordWord(keyLineEdit.labelData)
             }
         }
     }
-
 }
 
- 
+

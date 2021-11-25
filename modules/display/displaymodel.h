@@ -39,6 +39,21 @@ public:
 
     Q_INVOKABLE void setApplicationScale(int scale); 
     Q_INVOKABLE int getApplicationScale();
+
+    Q_INVOKABLE bool setAutomatic(bool isAuto);
+    Q_INVOKABLE bool getAutomatic();
+
+private:
+    int readScreenIdleTimeFromFile();
+    void writeSrceenIdleTimeToFile(int sec);
+    
+
+private:
+    int m_screenIdleTime;
+
+private slots:
+    void onBrightnessChanged(int brightness);
+
 };
 
 #endif // DISPLAY_MODEL_H

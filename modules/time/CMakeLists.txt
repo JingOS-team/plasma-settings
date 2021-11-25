@@ -23,4 +23,6 @@ kcoreaddons_desktop_to_json(kcm_mobile_time "timesettings.desktop")
 
 install(FILES timesettings.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 install(TARGETS kcm_mobile_time DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/kcms)
+install(FILES org.freedesktop.timedate1.pkla DESTINATION /etc/polkit-1/localauthority/10-vendor.d)
+
 kpackage_install_package(package kcm_mobile_time kcms)

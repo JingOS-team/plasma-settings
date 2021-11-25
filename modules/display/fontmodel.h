@@ -27,6 +27,7 @@
 #include <QAbstractItemModel>
 #include <QStandardItemModel>
 #include <QFont>
+#include <sessionmanagement.h>
 
 #include "fontssettings.h"
 
@@ -59,6 +60,7 @@ private:
     FontsSettings *m_settings;
     QStandardItemModel *m_subPixelOptionsModel;
     QFont currntFont;
+    SessionManagement m_session;
 
 };
 

@@ -31,6 +31,9 @@ msgstr ""
 msgid "Battery"
 msgstr "电池"
 
+msgid "Device"
+msgstr "设备"
+
 #: Storage+info
 msgid "Storage Info"
 msgstr "存储信息"
@@ -415,7 +418,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"
@@ -3073,3 +3076,8 @@ msgstr "无线局域网"
 msgid "Bluetooth"
 
 msgstr "蓝牙"
+
+#: NONE
+msgid "None"
+
+msgstr "无"

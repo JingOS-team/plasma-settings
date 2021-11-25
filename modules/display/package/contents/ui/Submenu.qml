@@ -5,114 +5,78 @@
  */
 
 import QtQuick 2.2
-import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.10
 import QtQuick.Controls.Styles 1.4
-import QtGraphicalEffects 1.0
-
+import QtGraphicalEffects 1.12
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kcm 1.2
-import jingos.font 1.0
+import jingos.display 1.0
 
-Item {
+Rectangle {
     id: fonts_sub
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int appFontSize: theme.defaultFont.pointSize
+    property int screenWidth: 888 * appScaleSize
+    property int screenHeight: 648 * appScaleSize
+    property string currentSelectText
+    property string defaultFontText
+    property string defaultFontSize
+    property bool isUpdateFont: currentSelectText != defaultFontText || currentDisplayFontSize != defaultFontSize
+    property bool isDarkTheme: Kirigami.JTheme.colorScheme === "jingosDark"
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    color: Kirigami.JTheme.settingMinorBackground
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24
-    property int radiusCommon: 10 
-    property int fontNormal: 14 
+    property int currentDisplayFontSize
+    property int currentFontSize: currentDisplayFontSize * appFontSize
 
-
-    // width: screenWidth * 0.7
-    // height: screenHeight
-
-    // 0: extra small   - 20 
-    // 1: small         - 24
-    // 2: normal        - 28
-    // 3: large         - 32
-    // 4: extra large   - 34
-
-    property int currentFontSize: 14
-
-    Component.onCompleted:{
-        font_size_slider.load()
-        fonts_size_value.load()
-        
-    }
-
-    FontModel {
-        id: fontModel 
+    Component.onCompleted: {
+        currentDisplayFontSize = JDisplay.fontSize
+        currentSelectText = JDisplay.fontFamily
+        defaultFontText = JDisplay.fontFamily
+        defaultFontSize = JDisplay.fontSize
     }
 
     function changePreview(value) {
-        console.log("changePreview : " , value )
         switch(value){
             case 0:
-                currentFontSize = 10; 
-                break; 
-            case 1: 
-                currentFontSize = 12; 
-                break; 
-            case 2: 
-                currentFontSize = 14; 
-                break; 
-            case 3: 
-                currentFontSize = 16; 
-                break; 
-            case 4: 
-                currentFontSize = 17; 
-                break; 
+                currentDisplayFontSize = 10;
+                break;
+            case 1:
+                currentDisplayFontSize = 12;
+                break;
+            case 2:
+                currentDisplayFontSize = 14;
+                break;
+            case 3:
+                currentDisplayFontSize = 16;
+                break;
+            case 4:
+                currentDisplayFontSize = 17;
+                break;
         }
     }
 
-    Rectangle {
-        width: parent.width
-        height: parent.height
-        color: "#FFF6F9FF"
+    Column {
+       anchors.fill: parent
+       anchors.topMargin: 44 * appScaleSize
+       anchors.leftMargin: 20  * appScaleSize
+       anchors.rightMargin: 20 * appScaleSize
+       spacing: 24 * appScaleSize
 
         // Title Bar
-        Rectangle {
-            id: page_statusbar
+        Item {
+            width: parent.width
+            height: 30 * appScaleSize
 
-            anchors {
-                left: parent.left
-                top: parent.top
-                leftMargin: marginLeftAndRight
-                topMargin: marginTitle2Top
-            }
-
-            width: parent.width - marginLeftAndRight * 2
-            height: statusbar_height
-            color: "transparent"
-
-            Image {
+            Kirigami.JIconButton {
                 id: back_icon
-
-                anchors.verticalCenter: parent.verticalCenter
-
-                width: statusbar_icon_size
+                width: (22 + 8) * appScaleSize
                 height: width
-                source: "../image/icon_left.png"
-                sourceSize.width: width
-                sourceSize.height: width
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        popView()
-                    }
+                anchors.verticalCenter: parent.verticalCenter
+                color:Kirigami.JTheme.iconForeground
+                source: Qt.resolvedUrl("../image/icon_left.png")
+                onClicked: {
+                    popView()
                 }
             }
 
@@ -122,40 +86,30 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 
+                    leftMargin: 9  * appScaleSize
                 }
-
-                width: 359
-                height: 14
                 text: i18n("Fonts")
-                // font.pointSize: appFontSize + 11
-                font.pixelSize: 20
+                font.pixelSize: 20 * appFontSize
                 font.weight: Font.Bold
-                verticalAlignment: Text.AlignVCenter
+                color: Kirigami.JTheme.majorForeground
             }
 
-            Text {
+            Kirigami.JButton {
                 id: apply
 
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
-                    rightMargin: 25 
                 }
 
-                height: 14
                 text: i18n("Apply")
-                color: "blue"
-                font.pixelSize: 16
-                font.weight: Font.Bold
-                verticalAlignment: Text.AlignVCenter
+                backgroundColor: "transparent"
+                fontColor: isUpdateFont ? Kirigami.JTheme.highlightColor : Kirigami.JTheme.disableForeground
+                font.pixelSize: 16 * appFontSize
 
-                MouseArea {
-                    anchors.fill:parent 
-                    onClicked: {
-                        // console.log()
+                onClicked: {
+                    if (isUpdateFont) {
                         fontWarningDlg.open()
-                        
                     }
                 }
             }
@@ -163,73 +117,84 @@ Item {
 
         Rectangle {
             id: font_size_item
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: page_statusbar.bottom
-                leftMargin: marginLeftAndRight
-                rightMargin: marginLeftAndRight
-                topMargin: marginItem2Title
+
+            width: parent.width
+            height: 90 * appScaleSize
+            radius: 10 * appScaleSize
+
+            color: Kirigami.JTheme.cardBackground
+            visible: false
+
+            Text {
+                anchors {
+                    left: parent.left
+                    leftMargin: 20 * appScaleSize
+                    top:parent.top
+                    topMargin: 12 * appScaleSize
+                }
+                text: i18n("Font Size")
+                font.pixelSize: 12 * appFontSize
+                color: Kirigami.JTheme.minorForeground
             }
 
-            height: 90
-            radius: 10 
-            visible: false 
+            Item {
+                id: font_size_slider_item
 
-            Rectangle {
-                id: font_size_title 
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right 
-                }
+                height: font_size_slider.height
                 width: parent.width
-                height: 45
-                radius: 10 
-
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 12 * appScaleSize
                 Text {
+                    id: font_size_small
                     anchors {
                         verticalCenter: parent.verticalCenter
+                        verticalCenterOffset: -10 * appScaleSize
                         left: parent.left
-                        leftMargin: marginLeftAndRight
+                        leftMargin: 20 * appScaleSize
+                    }
+                    color: Kirigami.JTheme.minorForeground
+                    text : "A"
+                    font.pixelSize: 10 * appFontSize
+                }
+
+                Kirigami.JSlider{
+                    id:font_size_slider
+
+                    anchors.left: font_size_small.right
+                    anchors.leftMargin: 12 * appScaleSize
+                    anchors.right: font_size_big.left
+                    anchors.rightMargin: 12 * appScaleSize
+                    value:{
+                        if(Kirigami.JDisplay.fontSize === 10)
+                            return 0.0;
+                        if(Kirigami.JDisplay.fontSize === 12)
+                            return 1.0;
+                        if(Kirigami.JDisplay.fontSize === 14)
+                            return 2.0;
+                        if(Kirigami.JDisplay.fontSize === 16)
+                            return 3.0;
+                        if(Kirigami.JDisplay.fontSize === 17)
+                            return 4.0;
                     }
 
-                    text: i18n("Font Size")
-                    // font.pointSize: appFontSize + 2
-                    font.pixelSize: 12
-                    color: "#4D000000"
-                }
-            }
-
-            JrStepSliderItem {
-                id : font_size_slider
-                anchors {
-                    top : font_size_title.bottom 
-                    left : parent.left
-                    right: parent.right 
-                    bottom: parent.bottom 
-                }
-                height: 45
-
-                function load() {
-
-                    var size = fontModel.getFontSize();
-
-                    if(size >= 17){
-                        font_size_slider.sliderValue = 4
-                    }else if(size >= 16 ){
-                        font_size_slider.sliderValue = 3
-                    }else if (size >= 14){
-                        font_size_slider.sliderValue = 2
-                    }else if (size >= 12){
-                        font_size_slider.sliderValue = 1
-                    }else {
-                        font_size_slider.sliderValue = 0 
+                    stepStrs:[i18n("Extra Small"), i18n("Small"), i18n("Normal"), i18n("Large"), i18n("Extra Large")]
+                    onValueChanged:{
+                        changePreview(value);
                     }
                 }
 
-                onSliderChanged: {
-                    changePreview(value);
+                Text {
+                    id: font_size_big
+
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        verticalCenterOffset: -10  * appScaleSize
+                        right: parent.right
+                        rightMargin: 20 * appScaleSize
+                    }
+                    color: Kirigami.JTheme.minorForeground
+                    text : "A"
+                    font.pixelSize: appFontSize
                 }
             }
         }
@@ -237,73 +202,65 @@ Item {
         Rectangle {
             id: fonts_item
 
-            anchors {
-                left: parent.left
-                // top: font_size_item.bottom
-                top: page_statusbar.bottom
-                leftMargin: marginLeftAndRight
-                // topMargin: marginItem2Top
-                topMargin: marginItem2Title
-
-            }
-
-            width: parent.width - marginLeftAndRight * 2
-            height: default_setting_item_height
-
-            color: "#fff"
-            radius: 10 
+            width: parent.width
+            height: 45 * appScaleSize
+            radius: 10 * appScaleSize
+            color: Kirigami.JTheme.cardBackground
 
             Text {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: marginLeftAndRight
+                    leftMargin: 20 * appScaleSize
                 }
 
                 text: i18n("Font")
-                // font.pointSize: appFontSize + 2
-                font.pixelSize: 14
+                font.pixelSize: 14 * appScaleSize
+                color: Kirigami.JTheme.majorForeground
             }
 
             Text {
-                id:fonts_size_value
+                id: fonts_size_value
+
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: fonts_right_icon.left
-                    rightMargin: 9
+                    rightMargin: 9 * appScaleSize
                 }
-
-                function load() {
-                    
-                    var family = fontModel.getFontFamily();
-                    fonts_size_value.text = family
-                }
-
-                // font.pointSize: appFontSize + 2
-                font.pixelSize: 14
+                color: Kirigami.JTheme.minorForeground
+                font.pixelSize: 14 * appScaleSize
+                text: currentSelectText
             }
 
-            Image {
+            Kirigami.JIconButton {
                 id: fonts_right_icon
 
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
-                    rightMargin: marginLeftAndRight
+                    rightMargin: 20 * appScaleSize
                 }
 
-                source: "../image/icon_right.png"
-                sourceSize.width: statusbar_icon_size
-                sourceSize.height: statusbar_icon_size
+                width: 30 * appScaleSize
+                height: 30 * appScaleSize
+                color:Kirigami.JTheme.iconMinorForeground
+                source: Qt.resolvedUrl("../image/icon_right.png")
             }
 
             MouseArea {
                 anchors.fill: parent
 
                 onClicked: {
-                    familyDialog.px = fonts_item.x + fonts_item.width -  familyDialog.width * 1.1
-                    familyDialog.py = fonts_size_value.y - 40 
+                    familyDialog.x = fonts_item.x + fonts_item.width -  familyDialog.width
+                    familyDialog.y = fonts_item.y - 24 * appScaleSize / 2 - fonts_item.height / 2 + fonts_size_value.height / 2
                     familyDialog.open()
+                }
+            }
+            JrFamilyDialog {
+                id: familyDialog
+
+                onFamilyChanged: {
+                    currentSelectText = family
                 }
             }
         }
@@ -311,60 +268,32 @@ Item {
         Rectangle {
             id: preview_area
 
-            anchors {
-                left: parent.left
-                top: fonts_item.bottom
-                leftMargin: marginLeftAndRight
-                topMargin: marginItem2Top
-            }
+            width: parent.width
+            height: 250 * appScaleSize
 
-            width: parent.width - marginLeftAndRight * 2
-            height: 250
+            color: Kirigami.JTheme.cardBackground
+            radius: 10 * appScaleSize
 
-            color: "#fff"
-            radius: 10 
+            Text {
+                id:preview_title
 
-            Rectangle {
-                id: preview_title 
                 anchors {
+                    left: parent.left
+                    leftMargin: 20 * appScaleSize
                     top: parent.top
-                    left: parent.left
-                    right: parent.right 
+                    topMargin: 12 * appScaleSize
                 }
-                width: parent.width
-                height: 45
-                radius: 10 
 
-                Text {
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        left: parent.left
-                        leftMargin: marginLeftAndRight
-                    }
-
-                    text: i18n("Preview")
-                    font.pixelSize: 12
-                    color: "#4D000000"
-                }
+                text: i18n("Preview")
+                font.pixelSize: 12 * appFontSize
+                color: Kirigami.JTheme.minorForeground
             }
 
-            Rectangle {
+            Item {
                 id: preview_content
-                radius: 10 
 
-                anchors {
-                    top: preview_title.bottom 
-                    left: parent.left
-                    right:parent.right
-                    bottom:parent.bottom
-                }
-
-                Rectangle {
-                    id: center_tag
-                    anchors.centerIn:parent
-                    width: 10 
-                    height : 10 
-                }
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.width
 
                 Rectangle {
                     id: preview_list
@@ -372,15 +301,13 @@ Item {
                     anchors {
                         verticalCenter:preview_content.verticalCenter
                         left:preview_content.left
-                        leftMargin: 20
-                        // right:center_tag.left
+                        leftMargin: 20 * appScaleSize
                     }
 
-                    radius: 10
-                    width: 190
-                    height: 156
-                    color: "#FFFFFF"
-                    // color: "green"
+                    radius: 10 * appScaleSize
+                    width: 190 * appScaleSize
+                    height: 156 * appScaleSize
+                    color: isDarkTheme ? "#E626262A" : "#FFFFFF"
 
                     layer.enabled: true
                     layer.effect: DropShadow {
@@ -391,83 +318,88 @@ Item {
                         verticalOffset: 0.2
                         spread: 0
                     }
-                    
+
                     CheckItem {
                         id: item_1
+
                         anchors {
                             horizontalCenter:parent.horizontalCenter
                             top:parent.top
-                            topMargin: 10 
+                            topMargin: 10 * appScaleSize
                         }
-                        icon_name: "../image/font_icon_1.png"
+                        icon_name: Qt.resolvedUrl("../image/font_icon_1.png")
                         title_name: "Icons"
                         title_size: currentFontSize
                         fontFamily: fonts_size_value.text
-                        isCheck: true 
+                        isCheck: true
                     }
+
                     Rectangle {
                         id: sep1
-                        width:parent.width - 40
-                        height : 1
+
+                        width:parent.width - 40 * appScaleSize
+                        height : 1 * appScaleSize
                         anchors {
-                            top : item_1.bottom 
+                            top : item_1.bottom
                             horizontalCenter:parent.horizontalCenter
                         }
-                        color:"#223c3d43"
+                        color:Kirigami.JTheme.dividerForeground
                     }
 
                     CheckItem {
                         id: item_2
+
                          anchors {
                             horizontalCenter:parent.horizontalCenter
-                            top: sep1.bottom 
+                            top: sep1.bottom
                         }
-                        icon_name: "../image/font_icon_2.png"
+                        icon_name: Qt.resolvedUrl("../image/font_icon_2.png")
                         title_name: "List"
                         title_size: currentFontSize
                         fontFamily: fonts_size_value.text
-                        isCheck: false 
+                        isCheck: false
                     }
 
                     Rectangle {
                         id: sep2
-                        width:parent.width - 40
-                        height : 1
+
+                        width:parent.width - 40 * appScaleSize
+                        height :1 * appScaleSize
                         anchors {
-                            top : item_2.bottom 
+                            top : item_2.bottom
                             horizontalCenter:parent.horizontalCenter
                         }
-                        color:"#223c3d43"
+                        color: Kirigami.JTheme.dividerForeground
                     }
 
                     CheckItem {
                         id: item_3
+
                          anchors {
                             horizontalCenter:parent.horizontalCenter
-                             top: sep2.bottom 
+                             top: sep2.bottom
                         }
-                        icon_name: "../image/font_icon_3.png"
+                        icon_name: Qt.resolvedUrl("../image/font_icon_3.png")
                         title_name: "Name"
                         title_size: currentFontSize
                         fontFamily: fonts_size_value.text
-                        isCheck: false 
+                        isCheck: false
                     }
                 }
 
                 Rectangle {
                     id: preview_txt
+
                     anchors {
-                        verticalCenter:preview_content.verticalCenter
-                        // right:preview_content.right 
-                        // rightMargin: 20 
-                        left : center_tag.right
+                        verticalCenter: preview_content.verticalCenter
+                        left: preview_list.right
+                        leftMargin: 73 * appScaleSize
                     }
 
-                    radius: 10
-                    width: 251
-                    height : 140
-                    color: "#ddFFFFFF"
-                    // color:"red"
+                    radius: 10 * appScaleSize
+                    width: 231 * appScaleSize
+                    height : 140 * appScaleSize
+                    color: isDarkTheme ? "#E626262A" : "#FFFFFF"
 
                     layer.enabled: true
                     layer.effect: DropShadow {
@@ -480,36 +412,26 @@ Item {
                     }
 
                     Text {
-                        anchors.centerIn:preview_txt 
+                        anchors.centerIn:preview_txt
                         text: "Main text will look like this.\n1234567890!@#%&*()_+-="
                         font.pixelSize: currentFontSize
                         font.family: fonts_size_value.text
-                        width: 196
+                        width: 196 * appScaleSize
                         horizontalAlignment: Text.AlignHCenter
-
+                        color: Kirigami.JTheme.majorForeground
+                        clip: true
+                        wrapMode: Text.WordWrap
                     }
-
-                }
-
-            }
-           
-            JrFamilyDialog {
-                id: familyDialog
-
-                onFamilyChanged: {
-                    fonts_size_value.text = family
                 }
             }
 
             Kirigami.JDialog {
                 id: fontWarningDlg
 
-                anchors.centerIn: parent
                 title: i18n("Restart")
                 text: i18n("Applying this setting will restart your PAD")
                 leftButtonText: i18n("Cancel")
                 rightButtonText: i18n("Restart")
-                // rightButtonTextColor: "red"
                 dim: true
                 focus: true
 
@@ -519,9 +441,10 @@ Item {
 
                 onRightButtonClicked: {
                     var family = fonts_size_value.text
-                    var size = currentFontSize
-                    fontModel.setSystemFont(family , size)
+                    var size = currentDisplayFontSize
+                    JDisplay.setSystemFont(family , size);
                     fontWarningDlg.close()
+                    kcm.restartDevice()
                 }
             }
         }

@@ -1,9 +1,9 @@
-
-
-/**
- * SPDX-FileCopyrightText: 2021 Wang Rui <wangrui@jingos.com>
- *                         
- * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+/*
+ * Copyright (C) 2021 Beijing Jingling Information System Technology Co., Ltd. All rights reserved.
+ *
+ * Authors:
+ * Zhang He Gang <zhanghegang@jingos.com>
+ *
  */
 import QtQuick 2.2
 import QtQuick.Window 2.2
@@ -23,31 +23,18 @@ Item {
     property string currentVersion
     property string errorContent
 
+    property int screenWidth: 888 * appScale
+    property int screenHeight: 648 * appScale
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 17 * appScale
+    property int default_setting_item_height: 45 * appScale
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int appFontSize: theme.defaultFont.pixelSize
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 36 * appScale
+    property int marginLeftAndRight : 14  * appScale
+    property int marginItem2Top : 24  * appScale
+    property bool isDarkTheme: Kirigami.JTheme.colorScheme === "jingosDark"
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 17
-    property int default_setting_item_height: 45
-
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
-
-    // width: screenWidth * 0.7
-    // height: screenHeight
-
-
-    /*
-        0: checking:
-        1: checked_update_avilable
-        2: checked_update_unavilable
-        3: downloading
-        4:install
-    */
     property int upState: 0
     property string changeLog: "Change log: \n\nFeature: \n1. adfasdfasdfasdflaksjdfaksjdf;askjfd;alkjf \n" + "2. l;akdjf;alkjsdf;alksdjfaidsfjpaoijpoijpijdsfuahioueqwhoiru \n" + "3. uhuefhoqwufhoiqwhefoqwifhiqwuefhoiqwuhfoiqwuefhiqwuf \n\n"
                                + "Bug : \n" + "1. adfasdfasdfasdflaksjdfaksjdf;askjfd;alkjf \n "
@@ -61,20 +48,26 @@ Item {
         id: networkStatus
     }
 
-    UpdateTool {
-        id: updateTool
+    Connections {
+        target: updateTool
 
         onCheckedFinish: {
             upState = status
             changeLog = log
             if (upState == 1) {
+                rootHasNewVersion = 1
                 valueVersion = version
+            } else if (upState == 2) {
+                rootHasNewVersion = 2
             } else if (upState == 3) {
                 errorContent = i18n("Sever replied: Not Found ")
                 checkErrorDlg.open()
             } else if (upState == 4) {
                 errorContent = i18n("Request Timeout ")
                 checkErrorDlg.open()
+            } else if (upState == 5) {
+                rootHasNewVersion = 1
+                valueVersion = version
             }
         }
     }
@@ -82,7 +75,7 @@ Item {
     Component.onCompleted: {
         if (networkStatus.networkStatus != "Connected") {
             checkNetworkDlg.open()
-        }else {
+        } else {
             checkVersion.start();
         }
     }
@@ -90,12 +83,11 @@ Item {
     Timer {
         id: checkVersion
 
-        interval: 2000 
+        interval: 2000
         repeat: false
         triggeredOnStart: false
 
         onTriggered: {
-            // upState = 1
             updateTool.readRemoteVersion()
             currentVersion = updateTool.readLocalVersion()
         }
@@ -104,7 +96,7 @@ Item {
     Rectangle {
         width: parent.width
         height: parent.height
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground
 
         Rectangle {
             id: page_statusbar
@@ -112,7 +104,7 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: marginLeftAndRight
+                leftMargin: marginLeftAndRight - 10 * appScale
                 topMargin: marginTitle2Top
             }
 
@@ -120,23 +112,17 @@ Item {
             height: statusbar_height
             color: "transparent"
 
-            Image {
+            Kirigami.JIconButton {
                 id: back_icon
 
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: statusbar_icon_size
+                width: (22 + 8) * appScale
                 height: width
-                source: "../image/icon_left.png"
-                sourceSize.width: width
-                sourceSize.height: width
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        popView()
-                    }
+                source: Qt.resolvedUrl("../image/icon_left.png")
+                color: Kirigami.JTheme.iconForeground
+                onClicked: {
+                    popView()
                 }
             }
 
@@ -146,36 +132,30 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 
                 }
+                width: 359 * appScale
+                height: 14 * appScale
 
-                width: 359
-                height: 14
-                text: i18n("System Update")
-                // font.pixelSize: appFontSize + 11
-                font.pixelSize: 20
+                text: i18n("Software Update")
+                font.pixelSize: 20 * appFontSize
                 font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
+                color: Kirigami.JTheme.majorForeground
             }
 
-            Image {
+            Kirigami.JIconButton {
                 id: setting_icon
 
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
-                anchors.rightMargin: 25 
-
-                width: 17
+                width: 35 * appScale
                 height: width
-                source: "../image/update_settings.png"
-                sourceSize.width: width
-                sourceSize.height: width
 
+                source: Qt.resolvedUrl("../image/update_settings.svg")
+                color: Kirigami.JTheme.iconForeground
                 MouseArea {
                     anchors.fill: parent
-
                     onClicked: {
-                        console.log("update...")
                         system_info_root.gotoPage("update_setting_view")
                     }
                 }
@@ -187,22 +167,21 @@ Item {
 
             anchors {
                 top: page_statusbar.bottom
-                topMargin: marginItem2Title
+                topMargin: content_progress.visible ? 12 * appScale : marginItem2Title * 4
             }
-
             width: parent.width
-            height:  21+36+76
+            height:  (21+36+76+36) * appScale
+
             color: "transparent"
             visible: upState != 2
-
             AnimatedImage {
                 id: gifImage
 
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 69
-                height: 76
+                width: 69 * appScale
+                height: 76 * appScale
                 fillMode: Image.PreserveAspectFit
-                source: "../image/load.gif"
+                source: isDarkTheme ? "../image/black_load.gif" : "../image/load.gif"
                 visible: upState == 0
                 playing: visible
             }
@@ -211,24 +190,59 @@ Item {
                 id: jingos_logo
 
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 69
-                height: 76
-                visible: upState == 1
+                width: 69 * appScale
+                height: 76 * appScale
+                visible: upState === 1 || upState === 5
                 source: "../image/jingos_logo_update.svg"
             }
+
+            Text {
+                id: check_tag
+
+                anchors{
+                    horizontalCenter: parent.horizontalCenter
+                    top: gifImage.bottom
+                    topMargin: 16 * appScale
+                }
+
+                visible: gifImage.visible
+                text: i18n("Checking for updates...")
+                font.pixelSize: 17 * appFontSize
+                color: Kirigami.JTheme.minorForeground
+            }
+
             Text {
                 id: check_tag2
 
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     top: jingos_logo.bottom
-                    topMargin: 36
+                    topMargin: 16 * appScale
                 }
 
-                visible: upState == 1
-                text: i18n("Discover system updatable version %1" , valueVersion)
-                font.pixelSize: 14
-                color: "black"
+                visible: jingos_logo.visible
+                text: upState === 5 ? i18n("Current version %1  found updateable packages",valueVersion) : i18n("Discover system updatable version %1" , valueVersion)
+                font.pixelSize: 14 * appFontSize
+                color: Kirigami.JTheme.majorForeground//"black"
+            }
+
+            Text {
+                id: check_tip
+
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    top: check_tag2.bottom
+                    topMargin: 20 * appScale
+                }
+                width: parent.width - (30  * appScale + marginLeftAndRight) * 2
+                wrapMode: Text.WordWrap
+                maximumLineCount: 2
+
+                visible: jingos_logo.visible
+                text: i18n("Before updating, please make sure your device is charged. During the updating process, please connect to the Internet throughout.")
+                font.pixelSize: 12 * appFontSize
+                horizontalAlignment: Text.AlignHCenter
+                color: Kirigami.JTheme.majorForeground
             }
         }
 
@@ -237,11 +251,11 @@ Item {
 
             anchors {
                 top: page_statusbar.bottom
-                topMargin: marginItem2Title
+                topMargin: marginItem2Title * 4
             }
 
             width: parent.width
-            height:  21+36+76
+            height: 133 * appScale
             color: "transparent"
             visible: upState == 2
 
@@ -249,9 +263,9 @@ Item {
                 id: jingos_logo2
 
                 anchors.horizontalCenter: parent.horizontalCenter
+                width: 69 * appScale
+                height: 76 * appScale
 
-                width: 69
-                height: 76
                 source: "../image/jingos_logo_update.png"
             }
 
@@ -261,14 +275,14 @@ Item {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     top: jingos_logo2.bottom
-                    topMargin: 36
+                    topMargin: 36 * appScale
                 }
                 horizontalAlignment: Text.AlignHCenter
 
                 visible: upState == 2
                 text: i18n("Your software is already the latest version\n %1" , currentVersion)
-                font.pixelSize: appFontSize + 6
-                color: "black"
+                font.pixelSize: 17 * appFontSize
+                color: Kirigami.JTheme.majorForeground
             }
         }
 
@@ -278,64 +292,34 @@ Item {
             anchors {
                 top: content_area.bottom
                 bottom: update_btn.top
-                topMargin: 18
-                bottomMargin: 18
+                bottomMargin: 18 * appScale
             }
 
             width: parent.width
             color: "transparent"
+            visible: upState == 1
 
-            Text {
-                id: check_tag
+            ScrollView {
+                anchors.fill: parent
 
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: content_progress.top
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                contentWidth: -1
+                background: Item {}
 
-                visible: upState == 0
-                text: i18n("Checking for updates...")
-                font.pixelSize: 14
-                color: "#99000000"
-            }
+                Text {
+                    id: change_log
 
-            Rectangle {
-                id: changelog_area
-
-                anchors {
-                    fill: parent
-                    topMargin: 33 
-                    leftMargin: 102 
-                    rightMargin: 102 
-                }
-
-                width: 854 
-                color: "transparent"
-                visible: upState == 1
-                // clip:true
-
-                ScrollView {
-                    anchors.fill: parent
-
-                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                    contentWidth: -1
-                    background: Item {}
-
-                    Text {
-                        id: change_log
-
-                        anchors {
-                            left: changelog_area.left
-                            right: changelog_area.right
-                            leftMargin: 60 
-                            rightMargin: 60 
-                        }
-                        
-                        width: 555
-
-                        text: changeLog
-                        wrapMode: Text.WordWrap
-                        font.pixelSize: 14
-                        color: "#99000000"
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 30  * appScale + marginLeftAndRight
+                        rightMargin: 30  * appScale + marginLeftAndRight
                     }
+
+                    text: changeLog
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 14 *appFontSize
+                    color: Kirigami.JTheme.minorForeground
                 }
             }
         }
@@ -346,21 +330,21 @@ Item {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
-                bottomMargin: 100 
+                bottomMargin: 41  * appScale
             }
 
-            width: 370
-            height: 42
+            width: 370 * appScale
+            height: 42 * appScale
 
-            color: "blue"
-            radius: 10
-            visible: upState == 1
+            color: Kirigami.JTheme.highlightColor//"blue"
+            radius: 10 * appScale
+            visible: upState === 1 || upState === 5
 
             Text {
                 anchors.centerIn: parent
                 color: "white"
                 text: i18n("Update now")
-                font.pixelSize: 14
+                font.pixelSize: 14 * appFontSize
             }
 
             MouseArea {
@@ -375,26 +359,27 @@ Item {
         Kirigami.JDialog {
             id: checkBatteryDlg
 
-            anchors.centerIn: parent
-
             title: i18n("Update suggestion")
             text: i18n("It is recommended that the battery reaches 50% or connect to the power supply to update")
             centerButtonText: i18n("OK")
-            // rightButtonText: i18n("Cancel")
             dim: true
             focus: true
 
             onCenterButtonClicked: {
+                if (updateTool.getQaptupdatorUpdateStatus() === 2) {
+                    system_info_root.rootHasupdating = true
+                } else {
+                    system_info_root.rootHasupdating = false
+                }
                 updateTool.launchDistUpgrade(valueVersion)
-                system_info_root.popView()
                 checkBatteryDlg.close()
+                system_info_root.popView()
             }
         }
 
         Kirigami.JDialog {
             id: checkNetworkDlg
 
-            anchors.centerIn: parent
             title: i18n("Unable to check for updates")
             text: i18n("Please connect to the network and \n try again")
             centerButtonText: i18n("OK")
@@ -402,24 +387,21 @@ Item {
             focus: true
 
             onCenterButtonClicked: {
+                checkNetworkDlg.close()
                 system_info_root.popView()
-                checkBatteryDlg.close()
             }
         }
 
         Kirigami.JDialog {
             id: checkErrorDlg
 
-            anchors.centerIn: parent
-            
             title: i18n("Unable to check for updates")
             text: errorContent
             centerButtonText: i18n("OK")
             dim: true
             focus: true
-
             onCenterButtonClicked: {
-                checkBatteryDlg.close()
+                checkErrorDlg.close()
                 system_info_root.popView()
             }
         }

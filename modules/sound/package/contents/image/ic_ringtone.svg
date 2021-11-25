@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="34px" viewBox="0 0 32 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Interface, Essential/calendar-schedule-clock-time 2</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.556863 0 0 0 0 0.556863 0 0 0 0 0.576471 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="H-Sounds" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="h01设置-Sounds" transform="translate(-610.000000, -367.000000)">
+            <g id="编组" transform="translate(570.000000, 160.000000)">
+                <g id="Interface,-Essential/calendar-schedule-clock-time-2" transform="translate(40.000000, 179.000000)" filter="url(#filter-1)">
+                    <g transform="translate(0.000000, 28.540541)">
+                        <g id="-mockplus-" transform="translate(0.000000, 0.459459)">
+                            <g id="Path" transform="translate(-0.000000, -0.000000)">
+                                <polygon points="0 0 32.0000001 0 32.0000001 32.0000001 0 32.0000001"></polygon>
+                                <path d="M7.99200003,17.3333334 L7.99200003,12 C7.99200003,7.58133336 11.5773334,4.00000002 16.0000001,4.00000002 C20.4226668,4.00000002 24.0080001,7.58133336 24.0080001,12 L24.0080001,17.3333334 C24.0080001,18.6480001 24.6053334,19.8920001 25.6306668,20.7160001 C25.6306668,20.7160001 26.0426668,21.0466668 26.0426668,21.0466668 C27.2653334,22.0280001 26.5706668,24 25.0026668,24 L6.99733336,24 C5.42933336,24 4.73466669,22.0280001 5.95733336,21.0466668 C5.95733336,21.0466668 6.36933336,20.7160001 6.36933336,20.7160001 C7.39600003,19.8920001 7.99200003,18.6480001 7.99200003,17.3333334 Z" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <line x1="14.0000001" y1="28.0000001" x2="18.0000001" y2="28.0000001" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

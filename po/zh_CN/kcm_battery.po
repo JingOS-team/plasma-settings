@@ -108,12 +108,36 @@ msgid "Network %1"
 msgstr "网络%1"
 
 #: until+full
-msgid "%1 until full"
-msgstr "预计%1充满 "
+msgid "%1h %2m until fully charged"
+msgstr "预计 %1小时%2分钟充满"
+
+#: until+full
+msgid "%1h until fully charged"
+msgstr "预计 %1小时充满"
+
+#: until+full
+msgid "%1m until fully charged"
+msgstr "预计 %1分钟充满"
 
 #: remaining
-msgid "%1 remaining"
-msgstr "剩余 %1"
+msgid "%1h remaining"
+msgstr "剩余 %1小时"
+
+#: remaining
+msgid "%1h %2m remaining"
+msgstr "剩余 %1小时%2分钟"
+
+#: remaining
+msgid "%1m remaining"
+msgstr "剩余 %1分钟"
+
+#: remaining
+msgid "Already full"
+msgstr "已充满"
+
+#: remaining
+msgid "Computing..."
+msgstr "正在计算中..."
 
 #: Operator:
 msgid "Operator:"
@@ -398,7 +422,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"
@@ -3055,3 +3079,9 @@ msgstr "无线局域网"
 msgid "Bluetooth"
 
 msgstr "蓝牙"
+
+
+msgid "Calculating"
+msgstr "正在计算使用时间..."
+
+

@@ -1,0 +1,62 @@
+Source: plasma-settings
+Section: kde
+Priority: optional
+Maintainer: Debian/Kubuntu Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+XSBC-Original-Maintainer: Boudewijn Rempt <boud@kde.org>
+Build-Depends: cmake (>= 3.0.0),
+               debhelper (>= 11),
+               extra-cmake-modules,
+               libaccounts-glib-dev,
+               libaccounts-qt5-dev,
+               libgettextpo-dev,
+               libkaccounts-dev,
+               libkf5archive-dev,
+               libkf5auth-dev,
+               libkf5bookmarks-dev,
+               libkf5codecs-dev,
+               libkf5completion-dev,
+               libkf5config-dev,
+               libkf5contacts-dev,
+               libkf5coreaddons-dev,
+               libkf5dbusaddons-dev,
+               libkf5declarative-dev,
+               libkf5i18n-dev,
+               libkf5iconthemes-dev,
+               libkf5notifications-dev,
+               libkf5plasma-dev,
+               libkf5plasma5,
+               libkf5plasmaquick5,
+               libkf5service-dev,
+               libkf5solid-dev,
+               libkf5sonnet-dev,
+               libkf5windowsystem-dev,
+               libkpimgapi-dev,
+               libsignon-qt5-dev,
+               pkg-config,
+               pkg-kde-tools (>= 0.9),
+               qtbase5-dev,
+               qtbase5-private-dev,
+                libkf5networkmanagerqt-dev,
+                libkf5guiaddons-dev,
+                japp-sdk-qt-dev,
+                plasma-workspace-dev,
+                libpackagekitqt5-dev,
+               libkf5bluezqt-dev (>= 5.50.0~)
+Standards-Version: 4.1.4
+Homepage: https://projects.kde.org/projects/extragear/base/plasma-settings
+Vcs-Browser: https://gitlab.com/debian-pm/plasma-settings
+Vcs-Git: https://gitlab.com/debian-pm/plasma-settings.git
+
+Package: plasma-settings
+Architecture: any
+Depends: kaccounts-integration,
+         kaccounts-providers,
+         plasma-framework,
+         qml-module-org-kde-kaccounts,
+         qml-module-org-kde-kcm,
+         qml-module-org-kde-kirigami2,
+         qml-module-ubuntu-onlineaccounts,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: Plasma phone settings application
+ The settings application and a few modules for it.

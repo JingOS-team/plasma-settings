@@ -54,7 +54,7 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
 
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
 
         Text {
             id: location_title
@@ -68,10 +68,11 @@ Rectangle {
 
             width: 329
             height: 14
-            text: i18n("Location")
+            text: i18n("Location Service")
             // font.pointSize: appFontSize + 11
             font.pixelSize: 20 
             font.weight: Font.Bold
+            color: Kirigami.JTheme.majorForeground
         }
 
         
@@ -87,7 +88,7 @@ Rectangle {
 
             width: parent.width - marginLeftAndRight* 2
             height: default_setting_item_height
-            color: "#fff"
+            color: Kirigami.JTheme.cardBackground//"#fff"
             radius: 10
 
             Rectangle {
@@ -110,9 +111,10 @@ Rectangle {
                     }
                     width: 331
                     height: 17
-                    text: i18n("Location Status")
+                    text: i18n("Location Service")
                     // font.pointSize: appFontSize + 2
                     font.pixelSize: fontNormal
+                    color: Kirigami.JTheme.majorForeground
 
                 }
 

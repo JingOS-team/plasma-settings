@@ -20,16 +20,16 @@ Rectangle {
     }
     color: "#F2FBFBFB"
     radius: rectRadius
-    layer.enabled: true
-    layer.effect: DropShadow {
-        id: rectShadow
-        anchors.fill: shadowRect
-        color: shadowColor
-        source: shadowRect
-        samples: 9
-        radius: 4
-        horizontalOffset: 0
-        verticalOffset: 0
-        spread: 0
-    }
+    // layer.enabled: true
+    // layer.effect: DropShadow {
+    //     id: rectShadow
+    //     anchors.fill: shadowRect
+    //     color: shadowColor
+    //     source: shadowRect
+    //     samples: 9
+    //     radius: 4
+    //     horizontalOffset: 0
+    //     verticalOffset: 0
+    //     spread: 0
+    // }
 }

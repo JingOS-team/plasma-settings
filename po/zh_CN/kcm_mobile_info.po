@@ -71,8 +71,14 @@ msgstr "调制解调器 %1"
 
 #: Name:
 msgid "Name:"
-
 msgstr "名称"
+
+#: Name:
+msgid "Device Name"
+msgstr "设备名称"
+
+msgid "Other devices will see this name when you use Bluetooth and USB."
+msgstr "当您使用蓝牙和USB时,其他设备会看到此名称."
 
 #: IMEI:
 msgid "IMEI:"
@@ -261,7 +267,7 @@ msgstr "处理器"
 #: RAM
 msgid "RAM"
 
-msgstr ""
+msgstr "运行内存"
 
 #: %251+of+RAM
 msgid "%1 of RAM"
@@ -276,7 +282,7 @@ msgstr "未知"
 #: Internal+Storage
 msgid "Internal Storage"
 
-msgstr "内部存储器"
+msgstr "内部存储"
 
 #: Kernel+Version
 msgid "Kernel Version"
@@ -298,15 +304,15 @@ msgid "System & Update"
 
 msgstr "系统与更新"
 
-#: System+Update
-msgid "System Update"
+#: Software+Update
+msgid "Software Update"
 
 msgstr "系统更新"
 
-#: Legal+information
-msgid "Legal information"
+#: Software+Update
+msgid "Updating..."
 
-msgstr "法律信息"
+msgstr "更新中..."
 
 #: Every+day
 msgid "Every day"
@@ -384,7 +390,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"
@@ -3042,3 +3048,49 @@ msgstr "无线局域网"
 msgid "Bluetooth"
 
 msgstr "蓝牙"
+
+#: Reset
+msgid "Reset"
+
+msgstr "重置"
+
+msgid "Reset all settings"
+msgstr "重置所有设置"
+
+msgid "Rreet all settings ? This may require the tablet to restart. ait cannot be undone."
+msgstr "重新设置所有设置？这可能需要平板电脑重新启动。无法撤消。"
+
+msgid "Set"
+msgstr "设置"
+
+msgid "This will delete all data from your device, including:\n·Photos and videos\n·Music \n·Apps \n·Backups \n·System data and settings \n·All files in memory"
+msgstr "这将删除设备中的所有数据，包括：\n·照片和视频\n·音乐\n·应用程序\n·备份\n·系统数据和设置\n·内存中的所有文件"
+
+msgid "Insufficient Charge"
+msgstr "电量不足"
+
+msgid "This restore requires at least 50% battery or to be connected to a power source."
+msgstr "恢复出厂设置需要至少50%的电量或连接电源"
+
+msgid "Connected"
+msgstr "已连接"
+
+msgid "Status"
+msgstr "状态"
+
+
+msgid "IP Address"
+msgstr "IP 地址"
+
+msgid "WLAN Address"
+msgstr "WLAN 地址"
+
+
+msgid "Bluetooth Address"
+msgstr "蓝牙地址"
+
+msgid "Before updating, please make sure your device is charged. During the updating process, please connect to the Internet throughout."
+msgstr "升级时请保持JingPad电量正常，网络连接正常。"
+
+msgid "Current version %1  found updateable packages"
+msgstr "当前版本 %1 发现可更新软件包"

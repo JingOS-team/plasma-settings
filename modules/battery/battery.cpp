@@ -20,6 +20,7 @@
  */
 
 #include "battery.h"
+#include "batteryutil.h"
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KPluginFactory>
@@ -29,6 +30,8 @@ K_PLUGIN_CLASS_WITH_JSON(Battery, "battery.json")
 Battery::Battery(QObject *parent, const QVariantList &args)
     : KQuickAddons::ConfigModule(parent, args)
 {
+
+    qmlRegisterType<BatteryUtil>("BatteryUtil", 1, 0, "BatteryUtil");
 
     KAboutData *about = new KAboutData("kcm_battery", i18n("Battery"), "1.0", QString(), KAboutLicense::GPL);
     KLocalizedString::setApplicationDomain("kcm_battery");

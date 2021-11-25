@@ -22,57 +22,55 @@ import QtQuick 2.12
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
 import QtQuick.Shapes 1.12
-import org.kde.kirigami 2.11 as Kirigami
+import org.kde.kirigami 2.15 as Kirigami
 import QtGraphicalEffects 1.0
 
-Rectangle {
+Item {
     id: item_root
 
-    property string icon_name 
-    property string title_name 
-    property int title_size 
-    property bool isCheck : false 
-    property string fontFamily : theme.defaultFont.family
-   
-    width: 150
-    height: 45
-    color: "transparent"
+    property string icon_name
+    property string title_name
+    property int title_size
+    property bool isCheck : false
+    property string fontFamily : Kirigami.JDisplay.fontFamily
 
-    Rectangle {
-        anchors.fill : parent 
-        Image {
-            id: item_icon 
-            source: icon_name 
-            width: 17
-            height : 17
-            anchors {
-                left:parent.left 
-                verticalCenter : parent.verticalCenter
-            }
-        }
+    width: 150 * appScaleSize
+    height: 45 * appScaleSize
 
-        Text {
-            anchors {
-                left:item_icon.right 
-                leftMargin: 10 
-                verticalCenter : parent.verticalCenter
-            }
-            text :  title_name
-            font.family: fontFamily
-            font.pixelSize: title_size 
+    Kirigami.Icon {
+        id: item_icon
+        source: icon_name
+        width: 17 * appScaleSize
+        height : 17 * appScaleSize
+        anchors {
+            left:parent.left
+            verticalCenter : parent.verticalCenter
         }
-
-        Image {
-            id: item_check
-            source: "../image/menu_select" 
-            width: 17
-            height : 17
-            anchors {
-                right:parent.right 
-                verticalCenter : parent.verticalCenter
-            }
-            visible: isCheck
-        }
+        color:Kirigami.JTheme.iconForeground
     }
-   
+
+    Text {
+        anchors {
+            left:item_icon.right
+            leftMargin: 10 * appScaleSize
+            verticalCenter : parent.verticalCenter
+        }
+        text :  title_name
+        font.family: fontFamily
+        font.pixelSize: title_size
+        color: Kirigami.JTheme.majorForeground
+    }
+
+    Image {
+        id: item_check
+        source: "../image/menu_select.png"
+        width: 17 * appScaleSize
+        height : 17 * appScaleSize
+        anchors {
+            right:parent.right
+            verticalCenter : parent.verticalCenter
+        }
+        visible: isCheck
+    }
+
 }

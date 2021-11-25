@@ -22,6 +22,7 @@
 
 #include <QDebug>
 #include <QObject>
+#include <QDir>
 // #include <solid/device.h>
 #include <Solid/Device>
 #include <QAbstractItemModel>
@@ -36,28 +37,23 @@
 
 // static const char SOLID_POWERMANAGEMENT_SERVICE[] = "org.kde.Solid.PowerManagement";
 
-
-StorageModel::StorageModel() 
-: m_subPixelOptionsModel(new QStandardItemModel(this)){
+StorageModel::StorageModel() : m_subPixelOptionsModel(new QStandardItemModel(this)) {
 
     getAllMountedInfo();
+    disk();
 
     Solid::DeviceNotifier *notifier = Solid::DeviceNotifier::instance();
     mTimer = new QTimer();
-    
-    connect(notifier, &Solid::DeviceNotifier::deviceAdded, [this](const QString &device) 
-    {
 
+    connect(notifier, &Solid::DeviceNotifier::deviceAdded, [this](const QString &device)
+    {
         Solid::Device deviceItem(device);
-        qDebug() << "deviceAdded:: "<< deviceItem.displayName();
-        
-  
+
         if (deviceItem.isDeviceInterface(Solid::DeviceInterface::StorageDrive)){
 
             if (mTimer != nullptr) {
                 mTimer->setSingleShot(true);
                 connect(mTimer, &QTimer::timeout, this, [=](){
-                    qDebug() << "deviceAdded real";
                     getAllMountedInfo();
                     emit refreshListView() ;
                 });
@@ -67,45 +63,48 @@ StorageModel::StorageModel()
     });
 
     connect(notifier, &Solid::DeviceNotifier::deviceRemoved, [this](const QString &device) {
-        qDebug() << "deviceRemove" ;
-
         getAllMountedInfo();
         emit refreshListView() ;
-
     });
 }
 
 StorageModel::~StorageModel()
 {
 	Solid::DeviceNotifier *notifier = Solid::DeviceNotifier::instance();
-    
-    disconnect(notifier, &Solid::DeviceNotifier::deviceAdded, 0, 0); 
-    disconnect(notifier, &Solid::DeviceNotifier::deviceRemoved, 0, 0); 
- 
-	qDebug() << "~StorageModel" << "destruct";
-	if (mTimer != nullptr) 
+
+    disconnect(notifier, &Solid::DeviceNotifier::deviceAdded, 0, 0);
+    disconnect(notifier, &Solid::DeviceNotifier::deviceRemoved, 0, 0);
+
+	if (mTimer != nullptr)
 	{
-		if(mTimer->isActive()) 
-		{
+		if (mTimer->isActive()) {
 			mTimer->stop();
-		} 
+		}
 		delete mTimer;
 	}
 }
 
-QString StorageModel::getStorageName(){
-    qDebug() << "getStorageName" << storage.name();
+QString StorageModel::getStorageName() {
     return storage.name();
 }
 
-QString StorageModel::getStorageType(){
-    qDebug() << "getStorageType" << storage.fileSystemType();
+QString StorageModel::getStorageType() {
     return storage.fileSystemType();
 }
 
-double StorageModel::getStorageTotalSize(){
-    qDebug() << "getStorageTotalSize" << storage.bytesTotal();
-    return storage.bytesTotal();
+double StorageModel::getStorageTotalSize() {
+    // return storage.bytesTotal();
+    return allTotalSize;
+}
+
+double StorageModel::getHomeTotalSize() {
+    // return storage.bytesTotal();
+    return homeTotalSize;
+}
+
+double StorageModel::getHomeAvailableSize() {
+
+    return  homeFreeSize;
 }
 
 QAbstractItemModel *StorageModel::subPixelOptionsModel() const
@@ -114,94 +113,154 @@ QAbstractItemModel *StorageModel::subPixelOptionsModel() const
 }
 
 double StorageModel::getStorageAvailableSize(){
-    qDebug() << "getStorageAvailableSize" << storage.bytesAvailable();
-    return storage.bytesAvailable();
-}  
+    // QList<QStorageInfo> list = QStorageInfo::mountedVolumes();
+    // for(int i = 0 ; i < list.size() ; i++ ){
+    //     QStorageInfo diskInfo = list.at(i);
+    //     if(diskInfo.displayName() == "/"){
+    //         qint64 freeSize = diskInfo.bytesFree();
+    //         qDebug() << "get New Storage AvailableSize :: " << freeSize;
+    //         return freeSize;
+    //     }
+    // }
+    // qDebug() << "getStorageAvailableSize" << storage.bytesAvailable();
+    // return storage.bytesAvailable();
+    return  allFreeSize;
+}
 
-void StorageModel:: getAllMountedInfo(){
-     QStorageInfo storage = QStorageInfo::root();
+void StorageModel:: getAllMountedInfo() {
+    QStorageInfo storage = QStorageInfo::root();
 
     QList<QStorageInfo> list = QStorageInfo::mountedVolumes();
-    m_subPixelOptionsModel->clear() ; 
- 
+    m_subPixelOptionsModel->clear();
+
     int count = list.size();
-    qDebug() << "storage device size : =======" <<count;
 
     QString strInfo = "";
-    for(int i = 0; i < count; ++i)
-    {
+    for (int i = 0; i < count; ++i) {
         QStorageInfo diskInfo = list.at(i);
         qint64 freeSize = diskInfo.bytesFree();
         qint64 totalSize = diskInfo.bytesTotal();
         QString tempInfo = "";
-        // qDebug() << "storage name : =======" << diskInfo.displayName();
 
-        if(diskInfo.displayName().startsWith("/") && !diskInfo.displayName().startsWith("/media")){
-            QString tempInfo1 = QString("name:%1  totalSize:%2 freeSize:%3 \n")
+        if (diskInfo.displayName().startsWith("/") && !diskInfo.displayName().startsWith("/media")) {
+            QString tempInfo1 = QString("name:%1 totalSize:%2 freeSize:%3 \n")
             .arg(diskInfo.displayName())
             .arg(GetStorageSize(totalSize))
             .arg(GetStorageSize(freeSize));
-        }else {
-             tempInfo = QString("%1,%2,%3,%4")
-            .arg(diskInfo.displayName())
+        } else if (diskInfo.displayName() == "vendor" || diskInfo.displayName() == "productinfo") {
+
+        } else {
+            QString volumeName;
+            if (diskInfo.rootPath().contains("/")) {
+                volumeName = *(diskInfo.rootPath().split("/").end() - 1);
+            } else {
+                volumeName = "Unknown";
+            }
+            tempInfo = QString("%1, %2, %3, %4")
+            .arg(volumeName)
             .arg(GetStorageSize(totalSize))
-            .arg(GetStorageSize(totalSize- freeSize))
-            .arg(GetFreeSizePrecent(freeSize , totalSize));
-
+            .arg(GetStorageSize(totalSize - freeSize))
+            .arg(GetFreeSizePrecent(freeSize, totalSize));
             strInfo.append(tempInfo);
-
             auto item = new QStandardItem(tempInfo);
             m_subPixelOptionsModel->appendRow(item);
-            
         }
     }
-
-    //  qDebug() << "strInfo=======" << strInfo;
 }
 
-
-QString StorageModel::GetFreeSizePrecent(qint64 freeSize ,qint64 totalSize){
+QString StorageModel::GetFreeSizePrecent(qint64 freeSize, qint64 totalSize){
     float precent = (float)freeSize / (float)totalSize ;
     return  QString("%1").arg(precent); ;
 }
 
 QString StorageModel::GetStorageSize(qint64 size)
 {
-    if(size < 1024)
-    {
+    if (size < 1024) {
         return QString("%1 B").arg(size);
-    }
-    else
-    {
+    } else {
         size = size / 1024;
     }
- 
+
     double tempSize = 1.0 * size;
-    if(tempSize < 1024)
-    {
+    if (tempSize < 1024) {
         return QString("%1 KB").arg(tempSize);
-    }
-    else
-    {
+    } else {
         tempSize = tempSize / 1024;
     }
- 
-    if(tempSize < 1024)
-    {
-        return QString("%1 MB").arg(tempSize);
-    }
-    else
-    {
+
+    if (tempSize < 1024) {
+        QString str3 = QString::number(tempSize,'f',1);
+        return str3 + " MB";
+    } else {
         tempSize = tempSize / 1024;
     }
-    if(tempSize < 1024)
-    {
-        return QString("%1 GB").arg(tempSize);
-    }
-    else
-    {
+
+    if (tempSize < 1024) {
+        QString str4 = QString::number(tempSize,'f',1);
+        return str4 + " GB";
+    } else {
         tempSize = tempSize / 1024;
     }
- 
+
     return "";
+}
+
+QString StorageModel::disk()
+{
+    QString m_diskDescribe = "";
+    // QFileInfoList list = QDir::drives();
+    // foreach (QFileInfo dir, list)
+    // {
+    //     QString dirName = dir.absolutePath();
+    //     dirName.remove("/");
+    //     LPCWSTR lpcwstrDriver = (LPCWSTR)dirName.utf16();
+    //     ULARGE_INTEGER liFreeBytesAvailable, liTotalBytes, liTotalFreeBytes;
+    //     if(GetDiskFreeSpaceEx(lpcwstrDriver, &liFreeBytesAvailable, &liTotalBytes, &liTotalFreeBytes) )
+    //     {
+    //         QString free = QString::number((double) liTotalFreeBytes.QuadPart / GB, 'f', 1);
+    //         free += "G";
+    //         QString all = QString::number((double) liTotalBytes.QuadPart / GB, 'f', 1);
+    //         all += "G";
+
+    //         QString str = QString("%1 %2/%3       ").arg(dirName, free, all);
+    //         m_diskDescribe += str;
+
+    //         double freeMem = (double) liTotalFreeBytes.QuadPart / GB;
+
+    //         if(freeMem > m_maxFreeDisk)
+    //             m_maxFreeDisk = freeMem;
+    //     }
+    // }
+
+    QStorageInfo storage = QStorageInfo::root();
+    QList<QStorageInfo> list = QStorageInfo::mountedVolumes();
+
+    int count = list.size();
+    QString strInfo = "";
+    allFreeSize = 0;
+    allTotalSize = 0;
+
+    homeFreeSize = 0;
+    homeTotalSize = 0;
+
+    for (int i = 0; i < count; ++i) {
+        QStorageInfo diskInfo = list.at(i);
+        if (!diskInfo.rootPath().startsWith("/media") && !diskInfo.rootPath().startsWith("/home")) {
+            qint64 freeSize = diskInfo.bytesFree();
+            qint64 totalSize = diskInfo.bytesTotal();
+            QString tempInfo = QString("name:%1 totalSize:%2 freeSize:%3 \n")
+                .arg(diskInfo.displayName())
+                .arg(GetStorageSize(totalSize))
+                .arg(GetStorageSize(freeSize));
+            strInfo.append(tempInfo);
+                // continue ;
+            allFreeSize += freeSize ;
+            allTotalSize += totalSize;
+        } else if (diskInfo.rootPath().startsWith("/home")) {
+            homeFreeSize = diskInfo.bytesFree();
+            homeTotalSize = diskInfo.bytesTotal();
+        }
+    }
+
+    return m_diskDescribe;
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>-mockplus-</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.235294 0 0 0 0 0.235294 0 0 0 0 0.262745 0 0 0 0.600000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="D-VPN" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="d07设置-VPN修改VPN-L2TP" transform="translate(-558.000000, -88.000000)">
+            <g id="返回" transform="translate(530.000000, 36.000000)" filter="url(#filter-1)">
+                <g transform="translate(28.000000, 52.000000)">
+                    <g id="Group" transform="translate(-0.000000, -0.000000)">
+                        <polyline id="Path" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" points="30.2500001 5.50000002 13.7500001 22.0036668 30.2408335 38.5000002"></polyline>
+                        <polygon id="Path" points="0 0 44.0000002 0 44.0000002 44.0000002 0 44.0000002"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

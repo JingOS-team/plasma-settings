@@ -24,129 +24,82 @@ import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 import jingos.font 1.0
+import jingos.display 1.0
 
-Popup {
+Kirigami.JArrowPopup {
     id: root
 
-    property string uid
-    property var description: ""
-    property int px: 0
-    property int py: 0
-    property int selectIndex
-    property string currentFamily
-
-    FontModel {
-        id: fontModel 
-    }
-
-    signal familyChanged(string family)
-
-    x: px
-    y: py
-    width: 240 + 100
-    height: contentItem.height
-    modal: true
+    width: 240 * appScaleSize
+    height: 236 * appScaleSize
+    modal: false
     focus: true
 
-    background: Rectangle {
-        id: background
-        color: "transparent"
-    }
+    blurBackground.arrowX: width * 0.7
+    blurBackground.arrowWidth: 16 * appScaleSize
+    blurBackground.arrowHeight: 11 * appScaleSize
+    blurBackground.arrowPos: Kirigami.JRoundRectangle.ARROW_TOP
+    //blurBackground.radius: JDisplay.dp(10)
 
-    contentItem: Rectangle {
+    property string currentFamily
+    signal familyChanged(string family)
+
+    FontModel {
+        id: fontModel
+    }
+    contentItem: Item {
         id: contentItem
 
-        anchors.left: parent.left
-        anchors.right: parent.right
-        width: parent.width
-        height: 45 * 5 + 2
-        radius: 10
-        color: "#fff"
+        ListView {
+            id: listview1
 
-        layer.enabled: true
-        layer.effect: DropShadow {
-            horizontalOffset: 0
-            radius: 10
-            samples: 25
-            color: "#1A000000"
-            verticalOffset: 0
-            spread: 0
-        }
+            clip: true
+            anchors.fill: parent
+            model: fontModel.subPixelOptionsModel
+            snapMode:ListView.SnapToItem
+            delegate: Item {
+                width: listview1.width
+                height: 45 * appScaleSize
 
-        Rectangle {
-            id: menu_content
+                Component.onCompleted: {
+                    currentFamily = fonts_sub.currentSelectText
+                }
+                //background  not use
+                Rectangle{
+                    anchors.fill: parent
+                    visible: false
+                    color: mouseArea.containsMouse ? (mouseArea.pressed ? Kirigami.JTheme.pressBackground : Kirigami.JTheme.hoverBackground)
+                                                   : "transparent"
+                }
 
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                topMargin: 8
-                bottomMargin: 8
-                leftMargin: 8
-                rightMargin: 8
-            }
-
-            width: root.width - 8 * 2 
-            height: 45 * 5
-            color: "transparent"
-
-            ListView {
-                id: listview1
-                model: fontModel.subPixelOptionsModel
-                width: parent.width
-                height: listview1.count < 5 ? listview1.count * 45  - 1 : 5 * 45  - 1
-
-                
-                delegate: Rectangle {
-                    width: menu_content.width
-                    height: 45 
-
-                    Component.onCompleted: {
-                        currentFamily = fontModel.getFontFamily();
+                MouseArea {
+                    id:mouseArea
+                    anchors.fill:parent
+                    hoverEnabled: true
+                    onClicked: {
+                        currentFamily = display
+                        familyChanged(display)
+                        root.close();
                     }
+                }
+                Text {
+                    anchors.verticalCenter:parent.verticalCenter
+                    font.pixelSize: 14 * appFontSize
+                    color: Kirigami.JTheme.majorForeground
+                    text: display
+                }
 
-                    MouseArea {
-                        anchors.fill:parent
-                        onClicked: {
-                            currentFamily = display
-                            familyChanged(display)
-                            root.close();
-                        }
-                    }
-                    Text {
-                        anchors {
-                            verticalCenter:parent.verticalCenter
-                            left:parent.left
-                            leftMargin: 20
-                        }
-                        text: display
-                        font.pixelSize: 14
-                    }
+                Image {
+                    anchors.verticalCenter:parent.verticalCenter
+                    anchors.right: parent.right
+                    source: "../image/menu_select.png"
+                    width: 22 * appScaleSize
+                    height : 22 * appScaleSize
+                    visible: display == currentFamily
+                }
 
-                    Image {
-                        anchors {
-                            verticalCenter:parent.verticalCenter
-                            right:parent.right
-                            rightMargin: 20
-                        }
-                        source: "../image/menu_select.png"
-                        width: 22
-                        height : 22 
-                        sourceSize.width: 22
-                        sourceSize.height : 22 
-                        visible: display == currentFamily
-                    }
-
-                    Kirigami.Separator {
-                        anchors.bottom: parent.bottom
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.leftMargin: 20
-                        anchors.rightMargin: 20
-                        color: "#f0f0f0"
-                    }
-
+                Kirigami.Separator {
+                    anchors.bottom: parent.bottom
+                    width:parent.width
                 }
             }
         }

@@ -32,8 +32,8 @@ msgstr "首选语言顺序"
 msgid "The language at the top of the list will be used by default. If an app doesn't support your default language, the next language in the list will be used instead."
 msgstr "默认情况下，将使用列表顶部的语言。如果应用程序不支持您的默认语言，将使用列表中的下一种语言。"
 
-msgid "Language"
-msgstr "语言"
+msgid "Language & Region"
+msgstr "语言和区域"
 
 msgid "Default"
 msgstr "默认"
@@ -47,3 +47,26 @@ msgstr "重启"
 msgid "Applying this setting will restart your PAD"
 msgstr "应用该设置将会重启您的设备"
 
+msgid "Select Region"
+msgstr "选择区域"
+
+msgid "Region"
+msgstr "区域"
+
+msgid "Region Format Example"
+msgstr "区域格式示例"
+
+msgid "Numbers"
+msgstr "数字"
+
+msgid "Time"
+msgstr "时间"
+
+msgid "Currency"
+msgstr "货币"
+
+msgid "Measurement Units"
+msgstr "测量单位"
+
+msgid "Apply"
+msgstr "应用"

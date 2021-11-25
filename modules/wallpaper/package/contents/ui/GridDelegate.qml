@@ -2,6 +2,8 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.0
+import jingos.display 1.0
+
 Item {
     id: itemRoot
 
@@ -40,7 +42,7 @@ Item {
 
             text:  model.name
 
-            font.pixelSize: wallpaper_root.appFontSize - 10
+            font.pixelSize: wallpaper_root.appFontSize - 10 * JDisplay.sp(1.0)
             color: "white"
         }
     }

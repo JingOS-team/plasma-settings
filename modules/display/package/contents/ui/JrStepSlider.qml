@@ -19,11 +19,9 @@
  */
 
 import QtQuick 2.2
-import org.kde.kirigami 2.0
+
 import QtQuick.Controls 2.14 as QQC2
-import org.kde.kirigami 2.0 as Kirigami
 import QtGraphicalEffects 1.0
-import org.kde.kirigami 2.15
 
 
 QQC2.Slider {

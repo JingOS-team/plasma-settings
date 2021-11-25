@@ -25,7 +25,7 @@ import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 
-Popup {
+Kirigami.JArrowPopup {
     id: root
 
     property string uid
@@ -36,33 +36,41 @@ Popup {
 
     signal menuSelectChanged(int value)
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int appFontSize: theme.defaultFont.pointSize
+    property int screenWidth: 888 * appScale
+    property int screenHeight: 648 * appScale
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 18 
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24
-    property int radiusCommon: 10 
-    property int fontNormal: 14 
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 18  * appScale
+    property int marginLeftAndRight : 20  * appScale
+    property int marginItem2Top : 24 * appScale
+    property int radiusCommon: 10  * appScale
+    property int fontNormal: 14 * appFontSize
+    property string dialogTextColor: Kirigami.JTheme.majorForeground
 
-    width: 300
-    height: contentItem.height
+    width: 300 * appScale
+    height: contentItem.height +  root.topPadding + root.bottomPadding
+
+    blurBackground.arrowX: width * 0.75
+    blurBackground.arrowWidth: 16 * appScale
+    blurBackground.arrowHeight: 11 * appScale
+    blurBackground.arrowPos: Kirigami.JRoundRectangle.ARROW_TOP
 
     x: px
     y: py
     modal: true
+    Overlay.modal: Rectangle {
+                    color: "#00000000"
+                }
     focus: true
 
-    background: Rectangle {
-        id: background
-        color: "transparent"
-    }
+    // background: Rectangle {
+    //     id: background
+    //     color: "transparent"
+    // }
 
     contentItem: Rectangle {
         id: contentItem
@@ -71,7 +79,7 @@ Popup {
         anchors.right: parent.right
 
         width: parent.width
-        height: default_setting_item_height * 5 + 14 
+        height: default_setting_item_height * 5 + 14 * appScale
 
         radius: radiusCommon
         // layer.enabled: true
@@ -83,7 +91,7 @@ Popup {
         //     verticalOffset: 0
         //     spread: 0
         // }
-        color: "#ffffff"
+        color: "transparent"//Kirigami.JTheme.floatBackground//"#ffffff"
 
         Rectangle {
             id: menu_content
@@ -93,13 +101,13 @@ Popup {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
-                topMargin: 14
-                bottomMargin: 14
-                leftMargin: 14
-                rightMargin: 14
+                topMargin: 14 * appScale
+                bottomMargin: 14 * appScale
+                leftMargin: 14 * appScale
+                rightMargin: 14 * appScale
             }
 
-            width: root.width - 14 * 2
+            width: root.width - 14 * 2 * appScale
             color: "transparent"
 
             Column {
@@ -121,6 +129,7 @@ Popup {
 
                         font.pixelSize: fontNormal
                         text: i18n("Every day")
+                        color: dialogTextColor
                     }
 
                     Image {
@@ -130,8 +139,8 @@ Popup {
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 17
-                        height: 17
+                        width: 17 * appScale
+                        height: 17 * appScale
 
                         source: "../image/menu_select.png"
                         visible: selectIndex == 0 ? true : false
@@ -145,6 +154,14 @@ Popup {
                             menuSelectChanged(selectIndex)
                             root.close()
                         }
+                    }
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: Kirigami.JTheme.dividerForeground//"#f0f0f0"
                     }
                 }
 
@@ -163,6 +180,7 @@ Popup {
 
                         font.pixelSize: fontNormal
                         text: i18n("Every two days")
+                        color: dialogTextColor
                     }
 
                     Image {
@@ -172,8 +190,8 @@ Popup {
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 17
-                        height: 17
+                        width: 17 * appScale
+                        height: 17 * appScale
 
                         visible: selectIndex == 1 ? true : false
                         source: "../image/menu_select.png"
@@ -187,6 +205,14 @@ Popup {
                             menuSelectChanged(selectIndex)
                             root.close()
                         }
+                    }
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: Kirigami.JTheme.dividerForeground//"#f0f0f0"
                     }
                 }
 
@@ -205,6 +231,7 @@ Popup {
 
                         font.pixelSize: fontNormal
                         text: i18n("Weekly")
+                        color: dialogTextColor
                     }
 
                     Image {
@@ -214,8 +241,8 @@ Popup {
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 17
-                        height: 17
+                        width: 17 * appScale
+                        height: 17 * appScale
                         source: "../image/menu_select.png"
                         visible: selectIndex == 2 ? true : false
                     }
@@ -228,6 +255,14 @@ Popup {
                             menuSelectChanged(selectIndex)
                             root.close()
                         }
+                    }
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: Kirigami.JTheme.dividerForeground//"#f0f0f0"
                     }
                 }
 
@@ -246,6 +281,7 @@ Popup {
 
                         font.pixelSize: fontNormal
                         text: i18n("Every two weeks")
+                        color: dialogTextColor
                     }
 
                     Image {
@@ -255,8 +291,8 @@ Popup {
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 17
-                        height: 17
+                        width: 17 * appScale
+                        height: 17 * appScale
                         source: "../image/menu_select.png"
                         visible: selectIndex == 3 ? true : false
                     }
@@ -269,6 +305,14 @@ Popup {
                             menuSelectChanged(selectIndex)
                             root.close()
                         }
+                    }
+                    Kirigami.Separator {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: marginLeftAndRight
+                        anchors.rightMargin: marginLeftAndRight
+                        color: Kirigami.JTheme.dividerForeground//"#f0f0f0"
                     }
                 }
 
@@ -287,6 +331,7 @@ Popup {
 
                         font.pixelSize: fontNormal
                         text: i18n("Never")
+                        color: dialogTextColor
                     }
                     
                     Image {
@@ -296,8 +341,8 @@ Popup {
                             verticalCenter: parent.verticalCenter
                         }
 
-                        width: 17
-                        height: 17
+                        width: 17 * appScale
+                        height: 17 * appScale
                         source: "../image/menu_select.png"
                         visible: selectIndex == 4 ? true : false
                     }

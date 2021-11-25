@@ -19,7 +19,7 @@
  */
 import QtQuick 2.6
 import QtQuick.Controls 2.2 as Controls
-import org.kde.kirigami 2.5 as Kirigami
+import org.kde.kirigami 2.15 as Kirigami
 
 import org.kde.plasma.settings 0.1
 
@@ -28,6 +28,8 @@ Kirigami.Page {
 
     property QtObject kcm
     property Item internalPage
+    signal pause()
+    signal resume()
 
     width : 888 * 0.7
     height: 648
@@ -40,8 +42,8 @@ Kirigami.Page {
     header: Item {}
 
     onInternalPageChanged: {
-        internalPage.parent = contentItem
-        internalPage.anchors.fill = contentItem
+        internalPage.parent = container
+        internalPage.anchors.fill = container
     }
     
     onActiveFocusChanged: {
@@ -52,5 +54,15 @@ Kirigami.Page {
 
     Component.onCompleted: {
         kcm.load()
+    }
+
+    function settingPaused()
+    {
+        container.pause()
+    }
+
+    function settingResume()
+    {
+        container.resume()
     }
 }

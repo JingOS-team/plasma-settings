@@ -30,8 +30,8 @@ Rectangle {
 
     property real currentValue
     property real maxValue
-    width: 640 * appScale
-    height: 6 * appScale
+    width: 640 * appScaleSize
+    height: 6 * appScaleSize
     color: "transparent"
 
     signal sliderValueChanged(int value)
@@ -76,7 +76,7 @@ Rectangle {
         background: Rectangle {
             id: progressBarBackground
 
-            radius: 6 * appScale
+            radius: 6 * appScaleSize
             color: "#d8000000"
             layer.enabled: true
             layer.effect: OpacityMask {

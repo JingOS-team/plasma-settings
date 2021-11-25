@@ -1,9 +1,10 @@
-/**
- * SPDX-FileCopyrightText: 2020 Tobias Fella <fella@posteo.de>
- * SPDX-FileCopyrightText: 2021 Wang Rui <wangrui@jingos.com>
- * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+/*
+ * Copyright (C) 2021 Beijing Jingling Information System Technology Co., Ltd. All rights reserved.
+ *
+ * Authors:
+ * Zhang He Gang <zhanghegang@jingos.com>
+ *
  */
-
 import QtQuick 2.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.10
@@ -15,25 +16,38 @@ import org.jingos.info 1.0
 Item {
     id: info_root
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int appFontSize: theme.defaultFont.pointSize
+    property int screenWidth: 888 * appScale
+    property int screenHeight: 648 * appScale
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 36 * appScale
+    property int marginLeftAndRight : 20  * appScale
+    property int marginItem2Top : 24  * appScale
     property bool hasNewVersion: false
+    property int rootHas: rootHasNewVersion
+    property bool hasUpdating: system_info_root.rootHasupdating
 
     width: screenWidth * 0.7
     height: screenHeight
 
     UpdateTool {
         id: updateTool
+
+        onUpdatingChanged: {
+            info_root.reflashVersion();
+        }
+    }
+
+    function reflashVersion() {
+        hasNewVersion = updateTool.hasNewVersion()
+    }
+
+    onRootHasChanged:{
+        hasNewVersion = updateTool.hasNewVersion()
     }
 
     Component.onCompleted: {
@@ -44,7 +58,13 @@ Item {
         width: parent.width
         height: parent.height
 
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground
+
+        onVisibleChanged: {
+            if (visible) {
+                hasNewVersion = updateTool.hasNewVersion()
+            }
+        }
 
         Text {
             id: info_title
@@ -52,16 +72,16 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: marginLeftAndRight  
-                topMargin: marginTitle2Top  
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
 
-            width: 329
-            height: 14
+            width: 329 * appScale
+            height: 14 * appScale
             text: i18n("System & Update")
-            // font.pointSize: appFontSize + 11
-            font.pixelSize: 20 
+            font.pixelSize: 20 * appFontSize
             font.weight: Font.Bold
+            color: Kirigami.JTheme.majorForeground
         }
 
         Rectangle {
@@ -76,8 +96,8 @@ Item {
 
             width: parent.width - marginLeftAndRight* 2
             height: default_setting_item_height * 2
-            color: "#fff"
-            radius: 10
+            color: Kirigami.JTheme.cardBackground
+            radius: 10 * appScale
 
             SettingsItem {
                 id: item_about
@@ -95,9 +115,13 @@ Item {
 
                 anchors.top: item_about.bottom
 
-                mTitle: i18n("System Update")
+                mTitle: i18n("Software Update")
                 withSeparator: false
                 withNew: hasNewVersion
+                updating: hasUpdating
+                updateMode: true
+                mContent: i18n("Updating...")
+                withContent: hasUpdating ? true : false
 
                 onItemClicked: {
                     system_info_root.gotoPage("update_view")
@@ -117,13 +141,13 @@ Item {
 
             width: parent.width - marginLeftAndRight * 2
             height: default_setting_item_height
-            color: "#fff"
-            radius: 10
+            color: Kirigami.JTheme.cardBackground
+            radius: 10 * appScale
 
             SettingsItem {
                 id: item_legal
 
-                mTitle: i18n("Legal information")
+                mTitle: i18n("Legal Information")
                 withSeparator: false
 
                 onItemClicked: {
@@ -144,9 +168,8 @@ Item {
 
             width: parent.width - marginLeftAndRight * 2
             height: default_setting_item_height
-            visible: false
-            color: "#fff"
-            radius: 10
+            color: Kirigami.JTheme.cardBackground
+            radius: 10 * appScale
 
             SettingsItem {
                 id: update_about

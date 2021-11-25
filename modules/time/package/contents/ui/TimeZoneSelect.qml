@@ -17,39 +17,28 @@ import org.jingos.settings.time 1.0
 Item {
     id: timezone_layout
 
-    property int appFontSize: theme.defaultFont.pointSize
-    property string cTimeZone : "" 
+    property string cTimeZone : ""
     property string sTimeZone : ""
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36 
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
-    property int radiusCommon: 10 
-    property int fontNormal: 14
-
-    width: parent.width
-    height: parent.height
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
+    property int screenWidth: 888 * appScale
+    property int screenHeight: 648 * appScale
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 36  * appScale
+    property int marginLeftAndRight : 20  * appScale
+    property int marginItem2Top : 24  * appScale
+    property int radiusCommon: 10  * appScale
+    property int fontNormal: 14 * appFontSize
 
     TimeTool {
-        id: timeTool 
-        onDlgConfirm : {
-            console.log("onDlgConfirm");
+        id: timeTool
+        onDlgConfirm: {
             kcm.saveTimeZone(sTimeZone)
         }
-
-        onDlgCancel : {
-            console.log("onDlgCancel");
-            // kcm.saveTimeZone(cTimeZone)
-        }
-
     }
 
-    Component.onCompleted : {
+    Component.onCompleted: {
         cTimeZone = kcm.timeZone
     }
 
@@ -58,44 +47,64 @@ Item {
 
         Rectangle{
             width: input_parent.width
-            height: default_setting_item_height 
+            height: default_setting_item_height
+
             color: "transparent"
-            
             Text {
                 anchors.verticalCenter:parent.verticalCenter
-                font.pixelSize: 17
+                font.pixelSize: 17 * appFontSize
                 text: {
                     if (model) {
                         if (model.region) {
-                            return "%1 , %2".arg(model.city).arg(model.region)
+                            var regionName = model.region
+                            if(regionName == i18n("Asia/Taiwan")){
+                                regionName = i18n("Asia/Taipei(China)")
+                            }
+                            else if(regionName == i18n("Asia/台湾")){
+                                regionName = i18n("Asia/台湾（中国）")
+                            }
+                            else if(regionName == i18n("Asia/Hong Kong")){
+                                regionName = i18n("Asia/Hong Kong(China)")
+                            }
+                            else if(regionName == i18n("Asia/香港")){
+                                regionName = i18n("Asia/香港（中国）")
+                            }
+                            else if(regionName == i18n("Asia/Macao")){
+                                regionName = i18n("Asia/Macao(China)")
+                            }
+                            else if(regionName == i18n("Asia/澳门")){
+                                regionName = i18n("Asia/澳门（中国）")
+                            }
+                            return "%1 , %2".arg(model.city).arg(regionName)
                         } else {
                             return model.city
                         }
                     }
                     return ""
                 }
+                color: Kirigami.JTheme.majorForeground
             }
 
             Image {
-                source:"../image/menu_select.png"
-                width: 22 
-                height:width
+                width: 22 * appScale
+                height: width
                 anchors{
-                    verticalCenter:parent.verticalCenter
-                    right:parent.right
-                    rightMargin:0 
+                    verticalCenter: parent.verticalCenter
+                    right: parent.right
+                    rightMargin: 0
                 }
-                visible: model.timeZoneId == kcm.timeZone ? true : false 
+
+                source: "../image/menu_select.png"
+                visible: model.timeZoneId == kcm.timeZone ? true : false
             }
 
-            Kirigami.Separator {
-                anchors.bottom:parent.bottom
-                anchors.left:parent.left
+            Kirigami.JMenuSeparator {
+                width: parent.width
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
                 anchors.right: parent.right
-                height: 1 
-                color: "#f0f0f0"
             }
-            
+
             MouseArea {
                 anchors.fill:parent
                 onClicked: {
@@ -109,11 +118,12 @@ Item {
     }
 
     Rectangle {
-        id: root 
+        id: root
+
         width: parent.width
         height: parent.height
 
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground
 
         Rectangle {
             id: page_statusbar
@@ -121,72 +131,65 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: marginLeftAndRight 
-                topMargin: 48 
+                leftMargin: marginLeftAndRight
+                topMargin: 48  * appScale
             }
 
             width: parent.width
-            height: 27 
+            height: 27  * appScale
 
             color: "transparent"
 
-            Image {
+            Kirigami.JIconButton {
                 id: back_icon
 
                 anchors.verticalCenter: parent.verticalCenter
-                width: 22 
-                height: width
-                source: "../image/icon_left.png"
-                sourceSize.width: width
-                sourceSize.height: width
+                width: (22 + 8) * appScale
+                height: (22 + 8) * appScale
+                source: Qt.resolvedUrl("../image/icon_left.png")
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("back..about")
-                        kcm.timeZonesModel.filterString = ""
-                        popView()
-                    }
+                onClicked: {
+                    kcm.timeZonesModel.filterString = ""
+                    popView()
                 }
             }
 
             Text {
                 id: confirmBtn
 
+                height: 22  * appScale
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
-                    rightMargin: marginLeftAndRight * 2 
+                    rightMargin: marginLeftAndRight * 2
                 }
 
-                height: 22 
                 color:"#FF3C4BE8"
                 text: i18n(" ")
-                font.pixelSize: 17
+                font.pixelSize: 17 * appFontSize
                 font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
             }
 
             Rectangle {
                 id:input_parent
-                
-                height: 36
-                color:"transparent"
 
+                height: 36 * appScale
                 anchors {
                     left: back_icon.right
                     right: confirmBtn.left
-                    leftMargin:marginLeftAndRight 
-                    rightMargin: marginLeftAndRight 
+                    leftMargin:marginLeftAndRight
+                    rightMargin: marginLeftAndRight
                     verticalCenter: parent.verticalCenter
                 }
+
+                color:"transparent"
 
                 Kirigami.JSearchField {
                     id: timezone_input
                     width: parent.width
-                    anchors.verticalCenter:parent.verticalCenter
-                    font.pixelSize: 17
-                    bgColor:"#FFFFFFFF"
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pixelSize: 17 *appFontSize
                     focus: true
                     onTextChanged: {
                         kcm.timeZonesModel.filterString = text
@@ -196,49 +199,47 @@ Item {
         }
 
         Rectangle {
-            id:time_select_area
+            id: time_select_area
+
             anchors {
                 top: page_statusbar.bottom
                 left: parent.left
                 right: parent.right
                 bottom:parent.bottom
-                bottomMargin: 2
-                topMargin: 10
+                bottomMargin: 2 * appScale
+                topMargin: 10 * appScale
             }
+
             color:"transparent"
 
             Rectangle {
-                id:list_wrap
+                id: list_wrap
+
+                height:parent.height - 22 * appScale
                 anchors {
                     left: parent.left
                     right: parent.right
-                    bottom:time_select_area.bottom
+                    bottom: time_select_area.bottom
                     top: time_select_area.top
-                    leftMargin: marginLeftAndRight 
-                    rightMargin: marginLeftAndRight 
-                    bottomMargin: 2
-                    topMargin: 10 
+                    leftMargin: marginLeftAndRight
+                    rightMargin: marginLeftAndRight
+                    bottomMargin: 2 * appScale
+                    topMargin: 10  * appScale
                 }
-                height:parent.height - 22
+
                 color:"transparent"
                 clip: true
-
                 ListView {
-                    id:tz_list
+                    id: tz_list
+
                     clip: true
                     anchors.fill: parent
                     anchors.leftMargin: marginLeftAndRight * 2
                     implicitWidth: list_wrap.width - marginLeftAndRight * 3
-                    model: kcm.timeZonesModel 
-                    // delegate: Kirigami.DelegateRecycler {
-                    //     width: parent.width
-                    //     sourceComponent: listDelegateComponent
-                    // }
+                    model: kcm.timeZonesModel
                     delegate:listDelegateComponent
-
                 }
-            } 
+            }
         }
-        
     }
 }

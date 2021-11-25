@@ -10,10 +10,13 @@ import QtQuick.Window 2.2
 import QtQuick 2.7
 import QtQuick.Controls 2.2
 import org.kde.kirigami 2.15 as Kirigami
+import jingos.display 1.0
 
 Item {
     id: main
 
+    property real appScale: JDisplay.dp(1.0)
+    property real appFontSize: JDisplay.sp(1.0)
     property int screenWidth: Screen.width
     property int screenHeight: Screen.height
     // property real appScale: 1.3 * screenWidth / 1920
@@ -43,6 +46,22 @@ Item {
         TimeZoneSelect {}
     }
 
+
+    Connections {
+        target: kcm
+
+        onCurrentIndexChanged:{
+            if(index == 1){
+                popAllView()
+            }
+        }
+    }
+
+    function popAllView() {
+        while (stack.depth > 1) {
+            stack.pop()
+        }
+    }
 
 
     function gotoPage(name) {

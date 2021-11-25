@@ -15,18 +15,17 @@ import org.kde.kcm 1.2
 Item {
     id: legal_sub
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int appFontSize: theme.defaultFont.pointSize
+    property int screenWidth: 888 * appScale
+    property int screenHeight: 648 * appScale
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 18 
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 18  * appScale
+    property int marginLeftAndRight : 14  * appScale
+    property int marginItem2Top : 24  * appScale
 
     // width: screenWidth * 0.7
     // height: screenHeight
@@ -34,7 +33,7 @@ Item {
     Rectangle {
         width: parent.width
         height: parent.height
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
 
         Rectangle {
             id: page_statusbar
@@ -50,23 +49,19 @@ Item {
             height: statusbar_height
             color: "transparent"
 
-            Image {
+            Kirigami.JIconButton {
                 id: back_icon
 
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: statusbar_icon_size
+                width: (22 + 8) * appScale
                 height: width
-                source: "../image/icon_left.png"
-                sourceSize.width: width
-                sourceSize.height: width
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        system_info_root.popView()
-                    }
+                source: Qt.resolvedUrl("../image/icon_left.png")
+                color: Kirigami.JTheme.iconForeground
+                // sourceSize.width: width
+                // sourceSize.height: width
+                onClicked: {
+                    system_info_root.popView()
                 }
             }
 
@@ -76,16 +71,17 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 
+                    leftMargin: 9  * appScale
                 }
 
-                width: 359
-                height: 14
+                width: 359 * appScale
+                height: 14 * appScale
                 text: i18n("Legal Information")
                 // font.pointSize: appFontSize + 11
-                font.pixelSize: 20
+                font.pixelSize: 20 * appFontSize
                 font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
+                color: Kirigami.JTheme.majorForeground
             }
         }
 
@@ -99,8 +95,8 @@ Item {
                 topMargin: marginItem2Title
             }
 
-            height: legal_content.height + 50 
-            radius: 10
+            height: legal_content.height + 50  * appScale
+            radius: 10 * appScale
             color:"transparent"
 
             Text {
@@ -119,63 +115,12 @@ Item {
                 width: parent.width - marginLeftAndRight * 2
                 wrapMode: Text.WordWrap
                 // font.pointSize: appFontSize + 6
-                font.pixelSize: 16
+                font.pixelSize: 16 * appFontSize
+                lineHeight: 1.5
                 maximumLineCount: 10
-                text: i18n("Legal Notices:\nCopyright @ 2020 Jingling Inc. All rights reserved. \nJingling, the Jingling logo, Jing Pad, other cache objects have configurable update settings, and their update frequency is set by the Document Manager administrator. The objects with configurable update settings are controlled vocabulary lists ( CVLs), library property definitions, library property values lists, native folder lists, and user and group lists.If you issue a ROLLBACK after invoking these procedures, policy settings will not be updated. ")
+                color: Kirigami.JTheme.majorForeground
+                text: i18nd("settings","Legal Notices:\nCopyright @ 2020 Jingling Inc. All rights reserved. \nJingling, the Jingling logo, Jing Pad, other cache objects have configurable update settings, and their update frequency is set by the Document Manager administrator. The objects with configurable update settings are controlled vocabulary lists ( CVLs), library property definitions, library property values lists, native folder lists, and user and group lists.If you issue a ROLLBACK after invoking these procedures, policy settings will not be updated. ")
             }
         }
     }
 }
-/*
-Rectangle {
-    id: page_statusbar
-
-    anchors {
-        left: parent.left
-        top: parent.top
-        leftMargin: 34 * appScale
-        topMargin: 68 * appScale
-    }
-
-    width: parent.width
-    height: 41 * appScale
-    color: "transparent"
-
-    Image {
-        id: back_icon
-
-        anchors.verticalCenter: parent.verticalCenter
-
-        width: 34 * appScale
-        height: width
-        source: "../image/icon_left.png"
-        sourceSize.width: width
-        sourceSize.height: width
-
-        MouseArea {
-            anchors.fill: parent
-
-            onClicked: {
-                popView()
-            }
-        }
-    }
-
-    Text {
-        id: title
-
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: back_icon.right
-            leftMargin: 9 * appScale
-        }
-
-        width: 500
-        height: 50
-        text: i18n("Legal Information")
-        font.pointSize: appFontSize + 11
-        font.weight: Font.Bold
-        verticalAlignment: Text.AlignVCenter
-    }
-}
-*/

@@ -25,6 +25,7 @@ add_subdirectory(location)
 
 add_subdirectory(wallpaper)
 add_subdirectory(keyboard)
+add_subdirectory(loading)
 
 # Virtual Keyboard (maliit)
 # add_subdirectory(virtualkeyboard)

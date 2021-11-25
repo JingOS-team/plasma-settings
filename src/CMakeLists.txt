@@ -4,6 +4,7 @@ set(plasma-settings_SRCS
     modulesmodel.cpp
     module.cpp
     config.cpp
+    networkstatus.cpp
 )
 
 qt5_add_resources(RESOURCES resources.qrc)
@@ -18,6 +19,9 @@ target_link_libraries(plasma-settings
     KF5::QuickAddons
     KF5::I18n
     KF5::Declarative
+    KF5::Crash
+    KF5::NetworkManagerQt
+    jappcoreqt
 )
 
 install( TARGETS plasma-settings ${INSTALL_TARGETS_DEFAULT_ARGS} )

@@ -11,50 +11,71 @@ import QtQuick.Controls 2.10
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kcm 1.2
 import org.jingos.info 1.0
+import jingos.display 1.0
 
 Item {
     id: display_sub
 
     property double storageTotal: 0
     property string storageTotalValue: ""
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int appFontSize: theme.defaultFont.pointSize
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    property int statusbar_height : 30 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 18 
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
-    property string deviceName : kcm.localDeviceName
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 18  * appScale
+    property int marginLeftAndRight : 14  * appScale
+    property int marginItem2Top : 24  * appScale
+
+    property int ramMem: 0
 
     UpdateTool {
         id: updateTool
     }
 
-    Connections {
-        target: kcm
-        onLocalDeviceNameChanged: {
-            deviceName = localDeviceName 
-        }
-    }
-
     Component.onCompleted :{
         storageTotal = updateTool.getStorageTotalSize()
-        storageTotalValue = (storageTotal / 1000 / 1000 / 1000).toFixed(
-                    1) + "GB"
+        var storage = storageTotal / 1000 / 1000 / 1000;
+        storage = parseInt(storage);
+        if(storage <= 0) {
+            storage = 0;
+        } else if (storage <= 8) {
+            storage = 8
+        } else if (storage <= 16) {
+            storage = 16
+        } else if (storage <= 32) {
+            storage = 32
+        } else if (storage <= 64) {
+            storage = 64
+        } else if (storage <= 128) {
+            storage = 128
+        } else if (storage <= 256) {
+            storage = 256
+        } else if (storage <= 512) {
+            storage = 512
+        } else if (storage <= 1024) {
+            storage = 1024
+        }
+
+        storageTotalValue = storage + " GB";
+
+        var intMem = parseInt(kcm.hardwareInfo.memory)
+        intMem = intMem / 1000 / 1000 / 1000
+        if (intMem <= 0) {
+            intMem = 0;
+        }
+        ramMem = intMem;
     }
 
     Rectangle {
         id: info_parent
+
         width: parent.width
         height: parent.height
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground
 
-        Rectangle {
+        Item {
             id: page_statusbar
 
             anchors {
@@ -63,28 +84,20 @@ Item {
                 leftMargin: marginLeftAndRight
                 topMargin: marginTitle2Top
             }
-
             width: parent.width - marginLeftAndRight * 2
             height: statusbar_height
-            color: "transparent"
 
-            Image {
+            Kirigami.JIconButton {
                 id: back_icon
 
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: statusbar_icon_size
+                width: (22 + 8) * appScale
                 height: width
-                source: "../image/icon_left.png"
-                sourceSize.width: width
-                sourceSize.height: width
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        system_info_root.popView()
-                    }
+                source: "qrc:/image/icon_left.png"
+                color: Kirigami.JTheme.iconForeground
+                onClicked: {
+                    system_info_root.popView()
                 }
             }
 
@@ -94,15 +107,16 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 
+                    leftMargin: 9
                 }
-
-                width: 359
-                height: 14
-                text: i18n("About")
-                font.pixelSize: 20
-                font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
+                width: 359 * appScale
+                height: 14 * appScale
+
+                text: i18n("About")
+                font.pixelSize: 20 * appFontSize
+                font.weight: Font.Bold
+                color: Kirigami.JTheme.majorForeground
             }
         }
 
@@ -111,22 +125,21 @@ Item {
 
             anchors {
                 top: page_statusbar.bottom
-                topMargin: 35
+                topMargin: 35 * appScale
                 horizontalCenter: parent.horizontalCenter
             }
-
-            width: 60
-            height: 60
+            width: JDisplay.dp(55)
+            height: JDisplay.dp(60)
             Layout.alignment: Qt.AlignHCenter
+
             source: "../image/jingos_logo_update.svg"
         }
 
-        Rectangle {
+        Item {
             id: device_name_area
-            height: 22
-            width: childrenRect.width
-            color:"transparent"
 
+            height: 22 * appScale
+            width: childrenRect.width
             anchors {
                 horizontalCenter: info_parent.horizontalCenter
                 top: system_logo.bottom
@@ -135,31 +148,35 @@ Item {
 
             Text {
                 id: device_name_txt
-                font.pixelSize: 20
-                color: "black"
+
+                font.pixelSize: 20 * appFontSize
+                color: Kirigami.JTheme.majorForeground//"black"
                 verticalAlignment: Text.AlignVCenter
                 anchors.verticalCenter:parent.verticalCenter
-                anchors.left:parent.left 
-                text: deviceName
+                anchors.left:parent.left
+                horizontalAlignment: Text.AlignRight
+
+                text: deviceName.length > 12 ? (deviceName.substring(0,12) + "...") : deviceName
             }
 
-            Image {
-                id:device_name_icon
+            Kirigami.Icon {
+                id: device_name_icon
+
+                width : 22 * appScale
+                height : 22 * appScale
                 anchors{
                     left: device_name_txt.right
-                    leftMargin: 12
+                    leftMargin: 12 * appScale
                     verticalCenter: parent.verticalCenter
                 }
 
-                width : 22
-                height : 22
-                sourceSize.width : 22
-                sourceSize.height : 22
-                source: "../image/device_name_modify.svg"
+                source: "qrc:/image/device_name_modify.svg"
+                color: Kirigami.JTheme.minorForeground
 
                 MouseArea {
                     anchors.fill:parent
                     onClicked: {
+                        editDialog.inputText = deviceName
                         editDialog.open()
                     }
                 }
@@ -176,16 +193,17 @@ Item {
                 rightMargin: marginLeftAndRight
                 topMargin: marginItem2Title
             }
-
             width: parent.width - marginLeftAndRight * 2
-            height: default_setting_item_height * 7
-            radius: 10 
-            
+            height: (default_setting_item_height + 1) * 6
+            radius: 10  * appScale
+
+            color: Kirigami.JTheme.cardBackground
+
             SettingsItem {
                 id: model_name
 
                 mTitle: i18n("Model Name")
-                mContent: kcm.distroInfo.name
+                mContent: updateTool.readModelName()
                 withArrow: false
                 withContent: true
                 withSeparator: true
@@ -197,19 +215,7 @@ Item {
                 anchors.top: model_name.bottom
 
                 mTitle: i18n("Software Version")
-                mContent: updateTool.readLocalVersion()
-                withArrow: false
-                withContent: true
-                withSeparator: true
-            }
-
-            SettingsItem {
-                id: processor
-
-                anchors.top: software_version.bottom
-
-                mTitle: i18n("Processor")
-                mContent: kcm.hardwareInfo.processors
+                mContent: kcm.distroInfo.name + " "+ updateTool.readLocalVersion()
                 withArrow: false
                 withContent: true
                 withSeparator: true
@@ -218,18 +224,17 @@ Item {
             SettingsItem {
                 id: ram
 
-                anchors.top: processor.bottom
+                anchors.top: software_version.bottom
 
                 mTitle: i18n("RAM")
                 withArrow: false
                 withContent: true
                 withSeparator: true
                 mContent: {
-                    if (kcm.hardwareInfo.memory !== "0 B") {
-                        return i18nc("@label %1 is the formatted amount of system memory (e.g. 7,7 GiB)",
-                                     "%1 of RAM", kcm.hardwareInfo.memory)
-                    } else {
+                    if(ramMem == 0){
                         return i18nc("Unknown amount of RAM", "Unknown")
+                    } else {
+                        return ramMem + " GB";
                     }
                 }
             }
@@ -241,7 +246,7 @@ Item {
 
                 mTitle: i18n("Internal Storage")
                 mContent: storageTotalValue
-                withArrow: false 
+                withArrow: false
                 withContent: true
                 withSeparator: true
             }
@@ -258,48 +263,67 @@ Item {
                 withSeparator: true
             }
 
+            // SettingsItem {
+            //     id: serial_number
+
+            //     anchors.top: kernel_version.bottom
+
+            //     mTitle: i18n("Serial Number")
+            //     mContent: kcm.softwareInfo.frameworksVersion
+            //     withArrow: false
+            //     withContent: true
+            //     withSeparator: true
+            // }
+
             SettingsItem {
-                id: serial_number
+                id: status
 
                 anchors.top: kernel_version.bottom
 
-                mTitle: i18n("Serial Number")
-                mContent: kcm.softwareInfo.frameworksVersion
-                withArrow: false
-                withContent: true
-                withSeparator: false
-            }
-
-      /*       SettingsItem {
-                id: status
-
-                anchors.top: serial_number.bottom
-                
                 mTitle: i18n("Status")
                 withArrow: true
                 withContent: false
                 withSeparator: false
-            } */
+
+                onItemClicked:{
+                    system_info_root.gotoPage("status_view")
+                }
+            }
         }
 
         Kirigami.JDialog {
             id: editDialog
 
-            title:i18n("Device Name")
-            text: i18n("Other devices will see this name when you use Bluetooth,WLAN Direct,Personal hotspot and USB.")
+            title: i18n("Device Name")
+            text: i18n("Other devices will see this name when you use Bluetooth and USB.")
             inputEnable: true
             showPassword: false
             leftButtonText: i18n("Cancel")
-            rightButtonText: i18n("Ok")
+            rightButtonText: i18n("OK")
             onRightButtonClicked: {
-                if(editDialog.inputText.length != 0){
+                if (!rightButtonEnable) {
+                    return;
+                }
+                if (editDialog.inputText.length != 0) {
                     kcm.setLocalDeviceName(editDialog.inputText)
                 }
                 editDialog.visible = false
             }
             onLeftButtonClicked: {
                 editDialog.visible = false
+                editDialog.InputText = ""
             }
+            onInputTextChanged: {
+                if (inputText.length > 32) {
+                    editDialog.inputText = inputText.substring(0,32)
+                }
+                if (inputText.length < 1) {
+                    rightButtonEnable = false
+                } else {
+                    rightButtonEnable = true
+                }
+            }
+
         }
     }
 }

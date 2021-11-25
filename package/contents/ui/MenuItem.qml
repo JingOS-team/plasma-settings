@@ -19,6 +19,8 @@
  */
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import org.kde.kirigami 2.15 as Kirigami
+import jingos.display 1.0
 
 Item {
     id: menuItem_root
@@ -26,16 +28,15 @@ Item {
     property bool isSelect: false
     property int menuType: 0 // 0 : normal  ; 1 : switch ; 2 : text
     property string menuIconSource: ""
-    property string menuIconSourceHighlight: ""
     property string menuTitle: ""
     property string menuContent: ""
     property bool menuChecked: false
 
-    signal swichChanged
+    signal toggleChanged(bool checked)
     signal menuClicked
 
-    width: 240
-    height: 35
+    implicitWidth : 240 * appScaleSize
+    implicitHeight: 39 * appScaleSize
 
     //color: isSelect ? "transparent" : "#FF3C4BE8"
     MouseArea {
@@ -45,55 +46,26 @@ Item {
         onClicked: {
             menuClicked()
         }
-//        onEntered: {
-//            if(!menuItem_root.isSelect){
-//                menuItem_root.color = "#339F9FAA"
-//            }
-//        }
-
-//        onExited: {
-//            menuItem_root.color = menuItem_root.isSelect ?  "transparent" : "#FF3C4BE8"
-
-//        }
-
-//        onPressed: {
-//            if(!menuItem_root.isSelect){
-//                menuItem_root.color = "#4D9F9FAA"
-//            }
-//        }
-
-//        onReleased: {
-//            menuItem_root.color = menuItem_root.isSelect ?  "transparent" : "#FF3C4BE8"
-//        }
     }
 
     Rectangle{
         anchors.fill: parent
-        radius: 10
+        radius: JDisplay.dp(10)
         visible:bkmouse.containsMouse || menuItem_root.isSelect
         color: menuItem_root.isSelect ? "#FF3C4BE8" : (bkmouse.pressed ? "#4D9F9FAA" : bkmouse.containsMouse ? "#339F9FAA" : "#ffffff")
     }
 
-//    onIsSelectChanged: {
-//        console.log("----------isSelect------------" , isSelect)
-//        menuItem_root.color = menuItem_root.isSelect ?  "transparent" : "#FF3C4BE8"
-//    }
-
-    Image {
+    Kirigami.Icon {
         id: menu_icon
 
         anchors {
             left: parent.left
             verticalCenter: parent.verticalCenter
-            leftMargin: 13
+            leftMargin: 13 * appScaleSize
         }
-        width: 17
+        width: 22 * appScaleSize
         height: width
-        // source: isSelect ? menuIconSourceHighlight : menuIconSource
         source:menuIconSource
-        sourceSize.width: 17
-        sourceSize.height: 17
-
     }
 
     Text {
@@ -102,33 +74,33 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             left: menu_icon.right
-            leftMargin: 7
+            leftMargin: 7 * appScaleSize
         }
-        width: 128
-        height: 17
-        font.pixelSize: 14
+        width: 128 * appScaleSize
+        height: 17 * appScaleSize
+        font.pixelSize: 14 * appFontSize
         verticalAlignment: Text.AlignVCenter
         text: menuTitle
-        color: isSelect ? "#fff" : "#000"
+        color: isSelect ? "#fff" : Kirigami.JTheme.majorForeground//"#000"
     }
 
     Item {
         anchors {
             right: parent.right
-            rightMargin: 13
+            rightMargin: 13 * appScaleSize
         }
-        width: 102
+        width: 102 * appScaleSize
         height: parent.height
         visible: menuType != 0
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width
-            height: 25
-            font.pixelSize: 14
+            height: 25 * appScaleSize
+            font.pixelSize: 14 * appScaleSize
             horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter
-            color: isSelect ? "#fff" : "#993C3C43"
+            color: isSelect ? "#fff" : Kirigami.JTheme.minorForeground//"#993C3C43"
             text: menuContent
             visible: menuType == 2
             wrapMode: Text.WrapAnywhere
@@ -136,15 +108,18 @@ Item {
             elide: Text.ElideRight
         }
 
-        Switch {
-            anchors.centerIn: parent
-//            Layout.columnSpan: 1
+        Kirigami.JSwitch {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            width: 43 * appScaleSize
+            height:26 * appScaleSize
+
             visible: menuType == 1
             checked: menuChecked
             checkable: true
 
-            onCheckedChanged: {
-                swichChanged()
+            onToggled: {
+                toggleChanged(checked)
             }
         }
     }

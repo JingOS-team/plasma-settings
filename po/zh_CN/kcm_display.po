@@ -129,3 +129,35 @@ msgid "Never"
 
 msgstr "永不"
 
+msgid "Change appearance style this setting will restart your PAD"
+
+msgstr "更改外观样式此设置将重新启动设备"
+
+msgid "Dark"
+
+msgstr "深色"
+
+msgid "Light"
+
+msgstr "浅色"
+
+msgid "On"
+msgstr "开"
+
+msgid "Off"
+msgstr "关"
+
+msgid "On Connection"
+msgstr "连接中"
+
+msgid "Not Connected"
+msgstr "未连接"
+
+msgid "Connected"
+msgstr "已连接"
+
+msgid "Automatic"
+msgstr "自动亮度"
+
+msgid "Double-tap to wake"
+msgstr "双击唤醒"

@@ -3,7 +3,7 @@
     Copyright 2016 David Rosca <nowrep@gmail.com>
     Copyright 2019 Sefa Eyeoglu <contact@scrumplex.net>
     Copyright 2020 Nicolas Fella <nicolas.fella@gmx.de>
-    Copyright 2021 Wang Rui <wangrui@jingos.com> 
+    Copyright 2021 Wang Rui <wangrui@jingos.com>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -30,46 +30,42 @@ import QtQuick.Controls 2.0
 import org.kde.kcm 1.3
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.plasma.private.volume 0.1
+import jingos.display 1.0
 
 Item {
 
     id: sound_root
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    // property int appFontSize: theme.defaultFont.pointSize
+    property real appScaleSize: JDisplay.dp(1.0)
+    property real appFontSize: JDisplay.sp(1.0)
+    property int screenWidth: 888 * appScaleSize
+    property int screenHeight: 648 * appScaleSize
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    property int statusbar_height : 22 * appScaleSize
+    property int statusbar_icon_size: 22 * appScaleSize
+    property int default_setting_item_height: 45 * appScaleSize
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36
-    property int marginLeftAndRight : 20
-    property int marginItem2Top : 24 
-    property int fontNormal: 14
+    property int marginTitle2Top : 44  * appScaleSize
+    property int marginItem2Title : 36 * appScaleSize
+    property int marginLeftAndRight : 20 * appScaleSize
+    property int marginItem2Top : 24  * appScaleSize
+    property int fontNormal: 14 * appScaleSize
 
-    // property real appScale: 1.3 * width / (1920 * 0.7)
-    property int appFontSize: theme.defaultFont.pointSize
     property real currentRingtone
     property bool volumeFeedback: true
     property int maxVolumeValue: Math.round(
                                      100 * PulseAudio.NormalVolume / 100.0)
     property int volumeStep: Math.round(5 * PulseAudio.NormalVolume / 100.0)
     readonly property string dummyOutputName: "auto_null"
-    readonly property int currentVolume: paSinkModel.preferredSink.volume
-    property bool isMuted: false
+    property bool isMuted: paSinkModel.preferredSink.muted
+    readonly property int currentVolume: isMuted ? 0 : paSinkModel.preferredSink.volume
 
     width:parent.width
-    height:parent.height 
+    height:parent.height
 
-    // width: Screen.width * 0.7
-    // height: Screen.height
-    // width: screenWidth * 0.7
-    // height: screenHeight
-
-    Component.onCompleted: {
-        isMuted = paSinkModel.preferredSink.muted
+    onIsMutedChanged:{
+        console.log(" isMuted:::::" + isMuted)
+        slince_switch.checked = isMuted
     }
 
     function iconName(volume, muted, prefix) {
@@ -174,6 +170,14 @@ Item {
         }
     }
 
+    Timer {
+        id: playTimer
+        interval: 100; running: false; repeat: false
+        onTriggered: {
+            playFeedback()
+        }
+    }
+
     function setVolume(num) {
         if (!paSinkModel.preferredSink || isDummyOutput(
                     paSinkModel.preferredSink)) {
@@ -183,7 +187,11 @@ Item {
         var percent = volumePercent(volume, maxVolumeValue)
         paSinkModel.preferredSink.muted = percent == 0
         paSinkModel.preferredSink.volume = volume
-        playFeedback()
+        if (playTimer.running) {
+            playTimer.restart();
+        } else {
+            playTimer.start();
+        }
     }
 
     SinkModel {
@@ -196,43 +204,6 @@ Item {
 
     VolumeFeedback {
         id: feedback
-    }
-
-    GlobalActionCollection {
-        // KGlobalAccel cannot transition from kmix to something else, so if
-        // the user had a custom shortcut set for kmix those would get lost.
-        // To avoid this we hijack kmix name and actions. Entirely mental but
-        // best we can do to not cause annoyance for the user.
-        // The display name actually is updated to whatever registered last
-        // though, so as far as user visible strings go we should be fine.
-        // As of 2015-07-21:
-        //   componentName: kmix
-        //   actions: increase_volume, decrease_volume, mute
-        name: "kmix"
-        displayName: main.displayName
-
-        GlobalAction {
-            objectName: "increase_volume"
-            text: i18n("Increase Volume")
-            shortcut: Qt.Key_VolumeUp
-            onTriggered: increaseVolume()
-        }
-
-        GlobalAction {
-            objectName: "decrease_volume"
-            text: i18n("Decrease Volume")
-            shortcut: Qt.Key_VolumeDown
-            onTriggered: decreaseVolume()
-        }
-
-        GlobalAction {
-            objectName: "mute"
-            text: i18n("Mute")
-            shortcut: Qt.Key_VolumeMute
-            onTriggered: {
-                muteVolume()
-            }
-        }
     }
 
     PulseObjectFilterModel {
@@ -251,7 +222,7 @@ Item {
 
     Timer {
         id: helloTimer2
-        interval: 200 
+        interval: 200
         repeat: false
         triggeredOnStart: false
         onTriggered: {
@@ -261,9 +232,10 @@ Item {
 
     Rectangle {
         id: sound_layout
-        width:parent.width
-        height:parent.height
-        color: "#FFF6F9FF"
+
+        width: parent.width
+        height: parent.height
+        color: Kirigami.JTheme.settingMinorBackground
 
         Text {
             id: sound_title
@@ -275,12 +247,13 @@ Item {
                 topMargin: marginTitle2Top
             }
 
-            width: 329
-            height: 14
+            width: 329 * appScaleSize
+            height: 14 * appScaleSize
             text: i18n("Sounds")
-            font.pixelSize: 20
+            font.pixelSize: 20 * appScaleSize
             font.weight: Font.Bold
             verticalAlignment:Text.verticalAlignment
+            color:  Kirigami.JTheme.majorForeground
         }
 
         Rectangle {
@@ -294,12 +267,11 @@ Item {
                 rightMargin: marginLeftAndRight
                 topMargin: marginItem2Title
             }
-
             width: parent.width - marginLeftAndRight * 2
-            height: default_setting_item_height * 3
-            color: "#fff"
-            radius: 10
+            height: default_setting_item_height * 2
 
+            color: Kirigami.JTheme.cardBackground
+            radius: 10 * appScaleSize
             Rectangle {
                 id: sound_slience
 
@@ -307,20 +279,23 @@ Item {
                     top: parent.top
                 }
                 width: parent.width
-                height: parent.height / 3
-                color: "transparent"
+                height: parent.height / 2
 
+                color: "transparent"
                 Text {
                     id: slince_title
+
                     anchors {
                         left: parent.left
                         leftMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
-                    width: 331
-                    height: 17
+                    width: 331 * appScaleSize
+                    height: 17 * appScaleSize
+
                     text: i18n("Silent mode")
                     font.pixelSize: fontNormal
+                    color: Kirigami.JTheme.majorForeground
                 }
 
                 Kirigami.JSwitch {
@@ -332,8 +307,11 @@ Item {
                         rightMargin: marginLeftAndRight
                     }
                     checked: isMuted
-                    onCheckedChanged: {
-                        switchMute(checked)
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked:{
+                            switchMute(!slince_switch.checked)
+                        }
                     }
                 }
 
@@ -343,7 +321,7 @@ Item {
                     anchors.right: parent.right
                     anchors.leftMargin: marginLeftAndRight
                     anchors.rightMargin: marginLeftAndRight
-                    color: "#f0f0f0"
+                    color: Kirigami.JTheme.dividerForeground
                 }
             }
 
@@ -354,9 +332,10 @@ Item {
                     top: sound_slience.bottom
                 }
                 width: parent.width
-                height: parent.height / 3
+                height: parent.height / 2
                 color: "transparent"
-                Image {
+
+                Kirigami.JIconButton {
                     id: voice_ic
 
                     anchors {
@@ -364,20 +343,22 @@ Item {
                         verticalCenter: parent.verticalCenter
                         leftMargin: marginLeftAndRight
                     }
-                    source: "../image/ic_voice.png"
-                    sourceSize.width: 17
-                    sourceSize.height: 17
+                    width: 30 * appScaleSize
+                    height: 30 * appScaleSize
+
+                    source: Qt.resolvedUrl("../image/ic_voice.svg")
+                    color: Kirigami.JTheme.iconForeground
                 }
 
                 Text {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         left: voice_ic.right
-                        leftMargin: 10
+                        leftMargin: 10 * appScaleSize
                     }
                     text: i18n("Voice")
                     font.pixelSize: fontNormal
-
+                    color: Kirigami.JTheme.majorForeground
                 }
 
                 Kirigami.JSlider {
@@ -386,7 +367,7 @@ Item {
                     anchors {
                         left: voice_ic.right
                         right: parent.right
-                        leftMargin: 80
+                        leftMargin: 80 * appScaleSize
                         rightMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
@@ -394,70 +375,8 @@ Item {
                     value: currentVolume
                     from: 0
                     to: maxVolumeValue
-                    onValueChanged: {
+                    onMoved: {
                         setVolume(value)
-                    }
-                }
-
-                Kirigami.Separator {
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.leftMargin: marginLeftAndRight
-                    anchors.rightMargin: marginLeftAndRight
-                    color: "#f0f0f0"
-                }
-            }
-
-            Rectangle {
-                id: ringtone_area
-
-                anchors {
-                    top: voice_area.bottom
-                }
-                width: parent.width
-                height: parent.height / 3
-                color: "transparent"
-                
-                Image {
-                    id: rt_icon
-
-                    anchors {
-                        left: parent.left
-                        verticalCenter: parent.verticalCenter
-                        leftMargin: marginLeftAndRight
-                    }
-                    sourceSize.width: 17
-                    sourceSize.height: 17
-                    source: "../image/ic_ringtone.png"
-                }
-
-                Text {
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        left: rt_icon.right
-                        leftMargin: 10
-                    }
-                    text: i18n("Ringtone")
-                    font.pixelSize: fontNormal
-
-                }
-
-                Kirigami.JSlider {
-                    id: ringtone_slider
-
-                    anchors {
-                        left: rt_icon.right
-                        right: parent.right
-                        leftMargin: 80
-                        rightMargin: marginLeftAndRight
-                        verticalCenter: parent.verticalCenter
-                    }
-                    value: pluseModel.getVolume()
-                    from: PulseAudio.MinimalVolume
-                    to: PulseAudio.MaximalVolume
-                    onValueChanged: {
-                        pluseModel.setVolume(value)
                     }
                 }
             }

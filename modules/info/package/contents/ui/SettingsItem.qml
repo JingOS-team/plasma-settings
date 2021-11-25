@@ -24,6 +24,7 @@ import QtQuick.Controls 2.10
 
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kcm 1.2
+import jingos.display 1.0
 
 Rectangle {
     id: settings_item_root
@@ -35,13 +36,14 @@ Rectangle {
     property bool withArrow: true
     property bool withNew: false
 
-    property int radiusCommon: 10 
-    property int fontNormal: 14
+    property int radiusCommon: 10  * appScale
+    property int fontNormal: 14 * appScale
+    property bool updating: false
+    property bool updateMode: false
 
     width: parent.width
     height: default_setting_item_height + 1
     color: "transparent"
-    // color : "#aa00ff00"
 
     signal itemClicked
 
@@ -62,11 +64,11 @@ Rectangle {
             verticalCenter: settings_item_root.verticalCenter
         }
 
-        width: 331 
-        height: 17
+        width: 331  * appScale
+        height: 17 * appScale
 
-        // font.pointSize: system_info_root.appFontSize + 2
         font.pixelSize: fontNormal
+        color: Kirigami.JTheme.majorForeground
     }
 
     Text {
@@ -74,14 +76,14 @@ Rectangle {
 
         anchors {
             verticalCenter: parent.verticalCenter
-            right: parent.right
-            rightMargin: marginLeftAndRight
+
+            right: updateMode ?  item_new.left : parent.right
+            rightMargin: updateMode ? JDisplay.dp(5) : marginLeftAndRight
         }
 
         visible: withContent
         text: mContent
-        color: "#99000000"
-        // font.pointSize: appFontSize + 2
+        color: Kirigami.JTheme.minorForeground
         font.pixelSize: fontNormal
     }
 
@@ -90,31 +92,66 @@ Rectangle {
 
         anchors {
             verticalCenter: parent.verticalCenter
-            right: item_arrow.right
-            rightMargin: marginLeftAndRight
+            right: item_arrow.left
+            rightMargin: 0 * appScale
         }
 
-        sourceSize.width: 17
-        sourceSize.height: 17
+        sourceSize.width: 17 * appScale
+        sourceSize.height: 17 * appScale
 
-        visible: withNew
+        visible: updating ? false : (withNew ? true : false)
         source: "../image/new.png"
     }
 
     Image {
+        id: item_updating
+
+        anchors {
+            verticalCenter: parent.verticalCenter
+            right: item_arrow.left
+            rightMargin: 0 * appScale
+        }
+
+        sourceSize.width: 17 * appScale
+        sourceSize.height: 17 * appScale
+
+        visible: updating
+        source: "../image/update_loading.svg"
+
+        RotationAnimation {
+            id: scanAnim
+
+            target: item_updating
+            loops: Animation.Infinite
+            running: true
+            from: 0
+            to: 360
+            duration: 3000
+        }
+    }
+
+    Kirigami.JIconButton {
         id: item_arrow
 
         anchors {
             verticalCenter: parent.verticalCenter
             right: parent.right
-            rightMargin: marginLeftAndRight
+            rightMargin: 10 * appScale
         }
 
-        sourceSize.width: 17
-        sourceSize.height: 17
+        width: 30 * appScale
+        height: 30 * appScale
 
         visible: withArrow
-        source: "../image/icon_right.png"
+        source: Qt.resolvedUrl("../image/icon_right.png")
+        color: Kirigami.JTheme.iconMinorForeground
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                itemClicked()
+            }
+        }
     }
 
     Kirigami.Separator {
@@ -127,6 +164,6 @@ Rectangle {
         anchors.rightMargin: marginLeftAndRight
 
         height: 1
-        color: "#f0f0f0"
+        color: Kirigami.JTheme.dividerForeground
     }
 }

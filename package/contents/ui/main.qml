@@ -23,57 +23,36 @@ import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.15 as Kirigami
-import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
+//import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 
 import org.kde.plasma.settings 0.1
+import jingos.display 1.0
 
 Kirigami.ApplicationWindow {
     id: main
 
+    property real appScaleSize: JDisplay.dp(1.0)
+    property real appFontSize: JDisplay.sp(1.0)
     property int screenWidth: Screen.width 
     property int screenHeight: Screen.height
+    property bool isDarkTheme: Kirigami.JTheme.colorScheme === "jingosDark"
+    property string wifiConnectedName
 
     width: screenWidth
     height: screenHeight
 
     pageStack.initialPage: appPage
     pageStack.interactive: false
-    // property real appScale: 1.3 * screenWidth / 1920
-    // property int appFontSize: theme.defaultFont.pointSize
     pageStack.separatorVisible: false
-    pageStack.defaultColumnWidth: 888 * 0.3
+    pageStack.defaultColumnWidth: 888 * appScaleSize * 0.3
+    color: Kirigami.JTheme.settingMinorBackground
 
     Component.onCompleted: {
         main.fullScreenWindow()
     }
 
-    onVisibleChanged: {
-        main.globalToolBarStyle = Kirigami.ApplicationHeaderStyle.None
-    }
 
     ApplicationPage {
         id: appPage
-    }
-
-    PlasmaNM.Handler {
-        id: handler
-
-        onPasswordErrorChanged: {
-            errorDialog.visible = true
-            errorDialog.text = i18n("Incorrect password for \"%1\"",name)
-
-            handler.removeConnection(connectionPath)
-        }
-    }
-
-    Kirigami.JDialog {
-        id: errorDialog
-
-        title: i18n("Failed to join")
-        inputEnable: false
-        centerButtonText: i18n("Ok")
-        onCenterButtonClicked: {
-            errorDialog.visible = false
-        }
     }
 }

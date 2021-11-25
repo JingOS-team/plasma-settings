@@ -72,7 +72,8 @@ void FontModel::save()
 {
     fontsSettings()->save();
     KGlobalSettings::self()->emitChange(KGlobalSettings::FontChanged);
-    QProcess::execute("reboot");
+    // QProcess::execute("reboot");
+     m_session.requestReboot(SessionManagement::ConfirmationMode::Skip);
 }
 
 QFont FontModel::getSystemFont()

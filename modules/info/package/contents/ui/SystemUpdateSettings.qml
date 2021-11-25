@@ -18,16 +18,16 @@ Item {
     // property real appScale: 1.3 * parent.width / (1920 * 0.7)
     // property int appFontSize: theme.defaultFont.pointSize
     property string dimTime: "Every day"
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36 
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
-    property int radiusCommon: 10 
-    property int fontNormal: 14
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 36  * appScale
+    property int marginLeftAndRight : 20  * appScale
+    property int marginItem2Top : 24  * appScale
+    property int radiusCommon: 10  * appScale
+    property int fontNormal: 14 * appFontSize
 
     UpdateTool {
         id: updateTool
@@ -99,7 +99,7 @@ Item {
         width: parent.width
         height: parent.height
 
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
 
         Rectangle {
             id: page_statusbar
@@ -115,26 +115,41 @@ Item {
             height: statusbar_height
             color: "transparent"
 
-            Image {
+            // Image {
+            //     id: back_icon
+
+            //     anchors.verticalCenter: parent.verticalCenter
+
+            //     width: statusbar_icon_size
+            //     height: width
+            //     sourceSize.width: width
+            //     sourceSize.height: width
+            //     source: "../image/icon_left.png"
+
+            //     MouseArea {
+            //         anchors.fill: parent
+
+            //         onClicked: {
+            //             system_info_root.popView()
+            //         }
+            //     }
+            // }
+
+             Kirigami.JIconButton {
                 id: back_icon
 
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: statusbar_icon_size
+                width: (22 + 8) * appScale
                 height: width
-                sourceSize.width: width
-                sourceSize.height: width
-
-                source: "../image/icon_left.png"
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        system_info_root.popView()
-                    }
+                source: Qt.resolvedUrl("../image/icon_left.png")
+                color: Kirigami.JTheme.iconForeground
+                // sourceSize.width: width
+                // sourceSize.height: width
+                onClicked: {
+                    system_info_root.popView()
                 }
-            }
+             }
 
              Text {
                 id: title
@@ -142,16 +157,17 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: back_icon.right
-                    leftMargin: 9 
+                    leftMargin: 9  * appScale
                 }
 
-                width: 359
-                height: 14
+                width: 359 * appScale
+                height: 14 * appScale
                 text: i18n("Update Settings")
                 // font.pointSize: appFontSize + 11
-                font.pixelSize: 20
+                font.pixelSize: 20 *  appFontSize
                 font.weight: Font.Bold
                 verticalAlignment: Text.AlignVCenter
+                color: Kirigami.JTheme.majorForeground
             }
         }
 
@@ -168,7 +184,7 @@ Item {
             width: parent.width - marginLeftAndRight * 2
             height: default_setting_item_height
 
-            color: "#fff"
+            color: Kirigami.JTheme.cardBackground//"#fff"
             radius: radiusCommon
 
             Text {
@@ -181,19 +197,38 @@ Item {
                 text: i18n("Automatically check for updates ")
                 // font.pointSize: appFontSize + 2
                 font.pixelSize: fontNormal
+                color: Kirigami.JTheme.majorForeground
             }
 
             Text {
+                id: selectText
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: item_arrow.left
+                    rightMargin: 8 * appScale
+                }
+
+                text: dimTime
+                // font.pointSize: appFontSize + 2
+                font.pixelSize: fontNormal
+                color: Kirigami.JTheme.minorForeground//"#99000000"
+            }
+
+             Kirigami.JIconButton {
+                id: item_arrow
+
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
                     rightMargin: marginLeftAndRight
                 }
 
-                text: dimTime
-                // font.pointSize: appFontSize + 2
-                font.pixelSize: fontNormal
-                color: "#99000000"
+                width: 30 * appScale
+                height: 30 * appScale
+
+                visible: withArrow
+                source: Qt.resolvedUrl("../image/icon_right.png")
+                color: Kirigami.JTheme.iconMinorForeground
             }
 
             MouseArea {
@@ -201,12 +236,87 @@ Item {
 
                 onClicked: {
                     selectDialog.px = sleep_area.x + sleep_area.width - selectDialog.width
-                    selectDialog.py = sleep_area.y + 69 * appScale
+                    selectDialog.py = sleep_area.y + sleep_area.height/2 + selectText.contentHeight/2
                     selectDialog.selectIndex = getIndex(dimTime)
                     selectDialog.open()
+
+                    // selectDialog.popup(sleep_area.x + sleep_area.width - selectDialog.width, 
+                    //     sleep_area.y - selectDialog.height)
                 }
             }
         }
+
+        // Kirigami.JPopupMenu{
+        //     id:selectDialog
+
+        //     property int selectIndex : getIndex(dimTime)
+        //     width: Kirigami.JDisplay.dp(240)
+        //     blurBackground.arrowX: selectDialog.width * 0.7
+        //     blurBackground.arrowY: 0
+        //     blurBackground.arrowWidth: Kirigami.JDisplay.dp(16)
+        //     blurBackground.arrowHeight: Kirigami.JDisplay.dp(11)
+        //     blurBackground.arrowPos: Kirigami.JRoundRectangle.ARROW_BOTTOM
+
+        //     textPointSize: Kirigami.JDisplay.sp(10.5)
+        //     iconHeight: Kirigami.JDisplay.dp(22)
+        //     Action {
+        //             text: i18n("Every day")
+        //             icon.source: selectDialog.selectIndex === 0 ? "../image/menu_select.png" : ""
+        //             onTriggered:{
+        //                 selectDialog.selectIndex = 0;
+        //                 dimTime = i18n("Every day")
+        //                  setIdleTime(24 * 60 * 60 * 1000)
+        //                 // setIdleTime(2 * 60)
+        //             }
+        //         }
+
+        //         Kirigami.JMenuSeparator { }
+
+        //         Action {
+        //             text: i18n("Every two days")
+        //             icon.source:selectDialog.selectIndex === 1 ? "../image/menu_select.png" : ""
+        //             onTriggered:{
+        //                 selectDialog.selectIndex = 1;
+        //                 dimTime = i18n("Every two days")
+        //                 setIdleTime(24 * 60 * 60 * 1000 * 2)
+        //             }
+        //         }
+
+        //         Kirigami.JMenuSeparator { }
+        //         Action {
+        //             text: i18n("Weekly")
+        //             icon.source: selectDialog.selectIndex === 2 ? "../image/menu_select.png" : ""
+        //             onTriggered:{
+        //                 selectDialog.selectIndex = 2;
+        //                 dimTime = i18n("Weekly")
+        //                 setIdleTime(24 * 60 * 60 * 1000 * 7)
+        //             }
+        //         }
+
+        //         Kirigami.JMenuSeparator { }
+        //         Action {
+        //             text: i18n("Every two weeks")
+        //             icon.source: selectDialog.selectIndex === 3 ? "../image/menu_select.png" : ""
+        //             onTriggered:{
+        //                 selectDialog.selectIndex = 3;
+        //                 dimTime = i18n("Every two weeks")
+        //                  setIdleTime(24 * 60 * 60 * 1000 * 14)
+        //                 // setIdleTime(15 * 60)
+        //             }
+        //         }
+
+        //         Kirigami.JMenuSeparator { }
+
+        //         Action {
+        //             text: i18n("Never")
+        //             icon.source: selectDialog.selectIndex === 4 ? "../image/menu_select.png" : ""
+        //             onTriggered:{
+        //                 selectDialog.selectIndex = 4;
+        //                 dimTime = i18n("Never")
+        //                 setIdleTime(-1)
+        //             }
+        //         }
+        // }
 
         JrDialog {
             id: selectDialog
@@ -231,7 +341,7 @@ Item {
                     break
                 case 4:
                     dimTime = i18n("Never")
-                    setIdleTime(24 * 60 * 60 * 1000 * 15)
+                    setIdleTime(-1)
                     break
                 }
             }

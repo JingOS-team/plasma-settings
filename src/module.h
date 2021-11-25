@@ -20,8 +20,45 @@
 
 #pragma once
 
+#include <QStringList>
 #include <KQuickAddons/ConfigModule>
 #include <QObject>
+
+
+class ModuleLoader : public QObject
+  {
+      Q_OBJECT
+
+  public slots:
+      void doLoad(const QString &parameter);
+
+  signals:
+      void resultReady(const QString &result);
+
+
+private:
+      void loadModule(QString name);
+
+      QStringList preLoadModuleList = {
+          "pointer",
+          "trackpad",
+          "keyboard",
+          "storage",
+          "battery",
+          "mobile_time",
+          "translations",
+          "mobile_info",
+          "sound",
+          "wallpaper",
+          "display",
+          "password",
+          "vpn",
+          "cellular",
+          "bluetooth",
+          "wifi"
+      };
+  };
+
 
 class Module : public QObject
 {
@@ -31,16 +68,32 @@ class Module : public QObject
 
 public:
     Module();
+//    void loadModule(QString name);
     KQuickAddons::ConfigModule *kcm() const;
     QString name() const;
     void setName(const QString &name);
+    Q_INVOKABLE void loadWallpaperCache();
+
+public slots:
+      void loadResults(const QString &);
+signals:
+      void operate(const QString &);
 
 Q_SIGNALS:
     void kcmChanged();
     void nameChanged();
 
+//public Q_SLOTS:
+//    void loadModuleList();
+
+
 private:
-    QHash<QString, KQuickAddons::ConfigModule *> loadedPlugins;
+
     KQuickAddons::ConfigModule *m_kcm = nullptr;
     QString m_name;
+    ModuleLoader* m_loader;
+    QThread     m_loadThread;
+    QTimer* m_loadModuleTimer;
+
+
 };

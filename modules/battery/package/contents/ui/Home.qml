@@ -21,94 +21,100 @@ import org.kde.kcm 1.2 as KCM
 import QtQuick 2.7
 import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Controls 2.10
-import org.kde.plasma.core 2.0 as PlasmaCore
+import BatteryUtil 1.0
 
 Rectangle {
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36 
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
-    property int radiusCommon: 10 
-    property int fontNormal: 14
-    property bool hasBattery: getBatteryData('Has Battery', false)
-    property string currentBatteryState: getBatteryData('State', false)
-    property int remainingTime: getBatteryData('Remaining msec', 0)
-
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 36  * appScale
+    property int marginLeftAndRight : 20  * appScale
+    property int marginItem2Top : 24  * appScale
+    property int radiusCommon: 10  * appScale
+    property int fontNormal: 14 *appFontSize
+    property double precent : pmSource.data["Battery"]["Percent"]
+    property int remainingTime: pmSource.data["Battery"]["Remaining msec"]
+    property int fullTime: pmSource.data["Battery"]["Full msec"]
+    property bool chargingStatus : isPlugInsert()
 
     anchors.fill: parent
 
-    color: "#FFF6F9FF"
+    color: Kirigami.JTheme.settingMinorBackground
 
-    PlasmaCore.DataSource {
-        id: pmSource
 
-        engine: "powermanagement"
-        connectedSources: ["Battery"]
 
-        onSourceAdded: {
-            disconnectSource(source)
-            connectSource(source)
-        }
 
-        onSourceRemoved: {
-            disconnectSource(source)
-        }
-    }
-     
-    function getBatteryData(key, def) {
-        var value = pmSource.data.Battery[key]
-        if (typeof value === 'undefined') {
-            return def
-        } else {
-            return value
-        }
+    function isPlugInsert() {
+        if(!pmSource.data["AC Adapter"])
+            return false;
+        return pmSource.data["AC Adapter"]["Plugged in"];
     }
 
     function getRemainTimeString() {
-        var msec = getBatteryData("Remaining msec", 0)
+        var msec = 0
+        var totalMins = 0
+        var hours = 0
+        var mins = 0
+        var info = ""
 
-        if(msec == 0){
-            return i18n(" %1h %2m " , 0 , 52)
-        }
-        var totalMins = Math.floor(msec / (60 * 1000))
-        var hours = Math.floor(totalMins / 60)
-        var mins = totalMins % 60
-        return i18n(" %1h %2m " , hours , mins)
-    }
+        if (isPlugInsert()) {
+            //msec = batteryUtil.getFullTime() * 1000;
 
-    onVisibleChanged: {
-        if(!visible){
-            if(pmSource != null){
-                console.log("visible change : disconnect battery connect")
-                pmSource.connectSource("Battery")
+            msec = fullTime * 1000;
+            totalMins = Math.floor(msec / (60 * 1000))
+            hours = Math.floor(totalMins / 60)
+            mins = totalMins % 60
+
+            if (hours > 0 && mins > 0) {
+                info = i18n("%1h %2m until fully charged", hours, mins)
+            } else if (hours > 0 && mins === 0) {
+                info = i18n("%1h until fully charged", hours)
+            } else if (mins > 0) {
+                info = i18n("%1m until fully charged", mins)
+            } else {
+                if (precent !== 100) { // Ignore invalid values
+                    info = i18n("Computing...")
+                    battery_progress.remainingString = info
+                    return
+                }
+                info = i18n("Already full")
             }
+        } else {
+            //msec = batteryUtil.getRemainTime() * 1000;
+            msec = remainingTime * 1000
+            totalMins = Math.floor(msec / (60 * 1000))
+            hours = Math.floor(totalMins / 60)
+            mins = totalMins % 60
+            if (hours > 0 && mins > 0) {
+                info = i18n("%1h %2m remaining", hours, mins)
+            } else if (hours > 0 && mins === 0) {
+                info = i18n("%1h remaining", hours)
+            } else {
+                if(msec == 0)
+                {
+                    info = i18n("Computing...")
+                    battery_progress.remainingString = info
+                    return
+                }
 
-            syncTimer.stop()
+                info = i18n("%1m remaining", mins)
+            }
         }
+        battery_progress.remainingString = info
     }
 
-    Component.onCompleted: {
-        syncTimer.start()
+    onPrecentChanged: {
+          getRemainTimeString()
     }
 
-    Component.onDestruction: {
-        console.log("onDestruction")
+    onRemainingTimeChanged: {
+        getRemainTimeString()
     }
 
-    Timer {
-        id: syncTimer
-        interval: 10*1000 
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            var info = getRemainTimeString()
-            var precent0 = getBatteryData("Percent", -1)
-            console.log("getCurrentPrecent....."+ precent0 )
-        }
+    onFullTimeChanged: {
+        getRemainTimeString()
     }
 
     Text {
@@ -117,15 +123,16 @@ Rectangle {
         anchors {
             left: parent.left
             top: parent.top
-            leftMargin: marginLeftAndRight  
-            topMargin: marginTitle2Top  
+            leftMargin: marginLeftAndRight
+            topMargin: marginTitle2Top
         }
 
-        width: 329
-        height: 14
+        width: 329 * appScale
+        height: 14 * appScale
         text: i18n("Battery")
-        font.pixelSize: 20 
+        font.pixelSize: 20 *appFontSize
         font.weight: Font.Bold
+        color: Kirigami.JTheme.majorForeground
     }
 
     JProgress {
@@ -134,23 +141,16 @@ Rectangle {
         anchors {
             top: title.bottom
             left: parent.left
-            topMargin: marginItem2Title  
-            leftMargin: marginLeftAndRight  
+            topMargin: marginItem2Title
+            leftMargin: marginLeftAndRight
             right: parent.right
-            rightMargin: marginLeftAndRight  
+            rightMargin: marginLeftAndRight
         }
-        
-        widgetWidth: parent.width - marginLeftAndRight * 2  
-        widgetHeight: 133  
-        totalPower: 100
-        leftPower: pmSource2.data["Battery"]["Percent"]
-        remainingString: getRemainTimeString()
-        isCharging: currentBatteryState == "Charging"
 
-        PlasmaCore.DataSource {
-            id: pmSource2
-            engine: "powermanagement"
-            connectedSources: ["Battery", "AC Adapter"]
-        }
+        widgetWidth: parent.width - marginLeftAndRight * 2
+        widgetHeight: 133  * appScale
+        totalPower: 100
+        leftPower: precent
+        isCharging: isPlugInsert()
     }
 }

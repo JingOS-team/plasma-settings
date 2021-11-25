@@ -10,19 +10,24 @@ import QtQuick.Controls 2.10 as QQC2
 
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kcm 1.2
+import jingos.display 1.0
 
 Rectangle {
     id: root
 
+    property real appScaleSize: JDisplay.dp(1.0)
+    property real appFontSize: JDisplay.sp(1.0)
     property int mWidth: parent.width
     property int mHeight: parent.height
-    property real appScale: 1
-    //property real appScale: 1.3 * parent.width / (1920 * 0.7)
-    property int defaultFontSize: theme.defaultFont.pointSize
     property string titleName: "Passcode"
     property string inputText: ""
 
-    color: "#FFF6F9FF"
+    color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
+    property bool isDarkTheme: Kirigami.JTheme.colorScheme === "jingosDark"
+    property bool isSwitchModel: false
+    property bool keyboardShow: false
+    property bool complexShow: false
+    property bool homeShow: false
 
     QQC2.StackView {
         id: stack
@@ -34,10 +39,26 @@ Rectangle {
         }
     }
 
+    Connections {
+        target: kcm
+
+        onCurrentIndexChanged: {
+            if(index == 1){
+                popAllView()
+            }
+        }
+    }
+
+    function popAllView() {
+        while (stack.depth > 1) {
+            stack.pop()
+        }
+    }
+
     function gotoPage(name) {
         if (name == "keyboard_view") {
             stack.push(keyboard_view)
-        } else if( name == "complex_view"){
+        } else if( name == "complex_view") {
             stack.push(complex_view)
         }
     }
@@ -63,7 +84,9 @@ Rectangle {
 
         Item {
             anchors.fill: parent
-            //color: "#FFF2F2F7"
+            onVisibleChanged: {
+                root.homeShow = visible
+            }
 
             Kirigami.Label {
                 id: title
@@ -71,13 +94,15 @@ Rectangle {
                 anchors {
                     top: parent.top
                     left: parent.left
-                    topMargin: 48 * appScale
-                    leftMargin: 20 * appScale
+                    topMargin: 48 * appScaleSize
+                    leftMargin: 20 * appScaleSize
                 }
-                height: 20 * appScale
-                font.pixelSize: 20
+                height: 20 * appScaleSize
+
+                font.pixelSize: 20 * appFontSize
                 font.bold: true
                 text: i18n("Password")
+                color: Kirigami.JTheme.majorForeground
             }
 
             Rectangle {
@@ -86,112 +111,108 @@ Rectangle {
                 anchors {
                     top: title.bottom
                     left: parent.left
-                    topMargin: 18 * appScale
-                    leftMargin: 20 * appScale
+                    topMargin: 18 * appScaleSize
+                    leftMargin: 20 * appScaleSize
                     horizontalCenter: parent.horizontalCenter
                 }
 
-                width: root.width - 40 * appScale
-                height: 45 * appScale * 2
+                width: root.width - 40 * appScaleSize
+                height: 45 * appScaleSize * 2
 
-                color: "white"
-                radius: 10 * appScale
-
-                
+                color: Kirigami.JTheme.cardBackground//"white"
+                radius: 10 * appScaleSize
                 Item {
-
                     id: change_pwd
+
                     anchors {
-                        top: parent.top 
+                        top: parent.top
                     }
                     width: parent.width
-                    height : 45
+                    height : 45 *appScaleSize
 
                     Kirigami.Label {
                         anchors.left: parent.left
-                        anchors.leftMargin: 20 * appScale
+                        anchors.leftMargin: 20 * appScaleSize
                         anchors.verticalCenter: parent.verticalCenter
 
                         text: i18n("Simple Password")
-                        color:"black"
-                        font.pixelSize: 14
-                        
+                        font.pixelSize: 14 * appFontSize
+                        color: Kirigami.JTheme.majorForeground//"black"
                     }
 
-                    Image {
+                    Kirigami.JIconButton {
                         anchors.right: parent.right
-                        anchors.rightMargin: 20 * appScale
+                        anchors.rightMargin: 20 * appScaleSize
                         anchors.verticalCenter: parent.verticalCenter
 
-                        sourceSize.width: 22 * appScale
-                        sourceSize.height: 22 * appScale
+                        width: 30 * appScaleSize
+                        height: 30 * appScaleSize
 
-                        source: "../image/arrow_right.png"
+                        source: Qt.resolvedUrl("../image/arrow_right.png")
+                        color: Kirigami.JTheme.iconMinorForeground
                     }
 
                     MouseArea {
                         anchors.fill: parent
-                        
+
                         onClicked: {
                             gotoPage("keyboard_view")
                         }
                     }
-
                 }
-                Kirigami.Separator{
-                    id:separator
-                    anchors{
+                Kirigami.Separator {
+                    id: separator
+
+                    anchors {
                         top: change_pwd.bottom
                         left: parent.left
                         right: parent.right
-                        leftMargin: 20 * appScale
-                        rightMargin: 20 * appScale
+                        leftMargin: 20 * appScaleSize
+                        rightMargin: 20 * appScaleSize
                     }
-                    color: "#FFF0F0F0"
+                    color: Kirigami.JTheme.dividerForeground//"#FFF0F0F0"
                 }
 
                 Item {
-
                     id: complex_pwd
+
                     anchors {
                         top: separator.bottom
-                        bottom : parent.bottom 
+                        bottom: parent.bottom
                     }
                     width: parent.width
-                    height : 45
+                    height : 45 * appScaleSize
 
                     Kirigami.Label {
                         anchors.left: parent.left
-                        anchors.leftMargin: 20 * appScale
+                        anchors.leftMargin: 20 * appScaleSize
                         anchors.verticalCenter: parent.verticalCenter
 
                         text: i18n("Complex Password")
-                        color:"black"
-                        font.pixelSize: 14
-                        
+                        font.pixelSize: 14 * appFontSize
+                        color: Kirigami.JTheme.majorForeground
+
                     }
 
-                    Image {
+                    Kirigami.JIconButton {
                         anchors.right: parent.right
-                        anchors.rightMargin: 20 * appScale
+                        anchors.rightMargin: 20 * appScaleSize
                         anchors.verticalCenter: parent.verticalCenter
+                        width: 30 * appScaleSize
+                        height: 30 * appScaleSize
 
-                        sourceSize.width: 22 * appScale
-                        sourceSize.height: 22 * appScale
-
-                        source: "../image/arrow_right.png"
+                        source: Qt.resolvedUrl("../image/arrow_right.png")
+                        color: Kirigami.JTheme.iconMinorForeground
                     }
 
                     MouseArea {
                         anchors.fill: parent
-                        
+
                         onClicked: {
                             gotoPage("complex_view")
                         }
                     }
-
                 }
-
             }
         }
     }
@@ -199,19 +220,38 @@ Rectangle {
     Connections{
         target: kcm
 
-        onConfirmSuccess:{
-            showToast(i18n("Password reset complete"))
+        onConfirmSuccess: {
+            popView()
+            showTimer.start()
+        }
+
+        onCurrentIndexChanged: {
+            if (index == 1) {
+                isSwitchModel = true
+            }
         }
     }
-    ToastView{
+
+    Timer{
+        id: showTimer
+
+        interval: 100
+        onTriggered: {
+            if(homeShow || keyboardShow || complexShow) {
+                showToast(i18n("Password reset complete"))
+            }
+        }
+    }
+
+     Kirigami.JToolTip{
         id:toastShow
+
+        font.pixelSize: 17 * appFontSize
     }
 
     function showToast(tips)
     {
-        toastShow.toastContent = tips
-        toastShow.x = (root.width - toastShow.width - 200) / 2
-        toastShow.y = root.width - toastShow.height - 36
-        toastShow.visible = true
+        toastShow.text = tips
+        toastShow.show(tips, 1500)
     }
 }

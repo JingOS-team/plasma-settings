@@ -46,11 +46,14 @@ public:
     Q_INVOKABLE QString getStorageType();
     Q_INVOKABLE double getStorageTotalSize();
     Q_INVOKABLE double getStorageAvailableSize();  
+    Q_INVOKABLE double getHomeTotalSize();
+    Q_INVOKABLE double getHomeAvailableSize();  
     Q_INVOKABLE void getAllMountedInfo();
     QString GetStorageSize(qint64 size);
     QString GetFreeSizePrecent(qint64 freeSize ,qint64 totalSize);
 
     QAbstractItemModel *subPixelOptionsModel() const;
+    QString disk();
 
 signals: 
     void refreshListView();
@@ -58,6 +61,10 @@ private:
     QStorageInfo storage = QStorageInfo::root();  
     QStandardItemModel *m_subPixelOptionsModel;
     QTimer *mTimer;
+    qint64 allFreeSize ;
+    qint64 allTotalSize ;
+    qint64 homeFreeSize ;
+    qint64 homeTotalSize ;
 };
 
 #endif // STORAGE_MODEL_H

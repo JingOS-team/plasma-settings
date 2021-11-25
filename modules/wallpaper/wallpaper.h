@@ -22,6 +22,7 @@
 #include <QObject>
 #include <KConfigGroup>
 #include <KSharedConfig>
+#include "listimageprovider.h"
 
 #ifndef WALLPAPER_H
 #define WALLPAPER_H
@@ -35,8 +36,7 @@ class Wallpaper : public KQuickAddons::ConfigModule
 
 public:
     Wallpaper(QObject *parent, const QVariantList &args);
-    Q_INVOKABLE void intoLibwallpaper(QString imageUrl);
-    QString getWallpaper();
+    ~Wallpaper();
     void connectWallpaperSignal();
     void setWallpaperUrl(QString wallpaperUrl);
     QString wallpaperUrl();
@@ -55,6 +55,7 @@ private:
    QString m_lockWallpaperUrl;
    QStringList m_systemWallpaperUrls;
    KConfigGroup* cfg;
+   ListImageProvider *lp;
 };
 
 #endif

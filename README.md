@@ -4,36 +4,6 @@ Settings application for Jingos system device , which is based on `Plasma-settin
 
 With beautify the interface of the application, in line with the design language of Jingos , and added a lot of features adapted to jingos
 
-
-
-## v0.9 change log:
-
-### Features:
-
-- Fonts settings
-
-- Wallpaper
-
-- Complex password 
-
-- Language 
-
-- Time zone 
-
-- Virtual keyboard
-
-  
-
-### Bug Fixed: 
-
-- Partial interface optimization
-- System Sleep 
-- Storage  info 
-- Mouse info 
-- Touchpad Function
-
-
-
 ## Plasma-settings Configuration modules
 
 Our aim for configuration modules is to work on multiple form factors.
@@ -62,9 +32,9 @@ cmake --build build --target install -j4
 
 * Home page: https://www.jingos.com/
 
-* Project page: https://github.com/JingOS-team/settings
+* Project page: https://github.com/JingOS-team/jing-settings
 
-* Issues: https://github.com/JingOS-team/settings/issues
+* Issues: https://github.com/JingOS-team/jing-settings/issues
 
 * Development channel: https://forum.jingos.com/
 

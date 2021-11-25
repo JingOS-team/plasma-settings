@@ -8,16 +8,15 @@ ToolTip
 
     property alias toastContent : toastText.text
     property alias toastItem: footerBlur.sourceItem
-    property int lastAppScaleSize: 1
 
     delay: 0
     timeout: 2000
 
-    width: (247 * lastAppScaleSize)
-    height: 46 * lastAppScaleSize
+    width: 247 * appScaleSize
+    height: 46 * appScaleSize
     background: Rectangle
     {
-        radius: 12
+        radius: 12 * appScaleSize
         color: "transparent"
         ShaderEffectSource
         {
@@ -49,7 +48,7 @@ ToolTip
 
             visible: false
             clip: true
-            radius: 12
+            radius: 12 * appScaleSize
         }
         OpacityMask{
             id: mask
@@ -62,7 +61,7 @@ ToolTip
         Rectangle{
             anchors.fill: footerBlur
             color: "#80000000"
-            radius: 12
+            radius: 12 * appScaleSize
         }
     }
     Text
@@ -73,9 +72,9 @@ ToolTip
              horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
             left: parent.left
-            leftMargin: 30 * lastAppScaleSize
+            leftMargin: 30 * appScaleSize
             right: parent.right
-            rightMargin: 30 * lastAppScaleSize
+            rightMargin: 30 * appScaleSize
         }
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -83,7 +82,7 @@ ToolTip
         text: ""
         font
         {
-            pixelSize: 14
+            pixelSize: 14 * appFontSize
         }
         color: "white"
     }

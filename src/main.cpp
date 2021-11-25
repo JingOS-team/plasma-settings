@@ -27,6 +27,7 @@
 #include "module.h"
 #include "modulesmodel.h"
 #include "settingsapp.h"
+#include "networkstatus.h"
 
 // Qt
 #include <QApplication>
@@ -53,6 +54,11 @@
 #include <QDBusError>
 #include <QDateTime>
 
+#include <KDBusService>
+#include <KCrash>
+#include <QQmlDebuggingEnabler>
+
+#include <japplicationqt.h>
 
 static constexpr char version[] = "2.0";
 
@@ -60,8 +66,12 @@ int main(int argc, char **argv)
 {
     qint64 startTime = QDateTime::currentMSecsSinceEpoch();
     qDebug()<<Q_FUNC_INFO << " loadtime:: main start time:" << startTime;
+    // qputenv("QT_SCALE_FACTOR", "2");
     QApplication app(argc, argv);
-
+    JApplicationQt japp;
+    japp.enableBackgroud(true);
+    // QQmlDebuggingEnabler debugprofile;
+    // QQmlDebuggingEnabler::startTcpDebugServer(8003, QQmlDebuggingEnabler::WaitForClient);
     // KLocalizedString::setApplicationDomain("plasma-settings");
     KLocalizedString::setApplicationDomain("settings"); 
 
@@ -83,6 +93,7 @@ int main(int argc, char **argv)
         {QStringLiteral("m"), QStringLiteral("module")}, 
         i18n("Settings module to open"), i18n("modulename")
         );
+
 
     const QCommandLineOption singleModuleOption({QStringLiteral("s"), QStringLiteral("singleModule")}, i18n("Only show a single module, requires --module"));
     const QCommandLineOption fullscreenOption({QStringLiteral("f"), QStringLiteral("fullscreen")}, i18n("Start window fullscreen"));
@@ -162,7 +173,12 @@ int main(int argc, char **argv)
     qmlRegisterType<SettingsConfig>("org.kde.plasma.settings", 0, 1, "SettingsConfig");
     qmlRegisterType<ModulesModel>("org.kde.plasma.settings", 0, 1, "ModulesModel");
     qmlRegisterType<Module>("org.kde.plasma.settings", 0, 1, "Module");
+    qmlRegisterType<NetworkStatus>("org.kde.plasma.settings", 0, 1, "NetworkStatus");
     qmlRegisterSingletonInstance<SettingsApp>("org.kde.plasma.settings", 0, 1, "SettingsApp", settingsApp);
+
+    //[liubangguo]app pause signal
+    QObject::connect(&japp,&JApplicationQt::background,settingsApp,&SettingsApp::onPaused);
+    QObject::connect(&japp,&JApplicationQt::resume,settingsApp,&SettingsApp::onResume);
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextObject(new KLocalizedContext(&engine));
@@ -173,8 +189,12 @@ int main(int argc, char **argv)
     settingsConfig.setSelectName("wifi");
     engine.rootContext()->setContextProperty(QStringLiteral("_settingsConfig"), &settingsConfig);
     
-    qputenv("QML_DISABLE_DISK_CACHE", "1");
+    // qputenv("QML_DISABLE_DISK_CACHE", "1");
     engine.load(package.filePath("mainscript"));
     
+    //KDBusService service(KDBusService::Unique | KDBusService::StartupOption(KDBusService::Replace));
+    //KCrash::setFlags(KCrash::AutoRestart);
+    KCrash::setDrKonqiEnabled(false);
+
     return app.exec();
 }

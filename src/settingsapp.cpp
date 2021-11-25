@@ -64,3 +64,13 @@ void SettingsApp::setSingleModule(const bool singleModule)
 {
     m_singleModule = singleModule;
 }
+
+void SettingsApp::onPaused()
+{
+    emit this->pause();
+}
+
+void SettingsApp::onResume()
+{
+    emit this->resume();
+}

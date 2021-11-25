@@ -1,8 +1,4 @@
 import QtQuick 2.2
-import org.kde.kirigami 2.0
-import QtQuick.Controls 2.14 as QQC2
-import org.kde.kirigami 2.0 as Kirigami
-import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.15
 
 Rectangle {
@@ -33,7 +29,6 @@ Rectangle {
 
         Text {
             id: font_size_small
-            // source: "../image/fs_small.png"
             anchors {
                 verticalCenter: parent.verticalCenter
                 left: parent.left 
@@ -45,7 +40,7 @@ Rectangle {
 
         Text {
             id: font_size_big
-            // source: "../image/fs_big.png"
+
             anchors {
                 verticalCenter: parent.verticalCenter
                 right: parent.right 

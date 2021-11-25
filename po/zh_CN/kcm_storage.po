@@ -393,7 +393,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"
@@ -3051,3 +3051,12 @@ msgstr "无线局域网"
 msgid "Bluetooth"
 
 msgstr "蓝牙"
+
+msgid "System Storage"
+msgstr "系统存储空间"
+
+msgid "User Storage"
+msgstr "用户存储空间"
+
+msgid "Storage %1"
+msgstr "存储空间 %1"

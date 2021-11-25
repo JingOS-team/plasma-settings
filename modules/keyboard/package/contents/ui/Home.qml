@@ -26,7 +26,6 @@ import QtQuick.Controls 2.10
 Kirigami.ApplicationWindow {
     id: battery_root
 
-    property real appScale: 1.3 * parent.width / (1920 * 0.7)
     property int appFontSize: theme.defaultFont.pointSize
 
     width: parent.width

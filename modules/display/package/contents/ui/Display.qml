@@ -29,37 +29,47 @@ Item {
     property int screenDim: 0
     property string dimTime: "2 Minutes"
     property bool positiveChange: false
-    property bool isDarkTheme: false 
+
+    property string darkThemeName: "org.jingos.dark.desktop"
+    property string lightThemeName: "org.jingos.light.desktop"
+    property bool isDarkTheme: jthemeManager.themeName ===  darkThemeName
+    property bool autoBrightness : pmSource.data["PowerDevil"] ? pmSource.data["PowerDevil"]["Auto Brightness"] : false
 
     // property int screenWidth: 888
     // property int screenHeight: 648
-    property int appFontSize: theme.defaultFont.pointSize
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
-    property int default_inner_title_height: 30 
+    property int statusbar_height : 22 * appScaleSize
+    property int statusbar_icon_size: 22 * appScaleSize
+    property int default_setting_item_height: 45 * appScaleSize
+    property int default_inner_title_height: 30  * appScaleSize
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
-    property int radiusCommon: 10 
-    property int fontNormal: 14
+    property int marginTitle2Top : 44  * appScaleSize
+    property int marginItem2Title : 36 * appScaleSize
+    property int marginLeftAndRight : 20  * appScaleSize
+    property int marginItem2Top : 24  * appScaleSize
+    property int radiusCommon: 10  * appScaleSize
+    property int fontNormal: 14 * appScaleSize
+
+    onMaxBrightnessChanged:{
+        console.log(" maxBrightness changed::" + maxBrightness)
+        if(maxBrightness <= 8){
+            brightness_slider.to = 255
+        } else {
+            brightness_slider.to = maxBrightness
+        }
+    }
 
     // width: screenWidth * 0.7
     // height: screenHeight
 
-    
 
-    // property real appScale: 1.3 * parent.width / (1920 * 0.7)
-    // property int appFontSize: theme.defaultFont.pointSize
+
     width: parent.width
     height: parent.height
 
     Component.onCompleted: {
         getCurrentBright.start()
-        isDarkTheme: false 
+        console.log(" theme model:" + jthemeManager.themeName)
     }
 
     DisplayModel {
@@ -68,7 +78,7 @@ Item {
         Component.onCompleted: {
             dimTime = getIdleTime()
             scaleValue = displayModel.getApplicationScale()
-            
+
         }
     }
 
@@ -77,7 +87,7 @@ Item {
 
         interval: 200
         repeat: false
-        
+
         onTriggered: {
             brightnessValue = pmSource.data["PowerDevil"]["Screen Brightness"]
             brightness_slider.value = brightnessValue
@@ -106,12 +116,14 @@ Item {
         }
 
         onDataChanged: {
+            console.log("brightness......")
             disableBrightnessUpdate = true
             if (maxBrightness == 0) {
                 maxBrightness = pmSource.data["PowerDevil"] ? pmSource.data["PowerDevil"]["Maximum Screen Brightness"]
                                                               || 0 : 7500
             }
             brightnessValue = pmSource.data["PowerDevil"]["Screen Brightness"]
+            console.log("change value" + brightnessValue + " positiveChange::" + positiveChange)
             if (positiveChange) {
                 positiveChange = false
             } else {
@@ -123,6 +135,8 @@ Item {
 
     onBrightnessValueChanged: {
         if (!disableBrightnessUpdate) {
+            console.log(" setbrightness::onBrightnessValueChanged:" + disableBrightnessUpdate
+            + " brightnessValue::" + brightnessValue)
             var service = pmSource.serviceForSource("PowerDevil")
             var operation = service.operationDescription("setBrightness")
             operation.brightness = brightnessValue
@@ -150,6 +164,7 @@ Item {
     }
 
     function setBrightness(value) {
+        console.log(" setbrightness::value:" + value)
         brightnessValue = value
         positiveChange = true
     }
@@ -170,7 +185,7 @@ Item {
             return i18n("10 Minutes")
         case 15 * 60:
             return i18n("15 Minutes")
-        case 30 * 60 * 60:
+        case -1:
             return i18n("Never")
         default:
             return i18n("2 Minutes")
@@ -193,10 +208,23 @@ Item {
         return 0
     }
 
+    Kirigami.JThemeManager{
+        id:jthemeManager
+    }
+
+    function setSystemTheme(themeName) {
+        console.log(" system theme name:" + jthemeManager.themeName + " set theme name:" + themeName)
+        if(jthemeManager.themeName != themeName) {
+            jthemeManager.themeName = themeName
+            scaleWarningDlg.isUpdateStyle = true
+            scaleWarningDlg.open()
+        }
+    }
+
     Rectangle {
         width: parent.width
         height: parent.height
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
 
         Text {
             id: title
@@ -204,13 +232,14 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: marginLeftAndRight  
-                topMargin: marginTitle2Top  
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
-            width: 329
-            height: 14
+            width: 329 * appScaleSize
+            height: 14 * appScaleSize
             text: i18n("Display & Brightness")
-            font.pixelSize: 20 
+            color: Kirigami.JTheme.majorForeground
+            font.pixelSize: 20 * appFontSize
             font.weight: Font.Bold
         }
 
@@ -225,136 +254,140 @@ Item {
             }
 
             width: parent.width - marginLeftAndRight* 2
-            height: 189
-            color: "#fff"
+            height: 189 * appScaleSize
+            color: Kirigami.JTheme.cardBackground//"#fff"
             radius: radiusCommon
-            visible: false 
+            // visible: false
 
             Rectangle {
                 id: light_area
-                width: parent.width /2 
-                height: parent.height 
+                width: parent.width /2
+                height: parent.height
+                color:"transparent"
 
                 anchors {
                     left: parent.left
-                    top: parent.top 
+                    top: parent.top
                 }
 
                 MouseArea {
                     anchors.fill:parent
                     onClicked: {
                         if(!isDarkTheme){
-                            return 
+                            return
                         }
-                        isDarkTheme = false  
+                        setSystemTheme(lightThemeName)
                     }
                 }
 
                 Image {
                     id: light_icon
-                    width : 130
-                    height : 95
+                    width : 130 * appScaleSize
+                    height : 95 * appScaleSize
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top:parent.top
                     anchors.topMargin: marginItem2Top
-                    sourceSize.width : width 
-                    sourceSize.height : height 
+                    // sourceSize.width : width
+                    // sourceSize.height : height
                     source: "../image/light_icon.png"
                 }
 
                 Text {
                     id:light_txt
-                    text:"Light"
+                    text: i18n("Light")
                     anchors.horizontalCenter:parent.horizontalCenter
                     anchors.top:light_icon.bottom
-                    anchors.topMargin: 6
-                    font.pixelSize: 14
-
+                    anchors.topMargin: 6 * appScaleSize
+                    font.pixelSize: 14 * appFontSize
+                    color: Kirigami.JTheme.majorForeground
                 }
 
-                Image {
+                Kirigami.Icon {
                     id: light_select
-                    width : 17
-                    height : 17
+                    width : 17 * appScaleSize
+                    height : 17 * appScaleSize
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top:light_txt.bottom
-                    anchors.topMargin:7
-                    sourceSize.width : width 
-                    sourceSize.height : height 
-                    source: isDarkTheme ? "../image/dark_unselect.png" : "../image/dark_select.png"
+                    anchors.topMargin:7 * appScaleSize
+                    // sourceSize.width : width
+                    // sourceSize.height : height
+                    source: isDarkTheme ? "qrc:/image/dark_unselect.png" : "qrc:/image/dark_select.png"
+                    color: isDarkTheme ? Kirigami.JTheme.majorForeground : "transparent"
 
                 }
             }
 
             Rectangle {
                 id: dark_area
-                width: parent.width /2 
-                height: parent.height 
-
+                width: parent.width /2
+                height: parent.height
+                color:"transparent"
                 anchors {
-                    left: light_area.right 
-                    top: parent.top 
+                    left: light_area.right
+                    top: parent.top
                 }
 
                 MouseArea {
                     anchors.fill:parent
                     onClicked: {
                         if(isDarkTheme){
-                            return 
+                            return
                         }
-                        isDarkTheme = true 
+                        setSystemTheme(darkThemeName)
                     }
                 }
 
                 Image {
                     id:  dark_icon
-                    width : 130
-                    height : 95
+                    width : 130 * appScaleSize
+                    height : 95 * appScaleSize
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top:parent.top
                     anchors.topMargin: marginItem2Top
-                    sourceSize.width : width 
-                    sourceSize.height : height 
+                    // sourceSize.width : width
+                    // sourceSize.height : height
                     source: "../image/dark_icon.png"
                 }
 
                 Text {
                     id: dark_txt
-                    text:"Dark"
+                    text: i18n("Dark")
                     anchors.horizontalCenter:parent.horizontalCenter
                     anchors.top:dark_icon.bottom
-                    anchors.topMargin: 6
-                    font.pixelSize: 14
+                    anchors.topMargin: 6 * appScaleSize
+                    font.pixelSize: 14 * appFontSize
+                    color: Kirigami.JTheme.majorForeground
                 }
 
-                Image {
+                Kirigami.Icon {
                     id:  dark_select
-                    width : 17
-                    height : 17
+                    width : 17 * appScaleSize
+                    height : 17 * appScaleSize
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: dark_txt.bottom
-                    anchors.topMargin:7
-                    sourceSize.width : width 
-                    sourceSize.height : height 
-                    source: isDarkTheme ? "../image/dark_select.png" : "../image/dark_unselect.png"
+                    anchors.topMargin:7 * appScaleSize
+                    // sourceSize.width : width
+                    // sourceSize.height : height
+                    source: isDarkTheme ? "qrc:/image/dark_select.png" : "qrc:/image/dark_unselect.png"
+                    color: isDarkTheme ? "transparent" : Kirigami.JTheme.majorForeground
                 }
             }
         }
-        
+
         Rectangle {
             id: brightness_area
 
             anchors {
                 left: parent.left
-                top: title.bottom
+                top: dark_theme_item.bottom
                 leftMargin: marginLeftAndRight
                 // topMargin: marginItem2Top
-                topMargin: marginItem2Title
+                topMargin: marginItem2Top
             }
 
             width: parent.width - marginLeftAndRight * 2
-            height: default_setting_item_height + default_inner_title_height
-            color: "#fff"
+            height: default_setting_item_height * 2  + default_inner_title_height
+            color: Kirigami.JTheme.cardBackground//"#fff"
             radius: 10
 
             Rectangle {
@@ -363,7 +396,8 @@ Item {
 
                 width: parent.width
                 height: default_inner_title_height
-                radius:10 
+                radius: radiusCommon
+                color: "transparent"
 
                 Text {
                     id: brightness_title
@@ -373,13 +407,12 @@ Item {
                         verticalCenter: parent.verticalCenter
                         leftMargin: marginLeftAndRight
                     }
-                    width: 329
-                    height: 14
+                    width: 329 * appScaleSize
+                    height: 14 * appScaleSize
                     text: i18n("Brightness")
-                    font.pixelSize: 12
-                    color: "#4D000000"
+                    font.pixelSize: 12 * appFontSize
+                    color: Kirigami.JTheme.minorForeground//"#4D000000"
                 }
-
             }
 
             Rectangle {
@@ -389,8 +422,8 @@ Item {
                 width: parent.width
                 height: default_setting_item_height
                 color: "transparent"
-                    
-                Image {
+
+                Kirigami.Icon {
                     id: ic_small
 
                     anchors {
@@ -398,13 +431,16 @@ Item {
                         verticalCenter: parent.verticalCenter
                         leftMargin: marginLeftAndRight
                     }
+                    width: 17 * appScaleSize
+                    height: 17 * appScaleSize
 
-                    source: "../image/brightness_less.png"
-                    sourceSize.width: 17
-                    sourceSize.height: 17
+                    source: "qrc:/image/brightness_less.png"
+                    color: Kirigami.JTheme.minorForeground
+                    // sourceSize.width: 17
+                    // sourceSize.height: 17
                 }
 
-                Image {
+                Kirigami.Icon {
                     id: ic_large
 
                     anchors {
@@ -412,10 +448,13 @@ Item {
                         verticalCenter: parent.verticalCenter
                         rightMargin: marginLeftAndRight
                     }
+                    width: 17 * appScaleSize
+                    height: 17 * appScaleSize
 
-                    source: "../image/brightness_more.png"
-                    sourceSize.width: 17
-                    sourceSize.height: 17
+                    source: "qrc:/image/brightness_more.png"
+                    color: Kirigami.JTheme.minorForeground
+                    // sourceSize.width: 17
+                    // sourceSize.height: 17
                 }
 
                 Kirigami.JSlider {
@@ -425,18 +464,91 @@ Item {
                         verticalCenter: parent.verticalCenter
                         left: ic_small.right
                         right: ic_large.left
-                        leftMargin: 17
-                        rightMargin: 17
+                        leftMargin: 17 * appScaleSize
+                        rightMargin: 17 * appScaleSize
                     }
+
+                    property int tmpValue
+                    property bool mousePressed: false
+
 
                     value: brightnessValue
                     from: 8
-                    to: maxBrightness
+                    to: 255
+                    touchDragThreshold: 1
+
                     onValueChanged: {
+                        console.log("  brightness onValueChanged::" + value)
+                    }
+
+                    onMoved: {
+                        console.log("  brightness onMoved::" + value)
                         if (brightnessValue == -1) {
                             return
                         }
-                        setBrightness(value)
+                        tmpValue = value
+                        if (mouseEventTimer.running) {
+                            mouseEventTimer.restart()
+                        } else {
+                            mouseEventTimer.start()
+                        }
+                    }
+
+                    // onPressedChanged: {
+                    //     if(pressed){
+                    //         brightness_slider.mousePressed = true
+                    //         mouseEventTimer.start()
+                    //     }else {
+                    //         brightness_slider.mousePressed = false
+                    //         mouseEventTimer.restart()
+                    //     }
+                    // }
+
+                     Timer {
+                        id: mouseEventTimer
+                        interval: 50
+                        running: false
+                        repeat: false
+                        onTriggered: setBrightness(brightness_slider.tmpValue)
+                    }
+                }
+            }
+
+            Rectangle {
+                id: brightness_bottom
+
+                anchors.top:brightness_top.bottom
+                width: parent.width
+                height: default_setting_item_height
+                color: "transparent"
+                // visible:false
+
+                Text {
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        left: parent.left
+                        leftMargin: marginLeftAndRight
+                    }
+
+                    text: i18n("Automatic")
+                    font.pixelSize: fontNormal
+                    color: Kirigami.JTheme.majorForeground
+                }
+
+                Kirigami.JSwitch {
+                    id: auto_switch
+
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        right: parent.right
+                        rightMargin: marginLeftAndRight
+                    }
+                    checked: autoBrightness
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked:{
+                             displayModel.setAutomatic(!auto_switch.checked)
+                        }
                     }
                 }
             }
@@ -454,7 +566,7 @@ Item {
 
             width: parent.width - marginLeftAndRight* 2
             height: default_setting_item_height
-            color: "#fff"
+            color: Kirigami.JTheme.cardBackground//"#fff"
             radius: radiusCommon
 
             Text {
@@ -466,42 +578,48 @@ Item {
 
                 text: i18n("Sleep")
                 font.pixelSize: fontNormal
+                color: Kirigami.JTheme.majorForeground
             }
 
             Text {
+                id: sleep_text
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: right_icon1.left
-                    rightMargin: 8
+                    rightMargin: 8 * appScaleSize
                 }
 
                 text: dimTime
                 font.pixelSize: fontNormal
-                color: "#99000000"
+                color: Kirigami.JTheme.minorForeground//"#99000000"
             }
 
-            Image {
+            Kirigami.JIconButton {
                 id: right_icon1
+                width: 30 * appScaleSize
+                height: 30 * appScaleSize
 
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.right
                     rightMargin: marginLeftAndRight
                 }
-                
-                source: "../image/icon_right.png"
-                sourceSize.width: 17
-                sourceSize.height: 17
+
+                source: Qt.resolvedUrl("../image/icon_right.png")
+                color: Kirigami.JTheme.iconMinorForeground
+                // sourceSize.width: 17
+                // sourceSize.height: 17
             }
 
             MouseArea {
                 anchors.fill: parent
 
                 onClicked: {
-                    selectDialog.px = sleep_area.x + sleep_area.width - selectDialog.width
-                    selectDialog.py = sleep_area.y + 45
-                    selectDialog.selectIndex = getIndex(dimTime)
-                    selectDialog.open()
+//                    selectDialog.px = sleep_area.x + sleep_area.width - selectDialog.width
+//                    selectDialog.py = sleep_area.y - selectDialog.height
+//                    selectDialog.selectIndex = getIndex(dimTime)
+
+                    selectDialog.popup(sleep_area.x + sleep_area.width - selectDialog.width, sleep_area.y - selectDialog.height + sleep_area.height/2 - sleep_text.contentHeight/2)
                 }
             }
         }
@@ -518,9 +636,9 @@ Item {
 
             width: parent.width - marginLeftAndRight * 2
             height: default_setting_item_height
-            visible:false 
+            visible:false
 
-            color: "#fff"
+            color: Kirigami.JTheme.cardBackground//"#fff"
             radius: radiusCommon
 
             Text {
@@ -532,21 +650,22 @@ Item {
 
                 text: i18n("Applications scale")
                 font.pixelSize: fontNormal
+                color: Kirigami.JTheme.majorForeground
             }
 
             Text {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: right_icon.left
-                    rightMargin: 8
+                    rightMargin: 8 * appScaleSize
                 }
 
-                text:  scaleValue + "%" 
+                text:  scaleValue + "%"
                 font.pixelSize: fontNormal
-                color: "#99000000"
+                color: Kirigami.JTheme.minorForeground//"#99000000"
             }
 
-            Image {
+            Kirigami.JIconButton {
                 id: right_icon
 
                 anchors {
@@ -555,15 +674,17 @@ Item {
                     rightMargin: marginLeftAndRight
                 }
 
-                source: "../image/icon_right.png"
-                sourceSize.width: 17
-                sourceSize.height: 17
+                source: Qt.resolvedUrl("../image/icon_right.png")
+                width: 30 * appScaleSize
+                height: 30 * appScaleSize
+                color: Kirigami.JTheme.iconMinorForeground
             }
 
             MouseArea {
                 anchors.fill: parent
 
                 onClicked: {
+                    scaleWarningDlg.isUpdateStyle = false
                     scaleWarningDlg.open()
                 }
             }
@@ -583,7 +704,7 @@ Item {
             width: parent.width - marginLeftAndRight * 2
             height: default_setting_item_height
 
-            color: "#fff"
+            color: Kirigami.JTheme.cardBackground//"#fff"
             radius: radiusCommon
 
 
@@ -596,11 +717,14 @@ Item {
 
                 text: i18n("Fonts")
                 font.pixelSize: fontNormal
+                color: Kirigami.JTheme.majorForeground
             }
 
 
-            Image {
+            Kirigami.JIconButton {
                 id: fonts_right_icon
+                width: 30 * appScaleSize
+                height: 30 * appScaleSize
 
                 anchors {
                     verticalCenter: parent.verticalCenter
@@ -608,9 +732,10 @@ Item {
                     rightMargin: marginLeftAndRight
                 }
 
-                source: "../image/icon_right.png"
-                sourceSize.width: 17
-                sourceSize.height: 17
+                source: "qrc:/image/icon_right.png"//"../image/icon_right.png"
+                color: Kirigami.JTheme.iconMinorForeground
+                // sourceSize.width: 17
+                // sourceSize.height: 17
 
             }
 
@@ -622,34 +747,149 @@ Item {
             }
         }
 
-        JrDialog {
-            id: selectDialog
+        Rectangle {
+                id: doublueClickRect
+                anchors {
+                    left: parent.left
+                    top: fonts_area.bottom
+                    leftMargin: marginLeftAndRight
+                    topMargin: marginItem2Top
+                }
+                width: parent.width - marginLeftAndRight * 2
+                height: default_setting_item_height
+                color: Kirigami.JTheme.cardBackground
+                radius: radiusCommon
 
-            onMenuSelectChanged: {
-                switch (value) {
-                case 0:
-                    dimTime = i18n("2 Minutes")
-                    setIdleTime(2 * 60)
-                    break
-                case 1:
-                    dimTime = i18n("5 Minutes")
-                    setIdleTime(5 * 60)
-                    break
-                case 2:
-                    dimTime = i18n("10 Minutes")
-                    setIdleTime(10 * 60)
-                    break
-                case 3:
-                    dimTime = i18n("15 Minutes")
-                    setIdleTime(15 * 60)
-                    break
-                case 4:
-                    dimTime = i18n("Never")
-                    setIdleTime(10 * 24 * 60 * 60)
-                    break
+                Text {
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        left: parent.left
+                        leftMargin: marginLeftAndRight
+                    }
+
+                    text: i18n("Double-tap to wake")
+                    font.pixelSize: fontNormal
+                    color: Kirigami.JTheme.majorForeground
+                }
+
+                Kirigami.JSwitch {
+                    id: double_click_switch
+
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        right: parent.right
+                        rightMargin: marginLeftAndRight
+                    }
+                    checked: kcm.touchDoubleOn
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked:{
+                             console.log(" double_click_switch:::::checked:" + double_click_switch.checked)
+                             kcm.touchDoubleOn = !double_click_switch.checked
+                        }
+                    }
                 }
             }
+
+
+        Kirigami.JPopupMenu {
+            id:selectDialog
+
+            property int selectIndex : getIndex(dimTime)
+            width: 240 * appScaleSize
+            blurBackground.arrowX: selectDialog.width * 0.7
+            blurBackground.arrowY: 0
+            blurBackground.arrowWidth: 16 * appScaleSize
+            blurBackground.arrowHeight: 11 * appScaleSize
+            blurBackground.arrowPos: Kirigami.JRoundRectangle.ARROW_BOTTOM
+
+            textPointSize: 14 * appScaleSize
+            iconHeight: 22 * appScaleSize
+            Action {
+                    text: i18n("2 Minutes")
+                    icon.source: selectDialog.selectIndex === 0 ? "../image/menu_select.png" : ""
+                    onTriggered:{
+                        selectDialog.selectIndex = 0;
+                        dimTime = i18n("2 Minutes")
+                        setIdleTime(2 * 60)
+                    }
+                }
+
+                Kirigami.JMenuSeparator { }
+
+                Action {
+                    text: i18n("5 Minutes")
+                    icon.source:selectDialog.selectIndex === 1 ? "../image/menu_select.png" : ""
+                    onTriggered:{
+                        selectDialog.selectIndex = 1;
+                        dimTime = i18n("5 Minutes")
+                        setIdleTime(5 * 60)
+                    }
+                }
+
+                Kirigami.JMenuSeparator { }
+                Action {
+                    text: i18n("10 Minutes")
+                    icon.source: selectDialog.selectIndex === 2 ? "../image/menu_select.png" : ""
+                    onTriggered:{
+                        selectDialog.selectIndex = 2;
+                        dimTime = i18n("10 Minutes")
+                        setIdleTime(10 * 60)
+                    }
+                }
+
+                Kirigami.JMenuSeparator { }
+                Action {
+                    text: i18n("15 Minutes")
+                    icon.source: selectDialog.selectIndex === 3 ? "../image/menu_select.png" : ""
+                    onTriggered:{
+                        selectDialog.selectIndex = 3;
+                        dimTime = i18n("15 Minutes")
+                        setIdleTime(15 * 60)
+                    }
+                }
+
+                Kirigami.JMenuSeparator { }
+
+                Action {
+                    text: i18n("Never")
+                    icon.source: selectDialog.selectIndex === 4 ? "../image/menu_select.png" : ""
+                    onTriggered:{
+                        selectDialog.selectIndex = 4;
+                        dimTime = i18n("Never")
+                        setIdleTime(-1)
+                    }
+                }
         }
+
+//        JrDialog {
+//            id: selectDialog
+
+//            onMenuSelectChanged: {
+//                switch (value) {
+//                case 0:
+//                    dimTime = i18n("2 Minutes")
+//                    setIdleTime(2 * 60)
+//                    break
+//                case 1:
+//                    dimTime = i18n("5 Minutes")
+//                    setIdleTime(5 * 60)
+//                    break
+//                case 2:
+//                    dimTime = i18n("10 Minutes")
+//                    setIdleTime(10 * 60)
+//                    break
+//                case 3:
+//                    dimTime = i18n("15 Minutes")
+//                    setIdleTime(15 * 60)
+//                    break
+//                case 4:
+//                    dimTime = i18n("Never")
+//                    setIdleTime(-1)
+//                    break
+//                }
+//            }
+//        }
 
         JrScaleDialog {
             id: selectScaleDialog
@@ -665,23 +905,32 @@ Item {
         Kirigami.JDialog {
             id: scaleWarningDlg
 
-            anchors.centerIn: parent
-            title: i18n("Set scale ")
-            text: i18n("Attention, the running apps will be closed to fit new configuration.")
+            property bool isUpdateStyle: false
+
+            title: isUpdateStyle ? i18n("Restart") : i18n("Set scale ")
+            text: isUpdateStyle ? i18n("Change appearance style this setting will restart your PAD") : i18n("Attention, the running apps will be closed to fit new configuration.")
             leftButtonText: i18n("Cancel")
-            rightButtonText: i18n("Set")
+            rightButtonText: isUpdateStyle ? i18n("Restart") : i18n("Set")
             dim: true
             focus: true
 
             onLeftButtonClicked: {
+                if (isUpdateStyle) {
+                    jthemeManager.themeName = isDarkTheme ? lightThemeName : darkThemeName
+                }
                 scaleWarningDlg.close()
             }
 
             onRightButtonClicked: {
-                selectScaleDialog.px = scale_area.x + scale_area.width - selectScaleDialog.width
-                selectScaleDialog.py = scale_area.y + 45
-                selectScaleDialog.mScaleValue = scaleValue
-                selectScaleDialog.open()
+                if (isUpdateStyle) {
+                    jthemeManager.saveTheme()
+                    kcm.restartDevice()
+                } else {
+                    selectScaleDialog.px = scale_area.x + scale_area.width - selectScaleDialog.width
+                    selectScaleDialog.py = scale_area.y + 45
+                    selectScaleDialog.mScaleValue = scaleValue
+                    selectScaleDialog.open()
+                }
                 scaleWarningDlg.close()
             }
         }

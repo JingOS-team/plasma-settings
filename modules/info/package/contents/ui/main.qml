@@ -9,18 +9,56 @@ import QtQuick.Layouts 1.2
 import QtQuick.Window 2.2
 import QtQuick 2.7
 import QtQuick.Controls 2.2
-import org.kde.kirigami 2.10 as Kirigami
+import org.kde.kirigami 2.15 as Kirigami
+import jingos.display 1.0
+import org.jingos.info 1.0
 
 Item {
     id: system_info_root
 
+    property real appScale: JDisplay.dp(1.0)
+    property real appFontSize: JDisplay.sp(1.0)
     property int screenWidth: Screen.width
     property int screenHeight: Screen.height
-    property real appScale: 1.3 * screenWidth / 1920
-    property int appFontSize: theme.defaultFont.pointSize
+    property string deviceName : kcm.getLocalDeviceName()
+    property string systemBackground: Kirigami.JTheme.settingMinorBackground
+    property string systemTextColor: Kirigami.JTheme.majorForeground
+    property string systemItemBackground: Kirigami.JTheme.cardBackground
+    property int rootHasNewVersion: 0
+    property bool rootHasupdating: false
 
     width: parent.width
     height: parent.height
+
+    Connections {
+        target: kcm
+        onLocalDeviceNameChanged: {
+            deviceName = localDeviceName
+        }
+        onCurrentIndexChanged:{
+            if(index == 1){
+                popAllView()
+            }
+            deviceName = kcm.getLocalDeviceName()
+        }
+    }
+
+    UpdateTool {
+        id: updateTool
+
+        onUpdatingChanged: {
+            if (updating) {
+                system_info_root.rootHasupdating = true
+                return;
+            }
+            system_info_root.rootHasupdating = false
+        }
+        Component.onCompleted: {
+            if (getQaptupdatorUpdateStatus() === 1) {
+                system_info_root.rootHasupdating = true
+            }
+        }
+    }
 
     StackView {
         id: stack
@@ -68,6 +106,12 @@ Item {
         FactoryReset {}
     }
 
+    Component {
+        id: status_view
+
+        Status {}
+    }
+
     function gotoPage(name) {
         if (name == "about_view") {
             stack.push(about_view)
@@ -79,11 +123,19 @@ Item {
             stack.push(reset_view)
         } else if (name == "update_setting_view") {
             stack.push(update_setting_view)
+        } else if (name == "status_view") {
+            stack.push(status_view)
         }
     }
 
     function popView() {
         stack.pop()
+    }
+
+    function popAllView() {
+        while (stack.depth > 1) {
+            stack.pop()
+        }
     }
 }
 

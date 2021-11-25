@@ -102,6 +102,20 @@ void Password::savePasswordType(const QString type)
     kdeglobals->sync();
 }
 
+bool Password::isDigitStr(const QString pwd)
+{
+    QByteArray ba = pwd.toLatin1();
+    const char *s = ba.data();
+ 
+    while(*s && *s>='0' && *s<='9') s++;
+ 
+    if (*s) { 
+        return false;
+    } else { 
+        return true;
+    }
+}
+
 void Password::slotReceiveDbusConfirm()
 {
     qDebug()<<"slotReceiveDbusConfirm "<<m_passwordType;

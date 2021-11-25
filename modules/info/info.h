@@ -24,9 +24,20 @@
 #include <KQuickAddons/ConfigModule>
 #include <BluezQt/Manager>
 #include <BluezQt/InitManagerJob>
+#include <QChar>
+#include <QDataStream>
+#include <sessionmanagement.h>
 
 #ifndef INFO_H
 #define INFO_H
+
+typedef struct {
+    uint8_t command[32];               // 设置成 “boot-recovery”
+    uint8_t status[32];
+    uint8_t recovery[768];
+    uint8_t stage[32];
+    uint8_t reserved[1184];             // 行为参数，各个参数用逗号分割，形如 “ignore-tags,reboot”
+} ResetData;
 
 class Info : public KQuickAddons::ConfigModule
 {
@@ -47,6 +58,9 @@ public:
     Q_INVOKABLE void copyInfoToClipboard() const;
     Q_INVOKABLE QString getLocalDeviceName();
     Q_INVOKABLE void setLocalDeviceName(const QString localName);
+    Q_INVOKABLE QString getLocalDeviceAdress();
+    Q_INVOKABLE QString getDeviceIMEI();
+    Q_INVOKABLE void resetSystem();
 
 Q_SIGNALS:
     void distroInfoChanged();
@@ -63,6 +77,8 @@ private:
     BluezQt::Manager *m_manager;
     QString m_localDeviceName = "";
     BluezQt::InitManagerJob *initJob;
+    SessionManagement m_session;
+
 };
 
 #endif // INFO_H

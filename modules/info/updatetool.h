@@ -1,21 +1,9 @@
 /*
- * Copyright 2021 Wang Rui <wangrui@jingos.com>
+ * Copyright (C) 2021 Beijing Jingling Information System Technology Co., Ltd. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
+ * Authors:
+ * Zhang He Gang <zhanghegang@jingos.com>
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #ifndef UPDATETOOL_H
 #define UPDATETOOL_H
@@ -25,9 +13,27 @@
 #include <QGuiApplication>
 #include "mynetworkobject.h"
 #include <QException>
-#include <BluezQt/Manager>
-#include <QStorageInfo>
 #include <BluezQt/InitManagerJob>
+#include <BluezQt/Manager>
+#include <BluezQt/Adapter>
+#include <QPointer>
+#include <PackageKit/Transaction>
+#include <PackageKit/Daemon>
+#include <QProcess>
+#include <QFile>
+#include <QDebug>
+#include <QTextCodec>
+#include <QUrl>
+#include <QSettings>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <exception>
+#include <KSharedConfig>
+#include <KConfigGroup>
+#include <QDBusInterface>
+#include <QDBusReply>
+#include <QStorageInfo>
 
 using namespace std;
 
@@ -39,16 +45,21 @@ public:
     explicit UpdateTool();
     ~UpdateTool(){};
 
+    Q_PROPERTY(bool updating READ updating WRITE setUpdating NOTIFY updatingChanged);
+
     QString localDeviceName(){ return m_localDeviceName; };
     MyNetworkObject *myNetworkObject;
     static QString settingFileName  ;
 
     // QString localVersionCode;
     Q_INVOKABLE void launchDistUpgrade(QString version);
-    QString valueVersion ;
-    
+    QString valueVersion = "";
+
+    bool updating();
+    void setUpdating(bool updateStatus);
 
     QString readLocalInfo();
+    void fetchUpdates();
     int Parse_Seniverse_Now_Json(QString& json);
     Q_INVOKABLE QString readLocalVersion();
     Q_INVOKABLE void readRemoteVersion();
@@ -56,23 +67,34 @@ public:
     Q_INVOKABLE void setCheckCycle(int cycle);
     Q_INVOKABLE int getCheckCycle();
     Q_INVOKABLE double getStorageTotalSize();
-    // Q_INVOKABLE QString getLocalDeviceName();
-    // Q_INVOKABLE void setLocalDeviceName(const QString localName);
+    Q_INVOKABLE QString readModelName();
+    Q_INVOKABLE void getAptUpdates();
+    Q_INVOKABLE int getQaptupdatorUpdateStatus();
 
     static QString loadSetting( QString key , QString value ) ;
 	static QString saveSetting( QString key , QString value ) ;
 
 private:
-    QStorageInfo storage = QStorageInfo::root();  
+    QStorageInfo storage = QStorageInfo::root();
     QString m_localDeviceName = "";
-    
-public slots: 
+    int loadPackageTime = 0;
+    int needUpdatePackageCount = 0;
+    bool m_updating = false;
+
+public slots:
     void readRemoteSuccess(QString data);
     void readRemoteFailure(QString error);
+    void transactionError(PackageKit::Transaction::Error, const QString& message);
+    void addPackageToUpdate(PackageKit::Transaction::Info, const QString& pkgid, const QString& summary);
+    void getUpdatesFinished(PackageKit::Transaction::Exit,uint);
+    void receiveDbusUpdatorSigEnd();
 
-signals: 
-    void checkedFinish(int status , QString log , QString version);  
-    void localDeviceNameChanged(const QString localDeviceName);  
+signals:
+    void checkedFinish(int status , QString log , QString version);  //1 = remote update , 5 = local update, 2 = no update, 3 = read local fail, 4 = server exception
+    void localDeviceNameChanged(const QString localDeviceName);
+    void localeCheckedFinish(int needUpdatePackageCount);
+    void qaptupdatorFinish();
+	void updatingChanged();
 };
 
 #endif

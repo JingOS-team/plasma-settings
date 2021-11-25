@@ -3,4 +3,11 @@
         <file alias="Password.qml">package/contents/ui/Password.qml</file>
         <file alias="Keyboard.qml">package/contents/ui/Keyboard.qml</file>
     </qresource>
+     <qresource prefix="/image">
+        <file alias="arrow_left.svg">package/contents/image/arrow_left.svg</file>
+        <file alias="key_back.png">package/contents/image/key_back.png</file>
+        <file alias="icon_confirm.png">package/contents/image/icon_confirm.png</file>
+        <file alias="icon_not_confirm.png">package/contents/image/icon_not_confirm.png</file>
+	<file alias="icon_pwd_confirm.svg">package/contents/image/icon_pwd_confirm.svg</file>
+    </qresource>
 </RCC>

@@ -59,10 +59,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 8 * appScale
+                    leftMargin: 8 * appScaleSize
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -73,10 +73,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale
+                    leftMargin: 70 * appScaleSize
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -87,10 +87,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 2
+                    leftMargin: 70 * appScaleSize * 2
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -101,10 +101,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 3
+                    leftMargin: 70 * appScaleSize * 3
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -115,10 +115,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 4
+                    leftMargin: 70 * appScaleSize * 4
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -129,10 +129,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 5
+                    leftMargin: 70 * appScaleSize * 5
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -143,10 +143,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 6
+                    leftMargin: 70 * appScaleSize * 6
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -157,10 +157,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 7
+                    leftMargin: 70 * appScaleSize * 7
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -171,10 +171,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 8
+                    leftMargin: 70 * appScaleSize * 8
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -185,10 +185,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 9
+                    leftMargin: 70 * appScaleSize * 9
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }
@@ -199,10 +199,10 @@ QQC2.Slider {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.left
-                    leftMargin: 70 * appScale * 10
+                    leftMargin: 70 * appScaleSize * 10
                 }
 
-                height: parent.height - 4 * appScale
+                height: parent.height - 4 * appScaleSize
                 width: height
                 color: "white"
             }

@@ -28,8 +28,22 @@
 #include <QClipboard>
 #include <QGuiApplication>
 #include <BluezQt/Adapter>
+#include <KConfigGroup>
+#include <KSharedConfig>
+#include <QFile>
+#include <cstring>
+#include <QProcess>
+#include <KAuth>
+#include <QDebug>
+#include <QDBusConnection>
+#include <QDBusReply>
+#include <QDBusInterface>
+#include <QMap>
+#include <QPair>
 
 K_PLUGIN_CLASS_WITH_JSON(Info, "info.json")
+
+using namespace std;
 
 Info::Info(QObject *parent, const QVariantList &args)
     : KQuickAddons::ConfigModule(parent, args)
@@ -52,10 +66,14 @@ Info::Info(QObject *parent, const QVariantList &args)
     connect(initJob, &BluezQt::InitManagerJob::result, this, &Info::initJobResult);
 }
 
-Info::~Info() 
+Info::~Info()
 {
-    if (m_manager != nullptr) 
+    if (m_manager != nullptr)
     {
+        qDebug()<<"-----------------------Info delete manager-----------------";
+        // if(initJob != nullptr && initJob->isRunning()){
+        //     initJob->kill();
+        // }
         delete m_manager;
     }
 }
@@ -80,7 +98,28 @@ void Info::copyInfoToClipboard() const
                                            hardwareInfo()->processors(),
                                            hardwareInfo()->memory());
 
+    qDebug()<< "CPU INFO:: "<< clipboardText;
+
     QGuiApplication::clipboard()->setText(clipboardText);
+}
+
+void Info::resetSystem()
+{
+    QVariantMap args;
+    args["method"] = "factoryReset";
+    KAuth::Action readAction("org.kde.factoryreset.manage");
+    readAction.setHelperId("org.kde.factoryreset");
+    readAction.setArguments(args);
+    KAuth::ExecuteJob *job = readAction.execute();
+
+    if (!job->exec()) {
+        qWarning() << "kauth action failed" <<  job->errorString() << job->errorText()
+                   << " error:" << job -> error();
+    } else {
+        qDebug() << " update file Success!";
+        // QProcess::execute("reboot");
+        m_session.requestReboot(SessionManagement::ConfirmationMode::Skip);
+    }
 }
 
 DistroInfo *Info::distroInfo() const
@@ -99,32 +138,111 @@ HardwareInfo *Info::hardwareInfo() const
 }
 
 void Info::initJobResult(BluezQt::InitManagerJob *job)
-{   
+{
     if (job->error()) {
         qApp->exit(1);
         return;
     }
-     BluezQt::AdapterPtr adaptor = m_manager->usableAdapter();
+    BluezQt::AdapterPtr adaptor = m_manager->usableAdapter();
+    if(!adaptor && m_manager->adapters().length() > 0){
+        adaptor = m_manager->adapters().at(0);
+    }
     if(adaptor){
         m_localDeviceName = adaptor->name();
-        Q_EMIT localDeviceNameChanged(m_localDeviceName);
+        if(getLocalDeviceName().isEmpty()){
+            setLocalDeviceName("JingPad");
+        }else{
+            if(getLocalDeviceName() != m_localDeviceName){
+                setLocalDeviceName(m_localDeviceName);
+                Q_EMIT localDeviceNameChanged(m_localDeviceName);
+            }
+        }
     }
 }
 
 QString Info::getLocalDeviceName()
 {
+    // BluezQt::AdapterPtr adaptor = m_manager->adapters().at(0);
+    // if(adaptor){
+    //    return adaptor->name();
+    // }
+    // return "";
+    auto kdeglobals = KSharedConfig::openConfig("kdeglobals");
+    KConfigGroup cfg(kdeglobals, "SystemInfo");
+    return cfg.readEntry("deviceName", QString(""));
+}
+
+QString Info::getDeviceIMEI(){
+    QDBusInterface interface("org.ofono", "/",
+                             "org.ofono.Manager",
+                             QDBusConnection::systemBus());
+
+    QString kValue = "";
+    if (interface.isValid()) {
+       qDebug() << "getDeviceIMEI.............";
+        QDBusMessage reply = interface.call("GetModems");
+
+        qDebug()<< Q_FUNC_INFO << "got reply:" << reply;
+        if (reply.type() == QDBusMessage::ReplyMessage) {
+            const auto &argument = reply.arguments().at(0).value<QDBusArgument>();
+
+            QDBusObjectPath path;
+            QString key;
+            QVariant value;
+
+            argument.beginArray();
+            while ( !argument.atEnd() ) {
+                argument.beginStructure();
+                argument >> path;
+                qDebug() << path.path();
+                argument.beginMap();
+
+                while ( !argument.atEnd() ) {
+                    argument.beginMapEntry();
+                    argument >> key >> value;
+                    if (key == "Serial") {
+                        kValue = value.toString();
+                    return kValue;
+                    }
+                    argument.endMapEntry();
+                }
+
+                argument.endMap();
+
+                argument.endStructure();
+            }
+            argument.endArray();
+
+            qDebug() << "getFullTime reply valid";
+        } else {
+            qDebug() << "getFullTime method called failed!";
+        }
+    }
+    return kValue ;
+}
+
+QString Info::getLocalDeviceAdress()
+{
     BluezQt::AdapterPtr adaptor = m_manager->adapters().at(0);
     if(adaptor){
-       return adaptor->name(); 
+       return adaptor->address();
     }
     return "";
 }
 
 void Info::setLocalDeviceName(const QString localName)
 {
+
+    qDebug() << "设置设备名称--》" << localName;
     BluezQt::AdapterPtr adaptor = m_manager->adapters().at(0);
     adaptor->setName(localName);
     m_localDeviceName = localName;
     Q_EMIT localDeviceNameChanged(m_localDeviceName);
+    qDebug() << "设置设备名称--》OK";
+
+    auto kdeglobals = KSharedConfig::openConfig("kdeglobals");
+    KConfigGroup cfg(kdeglobals, "SystemInfo");
+    cfg.writeEntry("deviceName", localName);
+    kdeglobals->sync();
 }
 #include "info.moc"

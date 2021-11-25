@@ -28,6 +28,7 @@
 
 #include <KLocalizedString>
 
+#include <QDebug>
 #ifdef Q_OS_LINUX
 #include <sys/sysinfo.h>
 #elif defined(Q_OS_FREEBSD)
@@ -97,6 +98,10 @@ QString HardwareInfo::memory() const
 
     totalRam = memory;
 #endif
+    qDebug() << Q_FUNC_INFO << "  totalRam   " << totalRam;
 
-    return KFormat().formatByteSize(totalRam);
+
+    return QString::number(totalRam);
+
+    //return KFormat().formatByteSize(totalRam);
 }

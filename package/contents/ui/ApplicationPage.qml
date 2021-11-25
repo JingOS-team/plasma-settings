@@ -20,13 +20,14 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.1 as Controls
-import org.kde.kirigami 2.13 as Kirigami
+import org.kde.kirigami 2.15 as Kirigami
 import org.kde.plasma.settings 0.1
 
 Kirigami.Page {
     id: initialPage
 
     property bool isResult: false
+    property string startModuleName: ""
 
     title: i18n("Settings")
     leftPadding: 0
@@ -56,30 +57,23 @@ Kirigami.Page {
                                                  }))
     }
 
+    function loadModule(moduleName) {
+        module.name = moduleName
+
+        kcmContainer.incubateObject(pageStack, {
+                                                     "kcm": module.kcm,
+                                                     "internalPage": module.kcm.mainUi
+                                                 })
+    }
+
     Module {
         id: module
     }
-
-    Rectangle {
-        id: app_layout
-        anchors.fill: parent
-        width: parent.width
-        height: parent.height
-        color: "transparent"
-
-        Rectangle {
+        Item {
             id: menuLayout
 
-            width: 265
+            width: 265 * appScaleSize
             height: parent.height
-            visible: true
-            color: "transparent"
-
-            anchors {
-                left: app_layout.left
-                top: app_layout.top
-            }
-
             ModulesList {
                 id: modulesList
                 anchors.fill: menuLayout
@@ -88,31 +82,79 @@ Kirigami.Page {
 
         Rectangle {
             id: contentLayout
-
-            visible: true
-            width: 623
+            width: 623 * appScaleSize
             height: parent.height
-            color: "#FFF6F9FF"
+            color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
             anchors {
                 left: menuLayout.right
-                top: parent.top
                 right: parent.right
             }
 
             Component {
                 id: kcmContainer
-                KCMContainer {}
+
+                KCMContainer {
+                    id:container
+                    Connections{
+                        target:SettingsApp
+
+                        onPause: {
+
+                            container.settingPaused()
+                        }
+
+                        onResume: {
+
+                            container.settingResume()
+                        }
+                    }}
+
+
             }
 
             Component.onCompleted: {
+                //openModule("loading")
                 if (SettingsApp.startModule == "") {
-                    openModule("wifi")
+                    startModuleName = "wifi"
+
                     modulesList.selectMenu = "wifi"
+
                 } else {
-                    openModule(SettingsApp.startModule)
+                    startModuleName = SettingsApp.startModule
+                    //openModule(SettingsApp.startModule)
                     modulesList.selectMenu = SettingsApp.startModule
                 }
+                loadTimer.start()
+                module.loadWallpaperCache()
+
             }
+        }
+
+    Timer{
+        id:loadTimer
+        interval:10
+        running: false
+        onTriggered:{
+            console.log("[liubangguo]timer send message before,module:"+module);
+//            var msg = {'module': module, 'kcmContainer': kcmContainer, 'pageStack':pageStack,'test':"test"};
+//            loadmodules.sendMessage(msg);
+//            loadModule("pointer");
+//            loadModule("trackpad");
+//            loadModule("keyboard");
+//            loadModule("storage");
+//            loadModule("battery");
+//            loadModule("mobile_time");
+//            loadModule("translations");
+//            loadModule("mobile_info");
+//            loadModule("sound");
+//            loadModule("wallpaper");
+//            loadModule("display");
+//            loadModule("password");
+//            loadModule("vpn");
+//            loadModule("cellular");
+//            loadModule("bluetooth");
+//            loadModule("wifi");
+            openModule(startModuleName)
         }
     }
 }

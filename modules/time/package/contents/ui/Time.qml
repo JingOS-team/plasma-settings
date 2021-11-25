@@ -32,47 +32,38 @@ import org.jingos.settings.time 1.0
 Item {
     id: time_root
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    // property int appFontSize: theme.defaultFont.pointSize
+    property int screenWidth: 888 * appScale
+    property int screenHeight: 648 * appScale
 
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
 
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36
-    property int marginLeftAndRight : 20
-    property int marginItem2Top : 24
-    property int radiusCommon: 10 
-    property int fontNormal: 14
-
-
-    // property int screenWidth: Screen.width
-    // property int screenHeight: Screen.height
-    // property real appScale: 1.3 * screenWidth / 1920
-    // property int appFontSize: theme.defaultFont.pointSize
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 36 * appScale
+    property int marginLeftAndRight : 20 * appScale
+    property int marginItem2Top : 24 * appScale
+    property int radiusCommon: 10  * appScale
+    property int fontNormal: 14 * appFontSize
 
     property string currentTime : Qt.formatTime(kcm.currentTime, Locale.ShortFormat)
-    property bool isShown : true 
-    property bool isAutoTimeZone : false 
-    property bool hasPermission: false 
-    property bool isFirstTime : true 
+    property bool isShown : true
+    property bool isAutoTimeZone : false
+    property bool hasPermission: false
+    property bool isFirstTime : true
     width: screenWidth * 0.7
     height: screenHeight
 
     onVisibleChanged: {
-        console.log("------onVisibleChanged--------",  visible);
         isShown = visible
     }
 
     TimeTool {
-        id: timeTool1 
+        id: timeTool1
+
         onDlgConfirm : {
-            console.log("click confirm ......")
             time_auto_switch.checked = kcm.useNtp
-            hasPermission = true 
-            console.log("----switch ....hasPermission--1111111111")
+            hasPermission = true
 
             isAutoTimeZone = kcm.useNtp
             if(!isAutoTimeZone){
@@ -82,22 +73,18 @@ Item {
         }
 
         onDlgCancel : {
-            console.log("click cancel ......")
-            // time_auto_switch.checked = isAutoTimeZone
-            hasPermission = false  
+            hasPermission = false
         }
-
     }
 
     Component.onCompleted: {
         isAutoTimeZone = kcm.useNtp
-        // isOrignValue = kcm.useNtp 
         time_auto_switch.checked = isAutoTimeZone
     }
 
     Rectangle {
         anchors.fill:parent
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground
 
         Text {
             id: title
@@ -105,16 +92,16 @@ Item {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: marginLeftAndRight  
-                topMargin: marginTitle2Top  
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
+            width: 329 * appScale
+            height: 14 * appScale
 
-            width: 329
-            height: 14
             text: i18n("Date & Time")
-            // font.pointSize: appFontSize + 11
-            font.pixelSize: 20 
+            font.pixelSize: 20 * appFontSize
             font.weight: Font.Bold
+            color: Kirigami.JTheme.majorForeground
         }
 
         Rectangle {
@@ -126,11 +113,11 @@ Item {
                 leftMargin: marginLeftAndRight
                 topMargin: marginItem2Title
             }
-
             width: parent.width - marginLeftAndRight* 2
             height: default_setting_item_height
-            color: "#fff"
-            radius: 10
+
+            color: Kirigami.JTheme.cardBackground
+            radius: 10 * appScale
 
             Text {
                 anchors {
@@ -140,28 +127,26 @@ Item {
                 }
 
                 text: i18n("24-Hour Time")
-                // font.pointSize: appFontSize + 2
                 font.pixelSize: fontNormal
-
+                color: Kirigami.JTheme.majorForeground
             }
 
             Kirigami.JSwitch {
-                // Switch{
-                    id: time_format_switch
+                id: time_format_switch
 
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        right: parent.right
-                        rightMargin: marginLeftAndRight
-                    }
-                    checked: kcm.twentyFour
-                    onCheckedChanged: {
-                        kcm.twentyFour = checked
-                        print(kcm.timeZone);
-                    }
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    right: parent.right
+                    rightMargin: marginLeftAndRight
                 }
-        }
 
+                checked: kcm.twentyFour
+                onCheckedChanged: {
+                    kcm.twentyFour = checked
+                    print(kcm.timeZone);
+                }
+            }
+        }
 
         Rectangle {
             id: time_settings_area
@@ -172,13 +157,11 @@ Item {
                 leftMargin: marginLeftAndRight
                 topMargin: marginItem2Top
             }
-
             width: parent.width - marginLeftAndRight* 2
             height: default_setting_item_height * 2
+            radius: 10 * appScale
 
-            color: "#fff"
-            radius: 10
-
+            color: Kirigami.JTheme.cardBackground
             Rectangle {
                 id: time_auto_area
 
@@ -186,25 +169,25 @@ Item {
                     left: parent.left
                     top : parent.top
                 }
-
                 width: parent.width
                 height: default_setting_item_height
-                color: "transparent"
 
+                color: "transparent"
                 Text {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         left: parent.left
                         leftMargin: marginLeftAndRight
                     }
-
                     text: i18n("Set Automatically")
-                    // font.pointSize: appFontSize + 2
                     font.pixelSize: fontNormal
+                    color: Kirigami.JTheme.majorForeground
                 }
 
                 Kirigami.JSwitch {
                     id: time_auto_switch
+
+                    property bool isSetting: false
 
                     anchors {
                         verticalCenter: parent.verticalCenter
@@ -214,37 +197,31 @@ Item {
 
                     MouseArea {
                         anchors.fill :parent
-                        onClicked :{
+                        onClicked: {
+                            if(time_auto_switch.isSetting){
+                                return
+                            }
+                            time_auto_switch.isSetting = true
                             kcm.useNtp = !kcm.useNtp
 
-                            if(hasPermission){
-                                console.log("----switch ....hasPermission--")
-                                time_auto_switch.checked = kcm.useNtp
-                                isAutoTimeZone = kcm.useNtp
-                                if(!isAutoTimeZone){
-                                    kcm.ntpServer = ""
-                                    kcm.saveTime()
-                                }
-                            } else {
-                                 console.log("----switch ....has not Permission--")
+                            time_auto_switch.checked = kcm.useNtp
+                            isAutoTimeZone = kcm.useNtp
+                            if(!isAutoTimeZone){
+                                kcm.ntpServer = ""
+                                kcm.saveTime()
                             }
+                            time_auto_switch.isSetting = false
                         }
-                    }
-                    // checked: kcm.useNtp
-                    onCheckedChanged: {
-                        console.log("----onCheckedChanged--")
-                        // 记录怎么获取当前是否有系统权限
                     }
                 }
 
-                Kirigami.Separator {
+                Kirigami.JMenuSeparator {
+                    width: parent.width
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.leftMargin: marginLeftAndRight
                     anchors.rightMargin: marginLeftAndRight
-                    height: 1 
-                    color: "#f0f0f0"
                 }
             }
 
@@ -268,12 +245,11 @@ Item {
                     }
 
                     text: i18n("Time Zone")
-                    // font.pointSize: appFontSize + 2
                     font.pixelSize: fontNormal
-                    color: kcm.useNtp ? "#99000000":"black"
+                    color: kcm.useNtp ? Kirigami.JTheme.minorForeground : Kirigami.JTheme.majorForeground
                 }
 
-               Image {
+               Kirigami.JIconButton {
                     id: item_arrow
 
                     anchors {
@@ -281,21 +257,21 @@ Item {
                         right: parent.right
                         rightMargin: marginLeftAndRight
                     }
+                    width: 30 * appScale
+                    height: 30 * appScale
 
-                    sourceSize.width: 17
-                    sourceSize.height: 17
-                    source: "../image/icon_right.png"
+                    source: Qt.resolvedUrl("../image/icon_right.png")
+                    color: Kirigami.JTheme.iconMinorForeground
                 }
 
                 Text {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         right: item_arrow.left
-                        leftMargin: 9
+                        leftMargin: 9 * appScale
                     }
-                    color:kcm.useNtp ? "#77000000":"#99000000"
+                    color:kcm.useNtp ? Kirigami.JTheme.disableForeground : Kirigami.JTheme.minorForeground
                     text: kcm.timeZone
-                    // font.pointSize: appFontSize + 2
                     font.pixelSize: fontNormal
                 }
 
@@ -303,10 +279,8 @@ Item {
                     anchors.fill:parent
                     onClicked:{
                         if(kcm.useNtp){
-                          return   
+                          return
                         }
-                        console.log("..TimeZone.. Clicked")
-                        // timeZonePickerSheet.open()
                         main.gotoPage("timezone_view")
                     }
                 }
@@ -317,8 +291,9 @@ Item {
                     anchors.right: parent.right
                     anchors.leftMargin: marginLeftAndRight
                     anchors.rightMargin: marginLeftAndRight
-                    height: 1 
-                    color: "#f0f0f0"
+                    height: 1
+
+                    color: "#00f0f0f0"
                 }
             }
 
@@ -337,42 +312,40 @@ Item {
 
                 Text {
                     id: date_txt
-                    width: 312 
-                    height: 17
-                    // font.pointSize: appFontSize + 2
-                    font.pixelSize :17
-                    anchors.centerIn: parent 
+
+                    width: 312  * appScale
+                    height: 17 * appScale
+                    anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
-                    text: Qt.formatDate(kcm.currentDate, Locale.ShortFormat);
+
+                    font.pixelSize :17 * appFontSize
+                    text: Qt.formatDate(kcm.currentDate, Locale.ShortFormat)
                     color: "#FF3C4BE8"
 
                     MouseArea {
                         anchors.fill:parent
                         onClicked:{
-                            console.log("..Date.. Clicked")
-                            // datePickerSheet.open()
                         }
                     }
                 }
 
                 Text {
                     id: time_txt
-                    width: 312 
-                    height: 17
-                    // font.pointSize: appFontSize + 2
-                    font.pixelSize: fontNormal
+
+                    width: 312  * appScale
+                    height: 17 * appScale
                     anchors.right: parent.right
                     anchors.rightMargin: marginLeftAndRight
                     anchors.verticalCenter:parent.verticalCenter
                     horizontalAlignment: Text.AlignRight
+
+                    font.pixelSize: fontNormal
                     text: currentTime
                     color: "#FF3C4BE8"
 
                      MouseArea {
                         anchors.fill:parent
                         onClicked:{
-                            console.log("..Time.. Clicked")
-                            // timePickerSheet.open()
                             popupEventEditor.open()
                         }
                     }
@@ -381,238 +354,3 @@ Item {
         }
     }
 }
-
-/*  SimpleKCM {
-    id: timeModule
-
-    Component {
-        id: listDelegateComponent
-
-        Kirigami.BasicListItem {
-            text: {
-                if (model) {
-                    if (model.region) {
-                        return "%1 / %2".arg(model.region).arg(model.city)
-                    } else {
-                        return model.city
-                    }
-                }
-                return ""
-            }
-            onClicked: {
-                timeZonePickerSheet.close()
-                kcm.saveTimeZone(model.timeZoneId)
-            }
-        }
-    }
-
-    ColumnLayout {
-        width: parent.width
-        spacing: 0
-        id: formLayout
-
-        Kirigami.ListSectionHeader {
-            label: i18n("Time Display")
-        }
-
-        Kirigami.BasicListItem {
-            label: i18n("Use 24-hour clock:")
-            icon: "clock"
-            onClicked: {
-                twentyFourSwitch.checked = !twentyFourSwitch.checked
-                twentyFourSwitch.clicked()
-            }
-            Controls.Switch {
-                id: twentyFourSwitch
-                checked: kcm.twentyFour
-                onClicked: {
-                    kcm.twentyFour = checked
-                    print(kcm.timeZone);
-                }
-            }
-        }
-
-        Kirigami.BasicListItem {
-            label: i18n("Timezone:")
-            onClicked: timeZonePickerSheet.open()
-            Controls.Label {
-                id: timeZoneButton
-                text: kcm.timeZone
-            }
-        }
-
-        Kirigami.ListSectionHeader {
-            label: i18n("Set Time and Date")
-        }
-
-        Kirigami.BasicListItem {
-            label: i18n("Set time automatically:")
-            onClicked: {
-                ntpCheckBox.checked = !ntpCheckBox.checked
-                ntpCheckBox.clicked()
-            }
-
-            Controls.Switch {
-                id: ntpCheckBox
-                checked: kcm.useNtp
-                onClicked: {
-                    kcm.useNtp = checked;
-                    if (!checked) {
-                        kcm.ntpServer = ""
-                        kcm.saveTime()
-                    }
-                }
-            }
-        }
-
-        Kirigami.BasicListItem {
-            label: i18n("Time")
-            icon: "clock"
-            onClicked: timePickerSheet.open()
-            Controls.Label {
-                text: {
-                    Qt.formatTime(kcm.currentTime, Locale.LongFormat)
-                }
-            }
-        }
-
-        Kirigami.BasicListItem {
-            label: i18n("Date")
-            icon: "view-calendar"
-            onClicked: datePickerSheet.open()
-
-            Controls.Label {
-                text: {
-                    Qt.formatDate(kcm.currentDate, Locale.LongFormat);
-                }
-            }
-        }
-    }
-
-    Kirigami.OverlaySheet {
-        id: timeZonePickerSheet
-        header: ColumnLayout {
-            Kirigami.Heading {
-                text: i18nc("@title:window", "Pick Timezone")
-            }
-            Kirigami.SearchField {
-                Layout.fillWidth: true
-                width: parent.width
-                onTextChanged: {
-                    kcm.timeZonesModel.filterString = text
-                }
-            }
-        }
-
-        footer: RowLayout {
-            Controls.Button {
-                Layout.alignment: Qt.AlignHCenter
-
-                text: i18nc("@action:button", "Close")
-
-                onClicked: timeZonePickerSheet.close()
-            }
-        }
-        ListView {
-            clip: true
-            anchors.fill: parent
-            implicitWidth: 18 * Kirigami.Units.gridUnit
-            model: kcm.timeZonesModel
-            delegate: Kirigami.DelegateRecycler {
-                width: parent.width
-
-                sourceComponent: listDelegateComponent
-            }
-        }
-    }
-
-    Kirigami.OverlaySheet {
-        id: timePickerSheet
-        header:  Kirigami.Heading { text: i18n("Pick Time") }
-        TimePicker {
-            id: timePicker
-            enabled: !ntpCheckBox.checked
-            twentyFour: twentyFourSwitch.checked
-
-            implicitWidth: width > Kirigami.Units.gridUnit * 15 ? width : Kirigami.Units.gridUnit * 15
-
-            Component.onCompleted: {
-                var date = new Date(kcm.currentTime);
-                timePicker.hours = date.getHours();
-                timePicker.minutes = date.getMinutes();
-                timePicker.seconds = date.getSeconds();
-            }
-            Connections {
-                target: kcm
-                onCurrentTimeChanged: {
-                    if (timePicker.userConfiguring) {
-                        return;
-                    }
-
-                    var date = new Date(kcm.currentTime);
-                    timePicker.hours = date.getHours();
-                    timePicker.minutes = date.getMinutes();
-                    timePicker.seconds = date.getSeconds();
-                }
-            }
-            onUserConfiguringChanged: {
-                kcm.currentTime = timeString
-                kcm.saveTime()
-            }
-        }
-        footer: RowLayout {
-            Controls.Button {
-                Layout.alignment: Qt.AlignRight
-
-                text: i18nc("@action:button", "Close")
-
-                onClicked: timePickerSheet.close()
-            }
-        }
-    }
-
-    Kirigami.OverlaySheet {
-        id: datePickerSheet
-        header: Kirigami.Heading { text: i18n("Pick Date") }
-        DatePicker {
-            id: datePicker
-            enabled: !ntpCheckBox.checked
-
-            implicitWidth: width > Kirigami.Units.gridUnit * 15 ? width : Kirigami.Units.gridUnit * 15
-
-            Component.onCompleted: {
-                var date = new Date(kcm.currentDate)
-                datePicker.day = date.getDate()
-                datePicker.month = date.getMonth()+1
-                datePicker.year = date.getFullYear()
-            }
-            Connections {
-                target: kcm
-                onCurrentDateChanged: {
-                    if (datePicker.userConfiguring) {
-                        return
-                    }
-
-                    var date = new Date(kcm.currentDate)
-
-                    datePicker.day = date.getDate()
-                    datePicker.month = date.getMonth()+1
-                    datePicker.year = date.getFullYear()
-                }
-            }
-            onUserConfiguringChanged: {
-                kcm.currentDate = isoDate
-                kcm.saveTime()
-            }
-        }
-        footer: RowLayout {
-            Controls.Button {
-                Layout.alignment: Qt.AlignRight
-
-                text: i18nc("@action:button", "Close")
-
-                onClicked: datePickerSheet.close()
-            }
-        }
-    }
-}  */

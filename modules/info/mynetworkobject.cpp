@@ -66,7 +66,7 @@ void MyNetworkObject::get(QUrl url) {
     request.setHeader(QNetworkRequest::UserAgentHeader, \
                       QVariant("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36"));
     pReply = networkAccessManager->get(request);
-    QReplyTimeout *pTimeout = new QReplyTimeout(pReply, 5000);
+    QReplyTimeout *pTimeout = new QReplyTimeout(pReply, 20000);
 
     connect(pTimeout, &QReplyTimeout::timeout, [=]() {
         emit requestFailSignal("Timeout");

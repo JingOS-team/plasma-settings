@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+UID=1000
+
+if id "$UID" > /dev/null 2>&1; then
+
+    USER="$(id "$UID" -u -n)"
+
+    if [ -e /home/$USER/.cache/systemsettings ]; then
+        rm -rf /home/$USER/.cache/systemsettings
+    fi
+    
+    if [ -e /home/$USER/.cache/mobile.plasmasettings ]; then
+        rm -rf /home/$USER/.cache/mobile.plasmasettings
+    fi
+fi
+
+exit 0

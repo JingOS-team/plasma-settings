@@ -2,10 +2,11 @@ import QtQuick 2.0
 import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.0
 import QtQml.Models 2.3
+import jingos.display 1.0
 
 Item {
     id:lockScrren
-    property int appFontSize: theme.defaultFont.pointSize
+    property int appFontSize: JDisplay.sp(1.0)//theme.defaultFont.pointSize
     property alias imageRadius : radiusImage.imageRadius
     property bool isFullShow : radiusImage.imageRadius === 0
     property alias mainInterfaceImageUrl: radiusImage.url
@@ -95,10 +96,10 @@ Item {
         anchors{
             horizontalCenter: radiusImage.horizontalCenter
             top: radiusImage.top
-            topMargin: 20
+            topMargin: 20 * appScale
         }
-        width: parent.width - 50
-        height: parent.height - 50
+        width: parent.width - 50 * appScale
+        height: parent.height - 50 * appScale
         model: gridModel
     }
 
@@ -106,7 +107,7 @@ Item {
         id: footItem
         anchors {
             bottom: radiusImage.bottom
-            bottomMargin: 10
+            bottomMargin: 10 * appScale
         }
         width: radiusImage.width
         height: footItem.iconWidthAndHeight  * 2
@@ -121,7 +122,7 @@ Item {
 
             property point mapPoint: effectSource.mapToItem(radiusImage, effectSource.x, effectSource.y)
 
-            width: favoriteAppRow.width + 20
+            width: favoriteAppRow.width + 20 * appScale
             height: parent.height
 
             sourceItem: radiusImage

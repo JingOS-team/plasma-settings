@@ -23,21 +23,24 @@ import QtQuick 2.7
 import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Controls 2.10
 import jingos.keyboard 1.0
+import jingos.display 1.0
 
 Rectangle {
     id: storage_root
 
-    property int screenWidth: 888
-    property int screenHeight: 648
-    property int statusbar_height : 22
-    property int statusbar_icon_size: 22
-    property int default_setting_item_height: 45
-    property int marginTitle2Top : 44 
-    property int marginItem2Title : 36 
-    property int marginLeftAndRight : 20 
-    property int marginItem2Top : 24 
-    property int radiusCommon: 10 
-    property int fontNormal: 14
+    property real appScale: JDisplay.dp(1.0)
+    property real appFontSize: JDisplay.sp(1.0)
+    property int screenWidth: 888 * appScale
+    property int screenHeight: 648 * appScale
+    property int statusbar_height : 22 * appScale
+    property int statusbar_icon_size: 22 * appScale
+    property int default_setting_item_height: 45 * appScale
+    property int marginTitle2Top : 44  * appScale
+    property int marginItem2Title : 36  * appScale
+    property int marginLeftAndRight : 20  * appScale
+    property int marginItem2Top : 24  * appScale
+    property int radiusCommon: 10  * appScale
+    property int fontNormal: 14 *appFontSize
 
     KeyboardModel {
         id: keyboardModel
@@ -54,7 +57,7 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
 
-        color: "#FFF6F9FF"
+        color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
 
         Text {
             id: location_title
@@ -62,17 +65,18 @@ Rectangle {
             anchors {
                 left: parent.left
                 top: parent.top
-                leftMargin: marginLeftAndRight  
-                topMargin: marginTitle2Top  
+                leftMargin: marginLeftAndRight
+                topMargin: marginTitle2Top
             }
-            width: 329
-            height: 14
+            width: 329 * appScale
+            height: 14 * appScale
             text: i18n("Keyboard")
-            font.pixelSize: 20 
+            font.pixelSize: 20 * appFontSize
             font.weight: Font.Bold
+            color: Kirigami.JTheme.majorForeground
         }
 
-        
+
          Rectangle {
             id: location_area
 
@@ -84,8 +88,8 @@ Rectangle {
             }
             width: parent.width - marginLeftAndRight* 2
             height: default_setting_item_height
-            color: "#fff"
-            radius: 10
+            color: Kirigami.JTheme.cardBackground//"#fff"
+            radius: 10 * appScale
 
             Rectangle {
                 id: location_item
@@ -105,9 +109,10 @@ Rectangle {
                         leftMargin: marginLeftAndRight
                         verticalCenter: parent.verticalCenter
                     }
-                    width: 331
-                    text: i18n("Virtual Keyboard Always on")
+                    width: 331 * appScale
+                    text: i18n("Always use virtual keyboard")
                     font.pixelSize: fontNormal
+                    color: Kirigami.JTheme.majorForeground
 
                 }
 
@@ -128,6 +133,6 @@ Rectangle {
 
          }
 
-    
+
     }
 }

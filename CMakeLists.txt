@@ -49,7 +49,11 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Declarative
     KIO
     BluezQt
+    Crash
+    NetworkManagerQt
+    GuiAddons
 )
+find_package(packagekitqt5 REQUIRED)
 
 find_package(PkgConfig)
 ki18n_install(po)
@@ -67,6 +71,6 @@ install(DIRECTORY package/ DESTINATION ${KDE_INSTALL_DATAROOTDIR}/kpackage/gener
 install(FILES org.kde.mobile.plasmasettings.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 # install(FILES settings.svg DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES settings.svg DESTINATION ${KDE_INSTALL_FULL_ICONDIR}/hicolor/scalable/apps/)
-
+install(FILES settings_main.notifyrc DESTINATION ${KNOTIFYRC_INSTALL_DIR})
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})

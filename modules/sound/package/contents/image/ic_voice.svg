@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="34px" viewBox="0 0 32 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Interface, Essential/calendar-schedule-clock-time 2</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.556863 0 0 0 0 0.556863 0 0 0 0 0.576471 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="H-Sounds" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="h01设置-Sounds" transform="translate(-610.000000, -278.000000)">
+            <g id="编组" transform="translate(570.000000, 160.000000)">
+                <g id="Interface,-Essential/calendar-schedule-clock-time-2" transform="translate(40.000000, 90.000000)" filter="url(#filter-1)">
+                    <g transform="translate(0.000000, 28.540541)">
+                        <g id="-mockplus-" transform="translate(0.000000, 0.459459)">
+                            <g id="Path" transform="translate(-0.000000, -0.000000)">
+                                <polygon points="0 0 32.0000001 0 32.0000001 32.0000001 0 32.0000001"></polygon>
+                                <path d="M7.83333335,11.5 L4.66666669,11.5 C3.93066668,11.5 3.33333335,12.0973334 3.33333335,12.8333334 L3.33333335,19.1666667 C3.33333335,19.9026667 3.93066668,20.5000001 4.66666669,20.5000001 L7.83333335,20.5000001 L13.1386667,24.9946668 C14.0053334,25.7293334 15.3333333,25.1133334 15.3333333,23.9773334 L15.3333333,8.0226667 C15.3333333,6.8866667 14.0040001,6.27066669 13.1386667,7.00533336 L7.83333335,11.5 Z" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M20.7160001,21.3040001 C22.2653334,20.3413334 23.3333334,18.3386667 23.3333334,16.0066667 C23.3333334,13.6746667 22.2653334,11.6706667 20.7160001,10.696" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M24.6733334,25.4200001 C27.0840001,23.3466668 28.6666668,19.9066667 28.6666668,16.0040001 C28.6666668,12.0960001 27.0813334,8.65333337 24.6666668,6.58133336" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

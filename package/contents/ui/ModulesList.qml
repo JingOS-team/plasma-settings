@@ -25,511 +25,320 @@ import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.2 as Controls
 
 import org.kde.kirigami 2.15 as Kirigami
-import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
 
 import org.kde.plasma.settings 0.1
 import org.kde.bluezqt 1.0 as BluezQt
+import MeeGo.QOfono 0.2 as QOfono
+import org.kde.plasma.networkmanagement 0.2 as PlasmaNM
+import org.kde.plasma.core 2.0 as PlasmaCore
 
 Kirigami.Page {
     id: settingsRoot
 
-    property string titleColor: "#4D000000"
+    property string titleColor: Kirigami.JTheme.minorForeground//"#4D000000"
     property string selectMenu: "wifi"
-    property string wifiConnectedName: editorProxyModel != null ? editorProxyModel.currentConnectedName : "Not connected"
-    property bool isBluetoothOn: !BluezQt.Manager.bluetoothBlocked
-    property bool isVpnConnected: vpnProxyModel.vpnConnectedName != "" ?  true : false
+    property string wifiConnectedName: networkStatus.connectedWifiName
+    property bool isBluetoothOn: !BluezQt.Manager.bluetoothBlocked  && isAdapterPowered()
+    property bool isVpnConnected:networkStatus.connectedVpnName != "" ? true : false
+    property var curentModemPath: ofonoManager.modems.length ? ofonoManager.modems[0] : ""
+    property bool isSimExits: simListModel.count > 0
+    property bool isCellularOn: ofonoContextConnection.active
+    property bool airplaneModeEnabled: stSource.data["StatusPanel"]["flight mode"]
 
-    width: parent.width
-    height: parent.height
-    title: i18n("Settings")
-    topPadding: 0
-    leftPadding: 0
-    rightPadding: 0
-    bottomPadding: 0
+    padding: 0
 
-    PlasmaNM.KcmIdentityModel {
-        id: connectionModel
+    PlasmaNM.Handler {
+        id: handler
     }
 
-    PlasmaNM.EditorProxyModel {
-        id: editorProxyModel
-
-        sourceModel: connectionModel
+    QOfono.OfonoManager {
+        id: ofonoManager
     }
 
-    PlasmaNM.EnabledConnections {
-        id: enabledConnections
+    QOfono.OfonoContextConnection{
+        id: ofonoContextConnection
+
+        contextPath: connectionManager.contexts[0]
     }
 
-    PlasmaNM.NetworkStatus {
+    QOfono.OfonoConnMan {
+        id:connectionManager
+
+        modemPath: curentModemPath
+    }
+
+    QOfono.OfonoSimListModel {
+        id: simListModel
+    }
+
+    NetworkStatus {
         id: networkStatus
-    }
 
-    PlasmaNM.VpnProxyModel {
-       id: vpnProxyModel
+        onWirelessEnabledChanged: {
+            setWifiContent();
+        }
 
-        sourceModel: connectionModel
+        onNetworkStatusChanged: {
+            setWifiContent();
+        }
 
-        onConnectedNameChanged:{
-            isVpnConnected = name != "" ? true : false
+        onConnectedWifiNameChanged: {
+            setWifiContent();
+        }
+
+        onConnectedVpnNameChanged:{
+            setVpnContent();
         }
     }
 
+    PlasmaCore.DataSource {
+        id: stSource
 
-    Repeater {
-        model: editorProxyModel
-        Item {
-            Component.onCompleted: {
-                if (ConnectionState == PlasmaNM.Enums.Activated) {
+        engine: "statuspanel"
+        connectedSources: ["StatusPanel"]
+    }
 
-                    //editorProxyModel.currentConnectedName = Name
-                }
-            }
-        }
+    function isAdapterPowered() {
+        var adapter = BluezQt.Manager.adapters[0]
+        var isPowered = adapter.powered
+        return isPowered;
     }
 
     background: Rectangle {
         anchors.fill: parent
-        color: "#FFE8EFFF"
+        color: Kirigami.JTheme.settingMajorBackground
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: "transparent"
+    Text {
+        id: settings_title
 
-        Rectangle {
-            id: settings_title
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            leftMargin: 25 * appScaleSize
+            topMargin: 40 * appScaleSize
+        }
+        text: i18nd("settings", "Settings")
+        font.bold: true
+        font.pixelSize: 25 * appFontSize
+        color: Kirigami.JTheme.majorForeground
+    }
 
-            anchors {
-                left: parent.left
-                top: parent.top
-                leftMargin: 25
-                topMargin: 40
-            }
-            width: parent.width
-            height: 30
-            color: "transparent"
+    ListView {
+        id: tagListview
+
+        anchors {
+            left: parent.left
+            top: settings_title.bottom
+            bottom: parent.bottom
+            bottomMargin: 10 * appScaleSize
+            right: parent.right
+            leftMargin: 12 * appScaleSize
+        }
+        clip: true
+        section.property: "group"
+        section.criteria: ViewSection.FullString
+        section.delegate: Item {
+            width: tagListview.width
+            height: 46 * appScaleSize
 
             Text {
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: parent.left
-                }
-                text: i18n("Settings")
-                font.bold: true
-                // font.pointSize: appFontSize + 16
-                font.pixelSize: 25
+                anchors.left: parent.left
+                anchors.leftMargin: 13 * appScaleSize
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 6 * appScaleSize
+                font.pixelSize: 12 * appFontSize
+                color:titleColor
+                text: section
             }
         }
 
-        Rectangle {
+        model: settingsModel
+        delegate: MenuItem {
+            menuChecked: model.type === "airplaneMode" ? airplaneModeEnabled : false
+            menuType: model.menuType
+            menuTitle: model.title
+            menuContent: model.menuContent
+            menuIconSource: model.icon
+            isSelect : settingsRoot.selectMenu === model.type
 
-            anchors {
-                left: parent.left
-                top: settings_title.bottom
-                leftMargin: 12
-                topMargin: 28
-            }
-
-            width: parent.width
-            height: parent.height
-            color: "transparent"
-
-            Controls.ScrollView {
-                id: scrollView
-                width: 888* 0.3 -12-13
-                height: parent.height -  (40+ 30+28)
-                Controls.ScrollBar.horizontal.policy: Controls.ScrollBar.AlwaysOff
-                // Controls.ScrollBar.vertical.policy: Controls.ScrollBar.AlwaysOff
-                contentWidth: -1
-
-                Controls.ScrollBar.vertical: Controls.ScrollBar {
-                    parent: scrollView
-                    x: scrollView.mirrored ? 0 : scrollView.width - width
-                    y: scrollView.topPadding
-                    policy: Controls.ScrollBar.AsNeeded
-                    height: scrollView.availableHeight
-                    active: scrollView.ScrollBar.horizontal.active
-                    contentItem: Rectangle {
-                        implicitWidth: 4
-                        implicitHeight: 80
-                        radius: width/2
-                        // color: scrollView.pressed ? "orange" : "green"
-                        color: "transparent"
-                    }
-                }
-
-                Column {
-                    spacing: 2
-
-                    Item {
-                        width: parent.width
-                        height: 2 
-                    }
-
-                    Text {
-                        id: network_title
-
-                        text: i18n("Network and connectivity")
-                        color: titleColor
-                        width: 175
-                        height: 12
-                        font.pixelSize: 12
-                        anchors {
-                            left: parent.left
-                            leftMargin: 12
-                        }
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: 6
-                    }
-
-                    MenuItem {
-                        id: wifiMenu
-
-                        menuTitle: i18n("WLAN")
-                        menuType: 2
-                        menuContent: !enabledConnections.wirelessEnabled ? i18n("Off") : networkStatus.networkStatus == "Connecting" ? i18n("On connection") : networkStatus.networkStatus == "Connected" ? wifiConnectedName : i18n("Not connected")
-                        menuIconSource: "../image/icon_wifi.svg"
-                        menuIconSourceHighlight: "../image/icon_wifi.svg"
-                        isSelect: selectMenu == "wifi"
-
-                        onMenuClicked: {
-                            selectMenu = "wifi"
-                            openModule("wifi")
-                        }
-                    }
-
-		            MenuItem {
-                        id: btMenu
-                        menuTitle: i18n("Bluetooth")
-                        menuType : 2
-                        menuContent : isBluetoothOn ? i18n("On") : i18n("Off")
-                        menuIconSource: "../image/icon_bt.svg"
-                        menuIconSourceHighlight: "../image/icon_bt.svg"
-                        isSelect: selectMenu == "bluetooth"
-                        onMenuClicked : {
-                            selectMenu = "bluetooth"
-                            openModule("bluetooth")
-                        }
-                    }
-
-                    MenuItem {
-                        id: vpnMenu
-                        menuTitle: "VPN"
-                        menuType : 2
-                        menuContent: isVpnConnected ? i18n("On") : i18n("Not connected")
-                        menuIconSource: "../image/icon_vpn.svg"
-                        menuIconSourceHighlight: "../image/icon_vpn.svg"
-                        isSelect: selectMenu == "vpn"
-                        onMenuClicked : {
-                            selectMenu = "vpn"
-                             openModule("vpn")
-                        }
-                    }
-
-                    /*
-                    MenuItem {
-                        id: cellMenu
-                        menuTitle: "Cellular"
-                        menuType : 0
-                        menuIconSource: "../image/icon_cell.png"
-                        isSelect: selectMenu == "cell"
-
-                        onMenuClicked : {
-                            selectMenu = "cell"
-                            openModule("mobile_cellularnetwork")
-                        }
-                    }
-
-                    
-
-                    MenuItem {
-                        id: hotspotMenu
-                        menuTitle: "Personal Hotspot"
-                        menuType : 0
-                        menuIconSource: "../image/icon_cell.png"
-                        isSelect: selectMenu == "hotspot"
-                        onMenuClicked : {
-                            selectMenu = "hotspot"
-                            openModule("mobile_power")
-                        }
-                    }*/
-
-                    Item {
-                        width: parent.width
-                        height: 28 
-                    }
-
-                    Text {
-                        id: display_title
-
-                        anchors {
-                            left: parent.left
-                            leftMargin: 18 
-                            bottomMargin: 6 
-                        }
-                        width: 269 
-                        height: 18 
-                        text: i18n("Display and sound")
-                        color: titleColor
-                        font.pixelSize: 12
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: 6 
-                    }
-
-                    MenuItem {
-                        id: displayMenu
-
-                        menuTitle: i18n("Display & Brightness")
-                        menuType: 0
-                        menuIconSource: "../image/icon_display.svg"
-                        menuIconSourceHighlight: "../image/icon_display.svg"
-                        isSelect: selectMenu == "display"
-
-                        onMenuClicked: {
-                            selectMenu = "display"
-                            openModule("display")
-                        }
-                    }
-                    MenuItem {
-                        id: wallpaperMenu
-                        menuTitle: i18n("Wallpaper")
-                        menuType : 0
-                        menuIconSource: "../image/icon_wallpaper.svg"
-                        menuIconSourceHighlight: "../image/icon_wallpaper.svg"
-                        isSelect: selectMenu == "wallpaper"
-                        onMenuClicked : {
-                            selectMenu = "wallpaper"
-                            openModule("wallpaper")
-                        }
-                    }
-
-
-                    MenuItem {
-                        id: soundMenu
-
-                        menuTitle: i18n("Sounds")
-                        menuType: 0
-                        menuIconSource: "../image/icon_sound.svg"
-                        menuIconSourceHighlight: "../image/icon_sound.svg"
-                        isSelect: selectMenu == "sound"
-
-                        onMenuClicked: {
-                            selectMenu = "sound"
-                            openModule("sound")
-                        }
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: 28
-                    }
-
-                    Text {
-                        id: security_title
-
-                        anchors {
-                            left: parent.left
-                            leftMargin: 18 
-                            bottomMargin: 6 
-                        }
-                        width: 269 
-                        height: 18 
-                        text: i18n("Security and privacy")
-                        color: titleColor
-                        font.pixelSize: 12
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: 6 
-                    }
-
-                    MenuItem {
-                        id: passwordMenu
-
-                        menuTitle: i18n("Password")
-                        menuType: 0
-                        menuIconSource: "../image/icon_password.svg"
-                        menuIconSourceHighlight: "../image/icon_password.svg"
-                        isSelect: selectMenu == "password"
-
-                        onMenuClicked: {
-                            selectMenu = "password"
-                            openModule("password")
-                        }
-                    }
-
-                    MenuItem {
-                        id: locationMenu
-                        menuTitle: i18n("Location Service")
-                        menuType : 0
-                        menuIconSource: "../image/icon_location.svg"
-                        menuIconSourceHighlight: "../image/icon_location.svg"
-                        isSelect: selectMenu == "location"
-                        onMenuClicked : {
-                            selectMenu = "location"
-                            openModule("location")
-                        }
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: 28 
-                    }
-
-                    Text {
-                        id: system_title
-                        
-                        anchors {
-                            left: parent.left
-                            leftMargin: 18 
-                        }
-                        width: 269 
-                        height: 18 
-                        text: i18n("System")
-                        color: titleColor
-                        font.pixelSize: 12
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: 6 
-                    }
-
-                    MenuItem {
-                        id: systemMenu
-
-                        menuTitle: i18n("System & Update")
-                        menuType: 0
-                        menuIconSource: "../image/icon_about.svg"
-                        menuIconSourceHighlight: "../image/icon_about.svg"
-                        isSelect: selectMenu == "mobile_info"
-
-                        onMenuClicked: {
-                            selectMenu = "mobile_info"
-                            openModule("mobile_info")
-                        }
-                    }
-
-                    MenuItem {
-                        id: languageMenu
-                        menuTitle: i18n("Language")
-                        menuType : 0
-                        menuIconSource: "../image/icon_language.svg"
-                        menuIconSourceHighlight: "../image/icon_language.svg"
-                        isSelect: selectMenu == "language"
-                        onMenuClicked : {
-                            selectMenu = "language"
-                            openModule("translations")
-                        }
-                    }
-                    
-                    MenuItem {
-                        id: timeMenu
-                        menuTitle: i18n("Date & Time")
-                        menuType : 0
-                        menuIconSource: "../image/icon_time.svg"
-                        menuIconSourceHighlight: "../image/icon_time.svg"
-                        isSelect: selectMenu == "Time"
-                        onMenuClicked : {
-                            selectMenu = "Time"
-                            openModule("mobile_time")
-
-                        }
-                    }
-
-                    MenuItem {
-                        id: batteryMenu
-
-                        menuTitle: i18n("Battery")
-                        menuType: 0
-                        menuIconSource: "../image/icon_battery.svg"
-                        menuIconSourceHighlight: "../image/icon_battery.svg"
-                        isSelect: selectMenu == "battery"
-
-                        onMenuClicked: {
-                            selectMenu = "battery"
-                            openModule("battery")
-                        }
-                    }
-
-                    MenuItem {
-                        id: storageMenu
-
-                        menuTitle: i18n("Storage")
-                        menuType: 0
-                        menuIconSource: "../image/icon_storage.svg"
-                        menuIconSourceHighlight: "../image/icon_storage.svg"
-                        isSelect: selectMenu == "storage"
-
-                        onMenuClicked: {
-                            selectMenu = "storage"
-                            openModule("storage")
-                        }
-                    }
-		
-                    MenuItem {
-                        id: keyboardMenu
-
-                        menuTitle: i18n("Keyboard")
-                        menuType: 0
-                        menuIconSource: "../image/icon_keyboard.svg"
-                        menuIconSourceHighlight: "../image/icon_keyboard.svg"
-                        isSelect: selectMenu == "keyboard"
-
-                        onMenuClicked: {
-                            selectMenu = "keyboard"
-                            openModule("keyboard")
-                        }
-                    }
-
-                    MenuItem {
-                        id: trackpadMenu
-
-                        menuTitle: i18n("Trackpad")
-                        menuType: 0
-                        menuIconSource: "../image/icon_touch.svg"
-                        menuIconSourceHighlight: "../image/icon_touch.svg"
-                        isSelect: selectMenu == "trackpad"
-
-                        onMenuClicked: {
-                            selectMenu = "trackpad"
-                            openModule("trackpad")
-                        }
-                    }
-
-                    MenuItem {
-                        id: pointerMenu
-
-                        menuTitle: i18n("Mouse")
-                        menuType: 0
-                        menuIconSource: "../image/icon_mouse.svg"
-                        menuIconSourceHighlight: "../image/icon_mouse.svg"
-                        isSelect: selectMenu == "pointer"
-
-                        onMenuClicked: {
-                            selectMenu = "pointer"
-                            openModule("pointer")
-                        }
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: 10 
-                    }
-		
-                    Item {
-                        Layout.fillHeight: true
-                    }
+            onToggleChanged: {
+                if (model.type === "airplaneMode") {
+                    handler.enableAirplaneMode(checked)
                 }
             }
+            onMenuClicked: {
+                if (menuType !== 1) {
+                    settingsRoot.selectMenu = model.type
+                    openModule(type)
+                }
+            }
+        }
+    }
+
+    onIsBluetoothOnChanged: {
+        setBluetoothContent();
+    }
+
+    onIsCellularOnChanged: {
+        setWifiContent();
+        setCellularContent();
+    }
+
+    onAirplaneModeEnabledChanged: {
+        setCellularContent();
+    }
+
+    onIsSimExitsChanged: {
+        setCellularContent();
+    }
+
+    function getWifiContent() {
+        var content = "";
+        if(networkStatus.wirelessEnabled === false){
+            content = i18nd("settings","Off");
+        } else {
+            if (isCellularOn === false && networkStatus.networkStatus === "Connecting") {
+                content = i18nd("settings","On Connection")
+            } else {
+                if (networkStatus.networkStatus === "Connected") {
+                    if(networkStatus.connectedWifiName != "") {
+                        content = networkStatus.connectedWifiName;
+                    } else {
+                        content = i18nd("settings","Not Connected");
+                    }
+                } else {
+                    content =  i18nd("settings","Not Connected");
+                }
+            }
+        }
+        return content;
+    }
+
+    function getBluetoothContent() {
+        var content = isBluetoothOn ? i18nd("settings","On") : i18nd("settings","Off")
+        return content;
+    }
+
+    function getCellularContent() {
+        var content = "";
+        if (airplaneModeEnabled === true) {
+            content =  i18nd("settings","Airplane Mode");
+        } else {
+            if (isSimExits === true){
+                if (isCellularOn === true) {
+                    content = i18nd("settings","On")
+                } else {
+                    content = i18nd("settings","Off")
+                }
+            } else {
+                content = i18nd("settings","No SIM")
+            }
+        }
+        return content;
+    }
+
+    function getVpnContent() {
+        var content = isVpnConnected ? i18nd("settings","On") : i18nd("settings","Not Connected");
+        return content;
+    }
+
+    function setWifiContent() {
+        var content = getWifiContent();
+        for(var i = 0; i < settingsModel.count; i++) {
+            if(settingsModel.get(i).type === "wifi") {
+                settingsModel.get(i).menuContent = content;
+                break;
+            }
+        }
+    }
+
+    function setBluetoothContent() {
+        var content = getBluetoothContent();
+        for(var i = 0; i < settingsModel.count; i++){
+            if(settingsModel.get(i).type === "bluetooth"){
+                settingsModel.get(i).menuContent = content;
+                break;
+            }
+        }
+    }
+
+    function setCellularContent(){
+        var content = getCellularContent();
+        for(var i = 0; i < settingsModel.count; i++){
+            if(settingsModel.get(i).type === "cellular"){
+                settingsModel.get(i).menuContent = content;
+                break;
+            }
+        }
+    }
+
+    function setVpnContent() {
+        var content = getVpnContent();
+        for(var i = 0; i < settingsModel.count; i++){
+            if(settingsModel.get(i).type === "vpn"){
+                settingsModel.get(i).menuContent = content;
+                break;
+            }
+        }
+    }
+
+    ListModel {
+        id: settingsModel
+
+        Component.onCompleted: {
+
+            settingsModel.append({"group" : i18nd("settings", "Network and connectivity"), "title" : i18nd("settings", "Airplane Mode"),
+                                     "type" : "airplaneMode", "menuType" : 1, "menuContent" : "", "icon" : Qt.resolvedUrl("../image/icon_ap.svg") });
+
+            settingsModel.append({"group" : i18nd("settings", "Network and connectivity"), "title" : i18nd("settings", "WLAN"),
+                                     "type" : "wifi", "menuType" : 2, "menuContent" : getWifiContent(), "icon" :  Qt.resolvedUrl("../image/icon_wifi.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "Network and connectivity"), "title" : i18nd("settings", "Bluetooth"),
+                                     "type" : "bluetooth", "menuType" : 2, "menuContent" : getBluetoothContent(), "icon" :  Qt.resolvedUrl("../image/icon_bt.svg")});
+//[liubangguo]canceled for V1.0
+//            settingsModel.append({"group" : i18nd("settings", "Network and connectivity"), "title" : i18nd("settings", "Cellular"),
+//                                     "type" : "cellular", "menuType" : 2, "menuContent" : getCellularContent(), "icon" :  Qt.resolvedUrl("../image/icon_cell.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "Network and connectivity"), "title" : i18nd("settings", "VPN"),
+                                     "type" : "vpn", "menuType" : 2, "menuContent" : getVpnContent(), "icon" :  Qt.resolvedUrl("../image/icon_vpn.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "Security and privacy"), "title" : i18nd("settings", "Password"),
+                                     "type" : "password", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_password.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "Display and sound"), "title" : i18nd("settings", "Display & Brightness"),
+                                     "type" : "display", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_display.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "Display and sound"), "title" : i18nd("settings", "Wallpaper"),
+                                     "type" : "wallpaper", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_wallpaper.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "Display and sound"), "title" : i18nd("settings", "Sounds"),
+                                     "type" : "sound", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_sound.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "System & Update"),
+                                     "type" : "mobile_info", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_about.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "Language & Region"),
+                                     "type" : "translations", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_language.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "Date & Time"),
+                                     "type" : "mobile_time", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_time.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "Battery"),
+                                     "type" : "battery", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_battery.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "Storage"),
+                                     "type" : "storage", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_storage.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "Keyboard"),
+                                     "type" : "keyboard", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_keyboard.svg")});
+
+            // settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "Trackpad"),
+            //                          "type" : "trackpad", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_touch.svg")});
+
+            settingsModel.append({"group" : i18nd("settings", "System"), "title" : i18nd("settings", "Mouse"),
+                                     "type" : "pointer", "menuType" : 0, "menuContent" : "", "icon" :  Qt.resolvedUrl("../image/icon_mouse.svg")});
         }
     }
 
@@ -539,10 +348,6 @@ Kirigami.Page {
         while (pageStack.depth > 1) {
             pageStack.pop()
         }
-
-        pageStack.push(kcmContainer.createObject(pageStack, {
-                                                     "kcm": module.kcm,
-                                                     "internalPage": module.kcm.mainUi
-                                                 }))
+        pageStack.push(kcmContainer.createObject(pageStack, { "kcm": module.kcm, "internalPage": module.kcm.mainUi }))
     }
 }

@@ -56,8 +56,8 @@ msgstr "鼠标"
 msgid "Device"
 msgstr "设备"
 
-msgid "Secondary Click"
-msgstr "左手模式"
+msgid "Primary Button"
+msgstr "主按键"
 
 msgid "Natural Scrolling"
 msgstr "自然滚动"
@@ -77,11 +77,11 @@ msgstr "慢"
 msgid "Fast"
 msgstr "快"
 
-msgid "Left"
-msgstr "左手"
+msgid "Left Button"
+msgstr "左键"
 
-msgid "Right"
-msgstr "右手"
+msgid "Right Button"
+msgstr "右键"
 
 #: Modems
 msgid "Modems"
@@ -426,7 +426,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"
@@ -3084,3 +3084,12 @@ msgstr "无线局域网"
 msgid "Bluetooth"
 
 msgstr "蓝牙"
+
+#: NONE
+msgid "None"
+
+msgstr "无"
+
+#: Mouse
+msgid "JingPad Keyboard"
+msgstr "灵动键盘"

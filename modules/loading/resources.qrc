@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/image">
+        <file alias="loadanim.gif">package/contents/image/loadanim.gif</file>
+    </qresource>
+</RCC>

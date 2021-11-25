@@ -22,7 +22,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
 import QtQuick.Shapes 1.12
-import org.kde.kirigami 2.11 as Kirigami
+import org.kde.kirigami 2.15 as Kirigami
 import QtGraphicalEffects 1.0
 
 Rectangle {
@@ -30,6 +30,7 @@ Rectangle {
 
     property int totalValue
     property int usedPower
+    property string progressColor: Kirigami.JTheme.highlightColor
     color: "transparent"
 
     function getPowerLeft() {
@@ -56,8 +57,8 @@ Rectangle {
 
             Rectangle {
                 anchors.centerIn: parent
-                width: 1
-                height: 1
+                width: 1 * appScale
+                height: 1 * appScale
                 visible: false
             }
         }
@@ -65,8 +66,8 @@ Rectangle {
         background: Rectangle {
             id: progressBarBackground
 
-            color: "#FFD6D9FF"
-            radius: 4
+            color: Kirigami.JTheme.disableForeground//"#FFD6D9FF"
+            radius: 4 * appScale
             layer.enabled: true
             layer.effect: OpacityMask {
                 maskSource: Rectangle {
@@ -81,7 +82,7 @@ Rectangle {
                 width: (usedPower / totalValue) * parent.width
                 height: parent.height
                 
-                color: "#FF6F82F5"
+                color:progressColor//"#FF6F82F5"
             }
         }
     }

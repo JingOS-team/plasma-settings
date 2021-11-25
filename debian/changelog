@@ -1,0 +1,50 @@
+plasma-settings (0.0.1) focal; urgency=medium
+
+  * Format version
+
+ -- JingOS CI <jingos@jingos.com>  Wed, 24 Nov 2021 20:13:36 +0800
+
+plasma-settings (0.0.1+git20180505-1) UNRELEASED; urgency=medium
+
+  * New Snapshot
+  * libkgapi-dev -> libkpimgapi-dev
+  * Add dep to qml-module-org-kde-kirigami2
+  * drop libkf5kdelibs4support-dev dependency
+
+ -- Jonah Brüchert <jbb@kaidan.im>  Sat, 05 May 2018 09:27:43 +0000
+
+plasma-settings (0.0.1-0ubuntu5) vivid; urgency=medium
+
+  * add dep to qml-module-ubuntu-onlineaccounts
+
+ -- Bhushan Shah <bshah@kde.org>  Tue, 12 Jan 2016 18:29:38 +0530
+
+plasma-settings (0.0.1-0ubuntu4) vivid; urgency=medium
+
+  * add deps
+
+ -- Boudewijn Rempt <boud@kde.org>  Fri, 05 Jun 2015 08:03:51 +0000
+
+plasma-settings (0.0.1-0ubuntu3) vivid; urgency=medium
+
+  *  add deps
+
+ -- Boudewijn Rempt <boud@kde.org>  Fri, 05 Jun 2015 07:57:36 +0000
+
+plasma-settings (0.0.1-0ubuntu2) vivid; urgency=medium
+
+  * fix dependency 
+
+ -- Boudewijn Rempt <boud@kde.org>  Fri, 05 Jun 2015 07:48:43 +0000
+
+plasma-settings (0.0.1-0ubuntu1) vivid; urgency=medium
+
+  * Add ecm as dependency
+
+ -- Boudewijn Rempt <boud@kde.org>  Fri, 05 Jun 2015 07:37:38 +0000
+
+plasma-settings (0.0.1-0ubuntu0) vivid; urgency=medium
+
+  * Initial release. 
+
+ -- Boudewijn Rempt <boud@kde.org>  Wed, 05 June 2015 09:50:41 +0000

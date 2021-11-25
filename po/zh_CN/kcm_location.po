@@ -28,10 +28,6 @@ msgid "Location Service"
 
 msgstr "定位服务"
 
-#: Location+Status
-msgid "Location Status"
-
-msgstr "定位开关"
 
 #: source
 msgid "target"
@@ -396,7 +392,7 @@ msgstr "建议电池电量达到50％或连接电源进行更新"
 #: OK
 msgid "OK"
 
-msgstr "好"
+msgstr "确定"
 
 #: Cancel
 msgid "Cancel"

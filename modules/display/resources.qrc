@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/image">
+        <file alias="dark_unselect.png">package/contents/image/dark_unselect.png</file>
+        <file alias="dark_select.png">package/contents/image/dark_select.png</file>
+        <file alias="icon_right.png">package/contents/image/icon_right.png</file>
+        <file alias="icon_left.png">package/contents/image/icon_left.png</file>
+        <file alias="brightness_less.png">package/contents/image/brightness_less.png</file>
+        <file alias="brightness_more.png">package/contents/image/brightness_more.png</file>
+    </qresource>
+</RCC>

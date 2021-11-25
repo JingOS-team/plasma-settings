@@ -2,6 +2,7 @@ find_package(Qt5 ${QT_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS DBus)
 
 set(wallpaper_SRCS # Specify source files for the library
     wallpaper.cpp
+    listimageprovider.cpp
     resources.qrc
 )
 
@@ -14,6 +15,7 @@ target_link_libraries(kcm_wallpaper
     KF5::I18n
     KF5::QuickAddons
     KF5::ConfigCore
+    KF5::GuiAddons
 )
 
 kcoreaddons_desktop_to_json(kcm_wallpaper "wallpaper.desktop") # Convert our desktop file to json

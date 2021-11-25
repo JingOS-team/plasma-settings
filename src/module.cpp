@@ -26,9 +26,47 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 
+static QMutex mutex;
+static QHash<QString, KQuickAddons::ConfigModule *> loadedPlugins;
+
 KQuickAddons::ConfigModule *Module::kcm() const
 {
     return m_kcm;
+}
+
+void ModuleLoader::doLoad(const QString &parameter)
+{
+    for (int i = 0; i < preLoadModuleList.size(); ++i)
+    {
+        QString moduleName = preLoadModuleList.at(i).toLocal8Bit().constData();
+        loadModule(moduleName);
+    }
+}
+
+void ModuleLoader::loadModule(QString name)
+{
+    qDebug()<<"[liubangguo]ModuleLoader::loadModule,name:"<<name;
+    mutex.lock();
+    const QString pluginPath = KPluginLoader::findPlugin(QLatin1String("kcms/") + "kcm_" + name);
+    KQuickAddons::ConfigModule * findModule = loadedPlugins.value(name);
+    if(findModule != nullptr){
+        mutex.unlock();
+        return;
+    }
+
+
+    KPluginLoader loader(pluginPath);
+    KPluginFactory *factory = loader.factory();
+    if (!factory) {
+        qWarning() << "[liubangguo]Error loading KCM plugin:" << loader.errorString();
+    } else {
+        KQuickAddons::ConfigModule * kcm = factory->create<KQuickAddons::ConfigModule>(this);
+        loadedPlugins.insert(name, kcm);
+        if (!kcm) {
+            qWarning() << "[liubangguo]Error creating object from plugin" << loader.fileName();
+        }
+    }
+    mutex.unlock();
 }
 
 QString Module::name() const
@@ -39,7 +77,32 @@ QString Module::name() const
 Module::Module() 
 {
     KPackage::PackageLoader::self()->listPackages(QString(), "kpackage/kcms/");
+
+    m_loader = new ModuleLoader();
+    m_loader->moveToThread(&m_loadThread);
+    connect(&m_loadThread, &QThread::finished, m_loader, &QObject::deleteLater);
+    connect(this, &Module::operate, m_loader, &ModuleLoader::doLoad);
+    connect(m_loader, &ModuleLoader::resultReady, this, &Module::loadResults);
+              m_loadThread.start();
 }
+
+void Module::loadWallpaperCache()
+{
+    const QString pluginPath = KPluginLoader::findPlugin(QLatin1String("kcms/") + "kcm_wallpaper");
+
+    KPluginLoader loader(pluginPath);
+    KPluginFactory *factory = loader.factory();
+    if (!factory) {
+        qWarning() << "Error loading KCM plugin:" << loader.errorString();
+    } else {
+        auto m_kcmWallpaper = factory->create<KQuickAddons::ConfigModule>(this);
+        loadedPlugins.insert("wallpaper", m_kcmWallpaper);
+        if (!m_kcmWallpaper) {
+            qWarning() << "Error creating object from plugin" << loader.fileName();
+        }
+    }
+}
+
 
 void Module::setName(const QString &name)
 {
@@ -49,8 +112,25 @@ void Module::setName(const QString &name)
     
     m_name = name;
     Q_EMIT nameChanged();
+    KQuickAddons::ConfigModule * findModule = loadedPlugins.value(m_name);
+    // if (m_kcm != nullptr) {
+    //     Q_EMIT m_kcm->currentIndexChanged(1);
+    // }
+    if(findModule != nullptr){
+    //if((m_name == "bluetooth" | m_name == "mobile_info" | m_name == "wifi" | m_name == "password") && findModule != nullptr){
+        m_kcm = findModule;
+        Q_EMIT kcmChanged();
+         if (m_kcm != nullptr) {
+            Q_EMIT m_kcm->currentIndexChanged(1);
+        }
+        return;
+    }
 
-    KQuickAddons::ConfigModule * module = loadedPlugins.take(m_name);
+    qDebug()<<"[liubangguo]Module::setName,find module is null,name:"<<name;
+    mutex.lock();
+
+    KQuickAddons::ConfigModule * module = loadedPlugins.value(m_name);
+
     const QString pluginPath = KPluginLoader::findPlugin(QLatin1String("kcms/") + "kcm_" + name);
 
     KPluginLoader loader(pluginPath);
@@ -67,7 +147,15 @@ void Module::setName(const QString &name)
 
    Q_EMIT kcmChanged();
 
-   if (module != nullptr)
-      delete module;
+    if (module != nullptr){
+        qDebug()<<Q_FUNC_INFO << " module remove::::::";
+        delete module;
+    }
+    mutex.unlock();
 
+}
+
+void Module::loadResults(const QString &result)
+{
+    qDebug()<<"[liubangguo]load all finished";
 }

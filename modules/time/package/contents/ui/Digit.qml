@@ -29,7 +29,7 @@ Item {
     property alias delegate: spinnerView.delegate
     property alias moving: spinnerView.moving
     property int selectedIndex: -1
-    property int fontSize: 14
+    property int fontSize: 14 * appFontSize
 
     width: placeHolder.width*1.3
     height: placeHolder.height*3

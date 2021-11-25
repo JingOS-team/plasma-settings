@@ -1,11 +1,13 @@
 set(battery_SRCS # Specify source files for the library
     battery.cpp
+    batteryutil.cpp
 )
 
 add_library(kcm_battery MODULE ${battery_SRCS})
 
 target_link_libraries(kcm_battery
     Qt5::Core
+    Qt5::DBus
     KF5::CoreAddons
     KF5::I18n
     KF5::QuickAddons

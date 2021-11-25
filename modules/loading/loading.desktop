@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=loading
+Name[x-test]=xxloadingxx
+Comment=loading
+Comment[x-test]=xxloadingxx
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=kcm_loading
+X-KDE-FormFactors=handset,tablet,mediacenter
+Categories=Qt;KDE;X-KDE-settings-system;
+X-KDE-Keywords=info,loading
+X-KDE-Keywords[x-test]=xxinfoxx,xxloadingxx
+X-KDE-ParentApp=kcontrol
+Exec=plasma-settings -m kcm_loading

@@ -37,8 +37,8 @@ Rectangle {
         color: "transparent"
 
         Button {
-            width: 100 * 3
-            height: 100
+            width: 100 * 3 * appScale
+            height: 100 * appScale
 
             onClicked: {
                 battery_root.popView()

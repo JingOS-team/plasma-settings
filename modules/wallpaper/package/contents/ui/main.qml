@@ -32,34 +32,38 @@ import org.kde.kirigami 2.15 as Kirigami
 import org.kde.plasma.private.volume 0.1
 import "openUtils.js" as Nav
 import org.kde.kcm 1.2
+import jingos.display 1.0
 
 Item {
 
     id: wallpaper_root
 
-    property real appScale: Screen.width / 888
-    property real heightScale: Screen.height / 648
-    property int appFontSize: 14//theme.defaultFont.pointSize
+    property real appScale: JDisplay.dp(1.0)
+    property real heightScale: appScale
+    property int appFontSize: 14 * JDisplay.sp(1.0) 
+
     property variant systemWallpapers: kcm.systemWallpapers
     property string wallpaperUrl: kcm.wallpaperUrl
     property string lockwallpaperUrl: kcm.lockwallpaperUrl
-    property int detailX: width + 10
+    property int detailX: Screen.width + 50 * appScale
     property bool isSetWallpaper
-    property bool isShowKirigamiWallpaper: false
     property bool isCurrentWallpaperLoaded: false
     property bool isTipImageLoaded: tipImage.isImageReady
 
     signal wallpaperChanged()
 
-    width: Screen.width * 0.7
-    height: Screen.height
+   anchors.fill:parent 
 
     onWallpaperChanged:{
         console.log("****** wallpaper changed lockwallpaperUrl:" + kcm.lockwallpaperUrl + " wallpaper:" + kcm.wallpaperUrl)
-        lockScrrenView.lockImageUrl = ""
-        lockScrrenView.lockImageUrl = kcm.lockwallpaperUrl
-        mainInterface.mainInterfaceImageUrl = ""
-        mainInterface.mainInterfaceImageUrl = kcm.wallpaperUrl
+        // lockScrrenView.lockImageUrl = ""
+        // lockScrrenView.lockImageUrl = kcm.lockwallpaperUrl
+        // mainInterface.mainInterfaceImageUrl = ""
+        // mainInterface.mainInterfaceImageUrl = kcm.wallpaperUrl
+        lockwallpaperUrl = ""
+        lockwallpaperUrl = kcm.lockwallpaperUrl
+        wallpaperUrl = ""
+        wallpaperUrl = kcm.wallpaperUrl
     }
 
     QQC2.StackView {
@@ -67,91 +71,77 @@ Item {
 
         anchors.fill: parent
 
-        // Component.onCompleted: {
-        //     stack.push(home_view)
-        // }
+        Component.onCompleted: {
+            stack.push(home_view)
+        }
     }
 
-    function openEditPage(imageUrl){
-        console.log(" openEditPage::" + imageUrl)
-        // stack.push(wallpaperComponent,{'source':("file://"+imageUrl)})
-        isShowKirigamiWallpaper = true
+    Connections {
+        target: kcm
+
+        onCurrentIndexChanged:{
+            if(index == 1){
+                popAllView()
+            }
+        }
     }
 
-    function popFullView(){
-        // stack.pop()
-        isShowKirigamiWallpaper = false
+    function popAllView() {
+        while (stack.depth > 1) {
+            stack.pop()
+        }
     }
 
     function openSystemWallpaper(){
         console.log(" kcm url :" + systemWallpapers)
         console.log(" kcm count 0 :" + systemWallpapers.length)
-        // stack.push(detailComponent)
-        zoomAnim.x = 0
-        zoomAnim.mainX = 0 - width - 10
-        zoomAnim.running = true
+        stack.push(detailComponent)
+        // zoomAnim.x = 0
+        // zoomAnim.mainX = 0 - width - 10
+        // zoomAnim.running = true
     }
 
     function popView() {
-        // stack.pop()
-        zoomAnim.x = width + 10
-        zoomAnim.mainX = 0
-        zoomAnim.running = true
+        stack.pop()
+        // zoomAnim.x = width + 10
+        // zoomAnim.mainX = 0
+        // zoomAnim.running = true
     }
 
-    // Component{
-    //     id:wallpaperComponent
-        // Kirigami.JWallPaperItem{
-        //     id:wallpaperItem
-        //     width: wallpaper_root.width
-        //     height: wallpaper_root.height
-        //     visible: wallpaper_root.isShowKirigamiWallpaper
-        //     onSetWallPaperFinished:{
-        //         console.log(" setwallpaper finnish:" + success)
-        //     }
-        //     onCancel:{
-        //         console.log(" setwallpaper cancel")
-        //         popFullView()
-        //     }
-        // }
-    // }
+    // ParallelAnimation
+    //     {
+    //         id: zoomAnim
+    //         property real x: 0
+    //         property real mainX: 0
 
+    //         NumberAnimation
+    //         {
+    //             // target: wallpaperDetail
+    //             property: "x"
+    //             // from: wallpaperDetail.x
+    //             to: zoomAnim.x
+    //             duration: Kirigami.Units.longDuration
+    //             easing.type: Easing.InOutQuad
+    //         }
+    //         NumberAnimation
+    //         {
+    //             // target: mainView
+    //             property: "x"
+    //             from: mainView.x
+    //             to: zoomAnim.mainX
+    //             duration: Kirigami.Units.longDuration
+    //             easing.type: Easing.InOutQuad
+    //         }
+    //     }
 
-
-    ParallelAnimation
-        {
-            id: zoomAnim
-            property real x: 0
-            property real mainX: 0
-
-            NumberAnimation
-            {
-                target: wallpaperDetail
-                property: "x"
-                from: wallpaperDetail.x
-                to: zoomAnim.x
-                duration: Kirigami.Units.longDuration
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation
-            {
-                target: mainView
-                property: "x"
-                from: mainView.x
-                to: zoomAnim.mainX
-                duration: Kirigami.Units.longDuration
-                easing.type: Easing.InOutQuad
-            }
-        }
-
-    // Component{
-    //     id:home_view
+    Component{
+        id:home_view
         Rectangle {
             id:mainView
             width: parent.width
             height: parent.height
 
-            color: "#FFF6F9FF"
+            color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
             Text {
                 id: wallpaper_title
 
@@ -159,11 +149,12 @@ Item {
                     left: parent.left
                     top: parent.top
                     leftMargin: 20 * appScale
-                    topMargin: 44
+                    topMargin: 44 * appScale
                 }
 
-                width: 500
+                width: 500 * appScale
                 text: i18n("Wallpaper")
+                color: Kirigami.JTheme.majorForeground
                 font.pixelSize: appFontSize + 6
                 font.weight: Font.Bold
             }
@@ -183,13 +174,13 @@ Item {
                     id:lockScrrenView
                     width: mainTop.itemWidth//270 * appScale
                     height: 197 * heightScale
-                    imageRadius: 10
+                    imageRadius: 10 * appScale
                 }
                 MainInterface{
                     id:mainInterface
                     width: mainTop.itemWidth
                     height: 197 * heightScale
-                    imageRadius: 10
+                    imageRadius: 10 * appScale
                     onMainWallpaperBackgroundReadyChanged:{
                         isCurrentWallpaperLoaded = mainWallpaperBackgroundReady
                     }
@@ -211,7 +202,7 @@ Item {
                 height: 77 * appScale
                 rectRadius: height / 8
                 borderWidth: 0
-                color: "#FFFFFF"
+                color: Kirigami.JTheme.cardBackground//"#FFFFFF"
                 RadiusImage{
                     id:tipImage
 
@@ -219,9 +210,8 @@ Item {
                     height: parent.height
                     width: height
                     imageRadius: systemWallpaper.radius
-                    url: isCurrentWallpaperLoaded ? (systemWallpapers.length > 0 ? systemWallpapers[0] : "../image/local_default.png") : ""
+                    url: isCurrentWallpaperLoaded ? (systemWallpapers.length > 0 ? "image://imageProvider/"+systemWallpapers[0] : "../image/local_default.png") : ""
                     defaultUrl: "../image/local_default.png"
-                    // imageSourceSize: Qt.size(width,height)
                     imageView.mipmap: true
                 }
                 Item {
@@ -233,14 +223,14 @@ Item {
                         leftMargin: 12 * appScale
                     }
                     width: titleText.contentWidth
-                    height: titleText.contentHeight + lengthText.contentHeight + 10
+                    height: titleText.contentHeight + lengthText.contentHeight + 10 * appScale
                     Text {
                         id: titleText
                         anchors{
                             top: parent.top
                         }
                         text: i18n("System wallpaper")
-                        color: "#000000"
+                        color: Kirigami.JTheme.majorForeground//"#000000"
                         font.pixelSize: appFontSize
                     }
                     Text {
@@ -251,7 +241,7 @@ Item {
                             topMargin: 4 * appScale
                         }
                         text: systemWallpapers.length
-                        color: "#4D000000"
+                        color: Kirigami.JTheme.minorForeground//"#4D000000"
                         font.pixelSize: appFontSize - 2
                     }
                 }
@@ -263,9 +253,10 @@ Item {
                         rightMargin: 11 * appScale
                         verticalCenter: parent.verticalCenter
                     }
-                    width: 27 * appScale
-                    height: 27 * appScale
+                    width: 30 * appScale
+                    height: 30 * appScale
                     source: "qrc:/package/contents/image/icon_right.png"
+                    color:Kirigami.JTheme.iconMinorForeground
                 }
 
                 MouseArea{
@@ -280,17 +271,19 @@ Item {
         }
 
 
-    // }
+    }
 
-    // Component{
-    //     id:detailComponent
+    Component{
+        id:detailComponent
         SystemWallpaperView{
           id:wallpaperDetail
-          x:detailX
           width: wallpaper_root.width
           height: wallpaper_root.height
+        //   Component.onCompleted:{
+        //       x = detailX
+        //   }
         }
-    // }
+    }
 
 
 }

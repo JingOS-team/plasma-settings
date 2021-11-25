@@ -1,0 +1,6 @@
+[TimeDate Manager]
+Identity=unix-group:sudo;admin;adm
+Action=org.freedesktop.timedate1;org.freedesktop.timedate1.set-time;org.freedesktop.timedate1.set-timezone;org.freedesktop.timedate1.set-local-rtc;org.freedesktop.timedate1.set-ntp;
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes

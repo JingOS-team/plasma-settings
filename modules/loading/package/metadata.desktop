@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=loading
+Name[x-test]=xxloadingxx
+Comment=Management of loading
+Comment[x-test]=xxloadingxx
+Encoding=UTF-8
+Type=Service
+Icon=network-modem
+X-KDE-ServiceTypes=SettingsModule
+X-KDE-PluginInfo-Author=liubangguo
+X-KDE-Library=kcm_loading
+X-KDE-PluginInfo-Name=kcm_loading
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=http://plasma-mobile.org
+X-KDE-PluginInfo-License=GPL
+X-KDE-FormFactors=handset,tablet
+X-Plasma-MainScript=ui/main.qml

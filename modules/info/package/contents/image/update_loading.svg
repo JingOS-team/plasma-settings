@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="48px" viewBox="0 0 44 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>-mockplus-</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.678431 0 0 0 0 0.678431 0 0 0 0 0.686275 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="M-System&amp;Update" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="m01-1设置-system更新中" transform="translate(-1617.000000, -270.000000)">
+            <g id="Crypto-Currency/Crypto,-Currency,-Bitcoin,-Ethereum" transform="translate(1617.000000, 270.000000)" filter="url(#filter-1)">
+                <g id="Path" transform="translate(-0.000000, -0.000000)">
+                    <polygon points="0 0 44.0000002 0 44.0000002 48.0000002 0 48.0000002"></polygon>
+                    <line x1="22.0000001" y1="6.00000003" x2="22.0000001" y2="13.2000001" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="22.0000001" y1="34.8000001" x2="22.0000001" y2="42.0000002" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="10.34" y1="11.28" x2="14.9966667" y2="16.3600001" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="29.0033335" y1="31.6400001" x2="33.6600001" y2="36.7200002" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="5.50000002" y1="24.0000001" x2="12.1000001" y2="24.0000001" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="31.9000001" y1="24.0000001" x2="38.5000002" y2="24.0000001" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="10.34" y1="36.7200002" x2="14.9966667" y2="31.6400001" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="29.0033335" y1="16.3600001" x2="33.6600001" y2="11.28" stroke="#323232" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

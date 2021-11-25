@@ -8,6 +8,7 @@ import QtQuick 2.15
 import QtGraphicalEffects 1.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.15 as Kirigami
 
 Item {
     id: imgItem
@@ -33,7 +34,7 @@ Item {
         id:defaultRect
         width: imgItem.width
         height: imgItem.height
-        color:"#E5E5EA"
+        color:Kirigami.JTheme.cardBackground//"#E5E5EA"
         radius: imageRadius
 
         Image {

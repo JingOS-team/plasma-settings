@@ -35,48 +35,46 @@ Item{
     property int currentIndex : 0
     property bool clickable: isagain ? passwordagain.length < 6 ? false : true 
                                                     : password.length < 6 ? false : true 
+     onVisibleChanged:{
+        root.keyboardShow = visible
+    }
     Item{
         id:title
 
-        anchors.top:parent.top
-
-        Image {
+        width: parent.width
+        height: 30 * appScaleSize
+        anchors.top: parent.top
+        anchors.topMargin: 45 * appScaleSize
+        Kirigami.JIconButton {
             id:backLabel
 
             anchors {
                 top: parent.top
                 left: parent.left
-                topMargin: 48 * appScale
-                leftMargin: 14 * appScale
+                leftMargin: 14 * appScaleSize
+                verticalCenter: parent.verticalCenter
             }
-
-            sourceSize.width: 22 * appScale
-            sourceSize.height: 22 * appScale
+            width: (22 + 8) * appScaleSize
+            height: (22 + 8) * appScaleSize
 
             visible:passwordVerify.visible
-            source: "../image/arrow_left.png"
-
-            MouseArea {
-                anchors.fill:parent
-
-                onClicked:{
-                    popView()
-                }
+            source: "qrc:/image/arrow_left.svg"
+            color: Kirigami.JTheme.iconForeground
+            onClicked:{
+                popView()
             }
         }
 
         Kirigami.Label {
             anchors {
-                top: parent.top
                 left: backLabel.right
-                topMargin: 48 * appScale
-                leftMargin: 10 * appScale
+                leftMargin: 10 * appScaleSize
+                verticalCenter: parent.verticalCenter
             }
-
-            height: 20 * appScale
             font.bold: true
             text: i18n("Simple Password")
-            font.pixelSize: 20
+            font.pixelSize: 20 * appFontSize
+            color: Kirigami.JTheme.majorForeground
         }
     }
 
@@ -86,11 +84,11 @@ Item{
         anchors.top: title.bottom
         anchors.left:parent.left
         anchors.right:parent.right
-        anchors.topMargin: 122 * appScale
-        anchors.rightMargin: 12
+        anchors.topMargin: 57 * appScaleSize
+        anchors.rightMargin: 12 *appFontSize
 
         width: mWidth
-        height: 80 * appScale
+        height: 80 * appScaleSize
 
         ColumnLayout {
 
@@ -108,7 +106,8 @@ Item{
 
                 text: !isagain ? i18n("Enter your new password") : i18n("Verify your new password")
                 font.pointSize: defaultFontSize
-                font.pixelSize: 14
+                font.pixelSize: 14 * appFontSize
+                color: Kirigami.JTheme.majorForeground
             }
 
             Grid {
@@ -116,12 +115,12 @@ Item{
                 anchors{
                     top:tipLabel.top
                     horizontalCenter:parent.horizontalCenter
-                    topMargin:40 * appScale
+                    topMargin:40 * appScaleSize
                 }
 
                 columns: 6
                 rows: 1
-                spacing: 13 * appScale
+                spacing: 13 * appScaleSize
 
                 Repeater {
                     id:inputRepater
@@ -129,11 +128,11 @@ Item{
                     model: passwordInput
 
                     delegate: Rectangle{
-                        width: appScale * 11
-                        height: appScale * 11
+                        width: appScaleSize * 11
+                        height: appScaleSize * 11
 
                         radius: height / 2
-                        color: index < currentIndex ? "#FF3C4BE8" :"#266B6B8A"
+                        color: index < currentIndex ? Kirigami.JTheme.highlightColor: Kirigami.JTheme.componentBackground//"#FF3C4BE8" :"#266B6B8A"
                     }
                 }
             }
@@ -144,15 +143,15 @@ Item{
                 anchors{
                     top: inputGrid.bottom
                     horizontalCenter:parent.horizontalCenter
-                    topMargin: 8 * appScale
+                    topMargin: 8 * appScaleSize
                 }
 
-                width: 200 * appScale
+                width: 200 * appScaleSize
                 visible: isErrorShow
                 wrapMode: Text.WordWrap
                 text: i18n("Password did not match, please try again")
-                color: "#FFE95B4E"
-                font.pixelSize: 14
+                color: Kirigami.JTheme.highlightRed//"#FFE95B4E"
+                font.pixelSize: 14 * appFontSize
             }
 
         }
@@ -167,7 +166,7 @@ Item{
             left:parent.left
             right:parent.right
             bottom: passwordVerify.bottom
-            rightMargin: 12
+            rightMargin: 12 * appScaleSize
         }
 
         width: mWidth
@@ -178,46 +177,51 @@ Item{
             
             columns: 3
             rows: 4
-            spacing: 17 * appScale
+            spacing: 17 * appScaleSize
 
             Repeater {
                 model: numberModel
 
                 delegate: Rectangle {
-                    width: 54 * appScale
-                    height: 54 * appScale
+                    width: 54 * appScaleSize
+                    height: 54 * appScaleSize
 
-                    color:  index == 9 | index == 11 ? "transparent" : "#266B6B8A"
-                    radius: 16 * appScale
+                    color:  index == 9 | index == 11 ? "transparent" : Kirigami.JTheme.componentBackground//"#266B6B8A"
+                    radius: 16 * appScaleSize
 
                     Kirigami.Label {
                         anchors.centerIn: parent
 
                         text: model.display
-                        font.pixelSize: 23
+                        font.pixelSize: 23 * appFontSize
+                        color: Kirigami.JTheme.majorForeground
                     }
 
-                    Image{
+                    Kirigami.Icon{
                         id:img_confirm
 
                         anchors.centerIn:parent
 
-                        width:30 * appScale
-                        height:30 * appScale
+                        width:30 * appScaleSize
+                        height:30 * appScaleSize
 
                         //opacity: clickable ? 1 : 0.18
+                        opacity: enabled ? 1 : 0.2
                         visible:index == 11
-                        source: clickable ? "../image/icon_confirm.png" : "../image/icon_not_confirm.png"
+                        enabled:passwordVerify.clickable
+                        source: "qrc:/image/icon_pwd_confirm.svg" 
+                        color:Kirigami.JTheme.majorForeground
                     }
 
-                    Image{
+                    Kirigami.Icon{
                         anchors.centerIn:parent
 
-                        width:30 * appScale
-                        height:30 * appScale
+                        width:30 * appScaleSize
+                        height:30 * appScaleSize
 
                         visible:index == 9
-                        source:"../image/key_back.png"
+                        source:"qrc:/image/key_back.png"
+                        color: Kirigami.JTheme.majorForeground
                     }
 
                     MouseArea {
@@ -305,7 +309,6 @@ Item{
     function checkPassword() {
          console.log("checkPassword: "+password+" "+passwordagain)
         if(password == passwordagain) {
-            popView()
             kcm.setPassword(password,"simple")
         } else {
             isErrorShow = true

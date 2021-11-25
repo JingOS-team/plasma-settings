@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/image">
+        <file alias="device_name_modify.svg">package/contents/image/device_name_modify.svg</file>
+        <file alias="icon_left.png">package/contents/image/icon_left.png</file>
+    </qresource>
+</RCC>

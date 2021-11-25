@@ -32,14 +32,14 @@ QtQ.Rectangle {
     property alias gridModel: detailGrid.model
     property var setWallpaperUrl
 
-    color: "#FFF6F9FF"
+    color: Kirigami.JTheme.settingMinorBackground//"#FFF6F9FF"
 
     QtQ.Item {
         id: title
 
         anchors {
             top: parent.top
-            topMargin: 42
+            topMargin: 42 * appScale
             left: parent.left
             leftMargin: 20 * appScale
         }
@@ -53,21 +53,18 @@ QtQ.Rectangle {
                 left: parent.left
             }
 
-            width: 27 * appScale
-            height: 27 * appScale
+            width: (22 + 8) * appScale
+            height: (22 + 8) * appScale
 
             source: "qrc:/package/contents/image/arrow_left.png"
-
-            QtQ.MouseArea {
-                anchors.fill: parent
-
-                onClicked: {
-                    popView()
-                    if (isSetWallpaperSuc) {
-                        wallpaper_root.wallpaperChanged()
-                        isSetWallpaperSuc = false
-                    }
-                }
+            color:Kirigami.JTheme.iconForeground
+            onClicked: {
+                popView()
+                console.log(" wallpaper set status::" + isSetWallpaperSuc)
+                // if (isSetWallpaperSuc) {
+                wallpaper_root.wallpaperChanged()
+                isSetWallpaperSuc = false
+                // }
             }
         }
 
@@ -82,6 +79,7 @@ QtQ.Rectangle {
             font.pixelSize: appFontSize + 6
             font.bold: true
             text: i18n("System wallpaper")
+            color: Kirigami.JTheme.majorForeground
         }
     }
 
@@ -110,7 +108,7 @@ QtQ.Rectangle {
         cellHeight: cellWidth * 131/180
         clip: true
         cacheBuffer: height * 2
-        model: (isCurrentWallpaperLoaded & isTipImageLoaded) ? wallpaper_root.systemWallpapers.length : 0
+        model: wallpaper_root.systemWallpapers.length//(isCurrentWallpaperLoaded & isTipImageLoaded) ? wallpaper_root.systemWallpapers.length : 0
         delegate: QtQ.Item {
             id: gdelegate
             width: detailGrid.cellWidth
@@ -118,20 +116,14 @@ QtQ.Rectangle {
             RadiusImage {
                 id:itemImage
                 anchors.centerIn: parent
-                url: wallpaper_root.systemWallpapers[index]//"../image/bg.png"
+                url: "image://imageProvider/"+wallpaper_root.systemWallpapers[index]//"../image/bg.png"
                 imageRadius: 10 * appScale
                 width: detailGrid.cellWidth - (22 * appScale)
                 height: detailGrid.cellHeight - (18 * appScale)
                 imageModel: QtQ.Image.PreserveAspectCrop
                 imageAsynchronous: true
+                defaultUrl: ""
                 // imageSourceSize: Qt.size(width,height)
-                QtQ.MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log(" onClicked::" + itemImage.url)
-                        systemWallpaper.openWallpaperView(itemImage.url)
-                    }
-                }
             }
 
 
@@ -150,8 +142,8 @@ QtQ.Rectangle {
                    }
                }
                onItemClicked: {
-                    console.log(" onClicked::" + itemImage.url)
-                       systemWallpaper.openWallpaperView(itemImage.url)
+                    console.log(" onClicked111::" + wallpaper_root.systemWallpapers[index])
+                    systemWallpaper.openWallpaperView(wallpaper_root.systemWallpapers[index])
                }
            }
 
@@ -181,7 +173,7 @@ QtQ.Rectangle {
             onSetWallPaperFinished:{
                 console.log(" setwallpaper finnish:" + success)
                 popWallpaperView()
-                isSetWallpaperSuc = success
+                isSetWallpaperSuc = true
             }
             onCancel:{
                 console.log(" setwallpaper cancel")
